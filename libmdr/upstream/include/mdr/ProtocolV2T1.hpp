@@ -1,0 +1,10228 @@
+#pragma once
+#include "ProtocolV2.hpp"
+#pragma pack(push, 1)
+
+// Generated from Sound Connect iOS J2ObjC metadata. Do not edit by hand.
+namespace mdr::v2::t1
+{
+#pragma region Enums
+    enum class Action : UInt8
+    {
+        SINGLE_TAP = 0x00,
+        DOUBLE_TAP = 0x01,
+        TRIPLE_TAP = 0x02,
+        REPEAT_TAP = 0x03,
+        SINGLE_TAP_AND_HOLD = 0x10,
+        DOUBLE_TAP_AND_HOLD = 0x11,
+        LONG_PRESS_THEN_ACTIVATE = 0x21,
+        LONG_PRESS_DURING_ACTIVATE = 0x22,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class AdjustSynchronizationStatus : UInt8
+    {
+        ENABLE = 0x00,
+        DISABLE = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class AdjustSynchronizationValue : UInt8
+    {
+        MSEC_0 = 0x00,
+        MSEC_10 = 0x01,
+        MSEC_20 = 0x02,
+        MSEC_30 = 0x03,
+        MSEC_40 = 0x04,
+        MSEC_50 = 0x05,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class AlertAction : UInt8
+    {
+        NEGATIVE = 0x00,
+        POSITIVE = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class AlertActionType : UInt8
+    {
+        CONFIRMATION_ONLY = 0x00,
+        POSITIVE_NEGATIVE = 0x01,
+        POSITIVE_CONFIRMATION_WITH_REPLY = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class AlertFlexibleMessageType : UInt8
+    {
+        BATTERY_CONSUMPTION_INCREASE_DUE_TO_SIMULTANEOUS_3_SETTINGS = 0x00,
+        CAUTION_FOR_FEATURES_EXCLUSIVE_TO_MULTI_POINT = 0x01,
+        CAUTION_FOR_FEATURES_EXCLUSIVE_TO_VOICE_ASSISTANT = 0x02,
+        CAUTION_FOR_FEATURES_EXCLUSIVE_TO_GATT = 0x03,
+        CAUTION_FOR_FEATURES_EXCLUSIVE_TO_GATT_WITHOUT_REBOOT = 0x04,
+        CAUTION_FOR_FEATURES_EXCLUSIVE_TO_GATT_NO_RIGHT_SIDE_LIMITATION = 0x05,
+        CAUTION_FOR_FEATURES_EXCLUSIVE_TO_GATT_WITHOUT_REBOOT_NO_RIGHT_SIDE_LIMITATION = 0x06,
+        BATTERY_CONSUMPTION_INCREASE_DUE_TO_SIMULTANEOUS_3_SETTINGS_REPLY_CONFIMATION = 0x07,
+        CAUTION_FOR_FEATURES_EXCLUSIVE_TO_BGM_MODE = 0x08,
+        CAUTION_FOR_FEATURES_EXCLUSIVE_TO_EQ = 0x09,
+        CAUTION_FOR_FUNCTIONS_THAT_ARE_EXCLUSIVE_WITH_BT_STANDBY_OFF = 0x0A,
+        BATTERY_CONSUMPTION_INCREASE_DUE_TO_ALL_SETTING_ACTIVATE = 0x0B,
+        DISCONNECT_CAUSED_BY_ENTER_PAIRING_MODE_WITH_FOLLOWING_FOR_LE_AUDIO_LIMITATION = 0x0C,
+        DISCONNECT_CAUSED_BY_CHANGE_CONNECTION_WITH_FOLLOWING_FOR_LE_AUDIO_LIMITATION = 0x0D,
+        DISCONNECT_CAUSED_BY_CHANGING_CONNECTION_STANDBY_MODE_CLASSIC_ONLY = 0x0E,
+        DISCONNECT_CAUSED_BY_CHANGING_CONNECTION_STANDBY_MODE_LE_AUDIO_CLASSIC = 0x0F,
+        DISCONNECT_CAUSED_BY_ENTER_PAIRING_MODE_WITH_FOLLOWING_FOR_LE_AUDIO_LIMITATION_SETTING_ON_CONNECTION_MODE = 0x10,
+        DISCONNECT_CAUSED_BY_CHANGE_CONNECTION_TO_LE_AUDIO_WITH_FOLLOWING_FOR_LE_AUDIO_LIMITATION = 0x11,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class AlertInquiredType : UInt8
+    {
+        FIXED_MESSAGE = 0x00,
+        VIBRATOR_ALERT_NOTIFICATION = 0x01,
+        FIXED_MESSAGE_WITH_LEFT_RIGHT_SELECTION = 0x02,
+        VOICE_ASSISTANT_ALERT_NOTIFICATION = 0x03,
+        APP_BECOMES_FOREGROUND = 0x04,
+        LE_AUDIO_ALERT_NOTIFICATION = 0x05,
+        FLEXIBLE_MESSAGE = 0x06,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class AlertLeftRightAction : UInt8
+    {
+        NEGATIVE = 0x00,
+        LEFT = 0x01,
+        RIGHT = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class AlertMessageType : UInt8
+    {
+        DISCONNECT_CAUSED_BY_CONNECTION_MODE_CHANGE = 0x00,
+        DISCONNECT_CAUSED_BY_CHANGING_KEY_ASSIGN = 0x01,
+        NEED_DISCONNECTION_FOR_UPDATING_FIRMWARE = 0x02,
+        GOOGLE_ASSISTANT_IS_NOW_AVAILABLE = 0x03,
+        DUAL_ASSIGN_OF_VOICE_ASSISTANT_IS_UNAVAILABLE = 0x05,
+        DISCONNECT_CAUSED_BY_CHANGING_MULTIPOINT_LDAC_DISABLE = 0x06,
+        DISCONNECT_CAUSED_BY_CHANGING_MULTIPOINT = 0x07,
+        BATTERY_CONSUMPTION_INCREASE_DUE_TO_EQ_AND_UPSCALING = 0x08,
+        CAUTION_FOR_DUAL_ASSIGNMENT_OF_PLAYBACK_CONTROL = 0x09,
+        CAUTION_FOR_DISABLE_TOUCH_SENSOR_PANEL = 0x0A,
+        CAUTION_FOR_DISABLE_TOUCH_SENSOR_PANEL_AND_RECONNECTION = 0x0B,
+        CAUTION_FOR_ABLE_TOUCH_SENSOR_PANEL = 0x0C,
+        CAUTION_FOR_ABLE_TOUCH_SENSOR_PANEL_AND_RECONNECTION = 0x0D,
+        CAUTION_FOR_DISABLE_VOICE_ASSISTANT_ASSIGNABLE_BUTTON = 0x0E,
+        CAUTION_FOR_DISABLE_VOICE_ASSISTANT_ASSIGNABLE_SENSOR = 0x0F,
+        CAUTION_FOR_DISABLE_VOICE_ASSISTANT_AND_RECONNECTION_ASSIGNABLE_BUTTON = 0x10,
+        CAUTION_FOR_DISABLE_VOICE_ASSISTANT_AND_RECONNECTION_ASSIGNABLE_SENSOR = 0x11,
+        CAUTION_FOR_ABLE_VOICE_ASSISTANT_ASSIGNABLE_BUTTON = 0x12,
+        CAUTION_FOR_ABLE_VOICE_ASSISTANT_ASSIGNABLE_SENSOR = 0x13,
+        CAUTION_FOR_ABLE_VOICE_ASSISTANT_AND_RECONNECTION_ASSIGNABLE_BUTTON = 0x14,
+        CAUTION_FOR_ABLE_VOICE_ASSISTANT_AND_RECONNECTION_ASSIGNABLE_SENSOR = 0x15,
+        CAUTION_FOR_CHANGE_VOICE_ASSISTANT = 0x16,
+        CAUTION_FOR_CHANGE_VOICE_ASSISTANT_TOUCH_SENSOR_PANEL = 0x17,
+        CAUTION_FOR_CHANGE_VOICE_ASSISTANT_TOUCH_SENSOR_PANEL_MOBILE_OR_SIRI = 0x18,
+        FOREGROUND_CAUTION_NEED_DISCONNECTION_FOR_ENABLING_WAKE_WORD = 0x19,
+        FOREGROUND_CAUTION_WAKE_WORD_IS_AVAILABLE_ONLY_IN_USE_OF_ALEXA = 0x1A,
+        CAUTION_FOR_NOT_CONNECTED_COMPASS_MOUNTING_SIDE_RIGHT = 0x1B,
+        CAUTION_FOR_CONNECTION_MODE_SOUND_QUALITY_PRIOR = 0x1C,
+        CAUTION_FOR_FW_UPDATE_IN_PROGRESS = 0x1D,
+        CAUTION_FOR_DISABLE_SAR_GM1 = 0x1E,
+        CAUTION_FOR_GATT_DISCONNECTION_FOR_SAR = 0x1F,
+        CAUTION_FOR_GATT_TO_ON = 0x20,
+        CANT_ASSIGN_MS_AND_GOOGLE_ASSISTANT_AT_THE_SAME_TIME = 0x21,
+        CAUTION_FOR_GATT_FOR_MS = 0x22,
+        CAUTION_FOR_GATT_FOR_QUICK_ACCESS_SERVICE = 0x23,
+        DISCONNECT_CAUSED_BY_GATT_ON = 0x24,
+        DISCONNECT_AND_CHANGE_KEY_ASSIGN_CAUSED_BY_GATT_ON = 0x25,
+        DISCONNECT_CAUSED_BY_CHANGING_KEY_ASSIGN_AND_CHANGE_GATT_TO_OFF = 0x26,
+        DISCONNECT_CAUSED_BY_CHANGING_VOICE_ASSISTANT_AND_CHANGE_GATT_TO_OFF = 0x27,
+        DISCONNECT_AND_CHANGE_VOICE_ASSISTANT_TO_SIRI_CAUSED_BY_GATT_ON = 0x28,
+        CANT_USE_LDAC_WHILE_GATT_IS_ON = 0x29,
+        CANT_USE_LDAC_IN_SOUND_QUALITY_PRIOR = 0x2A,
+        BATTERY_CONSUMPTION_INCREASE_DUE_TO_SOUND_FUNCTION_1 = 0x2B,
+        DISCONNECT_CAUSED_BY_CHANGING_CONNECTION_STANDBY_MODE_CLASSIC_ONLY = 0x2C,
+        DISCONNECT_CAUSED_BY_CHANGING_CONNECTION_STANDBY_MODE_LE_AUDIO_CLASSIC = 0x2D,
+        DISCONNECT_CAUSED_BY_ENTER_PAIRING_MODE_CLASSIC = 0x2E,
+        DISCONNECT_CAUSED_BY_ENTER_PAIRING_MODE_WITH_FOLLOWING_FOR_LE_AUDIO_LIMITATION_VAS_CONNECTION_MODE = 0x2F,
+        DISCONNECT_CAUSED_BY_CHANGE_CONNECTION_CLASSIC = 0x30,
+        DISCONNECT_CAUSED_BY_CHANGE_CONNECTION_WITH_FOLLOWING_FOR_LE_AUDIO_LIMITATION_VAS_CONNECTION_MODE = 0x31,
+        BISTO_LCH_ASSIGNMENT_AND_GATT_ACTIVATION_IS_IMPOSSIBLE = 0x32,
+        TEAMS_MUST_BE_ASSIGNED_TO_EITHER_LEFT_OR_RIGHT = 0x33,
+        DISCONNECT_CAUSED_BY_ENTER_PAIRING_MODE_WITH_FOLLOWING_FOR_LE_AUDIO_LIMITATION_ASSIGNABLE_SETTINGS_VA_QA_CONNECTION_MODE_QA = 0x34,
+        DISCONNECT_CAUSED_BY_CHANGE_CONNECTION_WITH_FOLLOWING_FOR_LE_AUDIO_LIMITATION_ASSIGNABLE_SETTINGS_VA_QA_CONNECTION_MODE_QA = 0x35,
+        DISCONNECT_CAUSED_BY_ENTER_PAIRING_MODE_WITH_FOLLOWING_FOR_LE_AUDIO_LIMITATION_VAS_CONNECTION_MODE_PDM = 0x36,
+        DISCONNECT_CAUSED_BY_CHANGE_CONNECTION_WITH_FOLLOWING_FOR_LE_AUDIO_LIMITATION_VAS_CONNECTION_MODE_PDM = 0x37,
+        DISCONNECT_CAUSED_BY_ENTER_PAIRING_MODE_WITH_FOLLOWING_FOR_LE_AUDIO_LIMITATION_VAS_CONNECTION_MODE_QA = 0x38,
+        DISCONNECT_CAUSED_BY_CHANGE_CONNECTION_WITH_FOLLOWING_FOR_LE_AUDIO_LIMITATION_VAS_CONNECTION_MODE_QA = 0x39,
+        DISCONNECT_CAUSED_BY_ENTER_PAIRING_MODE_WITH_FOLLOWING_FOR_LE_AUDIO_LIMITATION_VAS_CONNECTION_MODE_QA_PDM = 0x40,
+        DISCONNECT_CAUSED_BY_CHANGE_CONNECTION_WITH_FOLLOWING_FOR_LE_AUDIO_LIMITATION_VAS_CONNECTION_MODE_QA_PDM = 0x41,
+        CANT_USE_LDAC_WHILE_GATT_IS_ON_NO_RIGHT_SIDE_LIMITATION = 0x50,
+        CAUTION_FOR_CHANGING_VOICE_ASSISTANT_TO_SIRI = 0x51,
+        CAUTION_FOR_GATT_TO_OFF_CAUSED_BY_CHANGING_VOICE_ASSISTANT = 0x52,
+        CAUTION_FOR_LDAC_990 = 0x53,
+        CAUTION_FOR_GATT_TO_ON_FOR_QA_EASY_SETTING = 0x54,
+        CAUTION_FOR_FW_UPDATE_IN_PROGRESS_FOR_QA_EASY_SETTING = 0x55,
+        DISCONNECT_CAUSED_BY_GATT_ON_FOR_EASY_SETTING = 0x56,
+        DISCONNECT_AND_CHANGE_KEY_ASSIGN_CAUSED_BY_GATT_ON_FOR_QA_EASY_SETTING = 0x57,
+        DISCONNECT_AND_CHANGE_VOICE_ASSISTANT_TO_SIRI_CAUSED_BY_GATT_ON_FOR_QA_EASY_SETTING = 0x58,
+        CAUTION_FOR_AUTO_VOLUME_OPTIMIZER_TO_ON = 0x59,
+        CAUTION_FOR_AUTO_VOLUME_TO_ON_SVC_IS_ON = 0x5A,
+        CAUTION_FOR_AUTO_VOLUME_TO_ON_SVC_VOLUME_LIMITATION_IS_ON = 0x5B,
+        CAUTION_FOR_EXCLUSIVE_EQ_CHANGING_AND_BGM_MODE = 0x5C,
+        CAUTION_FOR_CHANGE_KEY_ASSIGN_TO_OTHER_VOICE_ASSISTANT = 0x5D,
+        CAUTION_FOR_CHANGE_KEY_ASSIGN_TO_PLAYBACK_CONTROL_L = 0x5E,
+        CAUTION_FOR_CHANGE_KEY_ASSIGN_TO_PLAYBACK_CONTROL_R = 0x5F,
+        CAUTION_FOR_CHANGE_KEY_ASSIGN_TO_NC_ASM_QUICK_ACCESS_L = 0x60,
+        CAUTION_FOR_CHANGE_KEY_ASSIGN_TO_NC_ASM_QUICK_ACCESS_R = 0x61,
+        CAUTION_FOR_CHANGE_KEY_ASSIGN_TO_VOICE_ASSISTANT_TO_NOT_SVA = 0x62,
+        CAUTION_FOR_CAN_USE_GOOGLE_HOT_WORD = 0x63,
+        CAUTION_FOR_CALLING_WHEN_SVA_TRAINING = 0x64,
+        CAUTION_FOR_CHANGE_KEY_ASSIGN_TO_BE_ENABLE_REPEAT_TAP = 0x65,
+        CAUTION_FOR_CHANGE_KEY_ASSIGN_TO_BE_DISABLE_REPEAT_TAP = 0x66,
+        CAUTION_FOR_CHANGE_HEART_RATE_PROFILE_TO_ON = 0x67,
+        CAUTION_FOR_CHANGE_HEART_RATE_SENSOR_GREEN_LIGHT_TO_OFF = 0x68,
+        CAUTION_FOR_ENABLING_2_DEVICES_CONNECTION_WITH_LDAC = 0x70,
+        CAUTION_FOR_CHANGING_TO_QUALITY_PRIOR_CONNECTION_MODE_WITH_2_DEVICES_CONNECTION = 0x71,
+        CAUTION_FOR_CONNECTED_2_DEVICES_IN_BACKGROUND_WITH_LDAC = 0x72,
+        WARNING_FOR_CHANGING_TO_LDAC_990_WITH_2_DEVICES_CONNECTION = 0x73,
+        DISCONNECT_CAUSED_BY_CHANGE_CLASSIC_AUDIO_SOUND_QUALITY_PRIOR_FROM_LE_AUDIO = 0x74,
+        DISCONNECT_CAUSED_BY_CHANGE_CLASSIC_AUDIO_CONNECTION_QUALITY_PRIOR_FROM_LE_AUDIO = 0x75,
+        DISCONNECT_CAUSED_BY_CHANGE_CLASSIC_AUDIO_SOUND_QUALITY_PRIOR = 0x76,
+        DISCONNECT_CAUSED_BY_CHANGE_CLASSIC_AUDIO_CONNECTION_QUALITY_PRIOR = 0x77,
+        CAUTION_FOR_TV_SOUND_BOOSTER_SETTING_ON = 0x80,
+        CAUTION_FOR_TV_SOUND_BOOSTER_SETTING_OFF = 0x81,
+        CAUTION_FOR_SETTINGS_STAMINA_FROM_ON_TO_OFF = 0x82,
+        CAUTION_FOR_SETTINGS_STAMINA_FROM_ON_TO_OFF_NO_LIGHTING_MODE = 0x83,
+        CAUTION_FOR_SETTINGS_STAMINA_FROM_OFF_TO_ON = 0x84,
+        CAUTION_FOR_SETTINGS_STAMINA_FROM_OFF_TO_ON_NO_LIGHTING_MODE = 0x85,
+        CAUTION_FOR_SETTINGS_SOUND_EFFECT_ON_STAMINA_ON = 0x86,
+        CAUTION_FOR_SETTINGS_SOUND_EFFECT_ON_STAMINA_ON_NO_LIGHTING = 0x87,
+        CAUTION_FOR_SETTINGS_LIGHTING_MODE_ON_WHEN_STAMINA_ON = 0x88,
+        CAUTION_FOR_DIABLING_BGM_MODE = 0x90,
+        CAUTION_FOR_USB_SUBMERSION_MONITOR_DURING_NOT_CHARGING = 0x91,
+        CAUTION_FOR_USB_SUBMERSION_MONITOR_DURING_CASE_IN = 0x92,
+        TURN_KEY_EQ_SUCCESS = 0x93,
+        CAUTION_FOR_USB_OVERHEAT_DETECTION_DURING_NOT_CHARGING = 0x94,
+        CAUTION_FOR_USB_OVERHEAT_DETECTION_DURING_CASE_IN = 0x95,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class AlertMessageTypeWithLeftRightSelection : UInt8
+    {
+        CAUTION_FOR_CHANGE_VOICE_ASSISTANT_ASSIGNABLE_BUTTON = 0x00,
+        CAUTION_FOR_CHANGE_VOICE_ASSISTANT_ASSIGNABLE_SENSOR = 0x01,
+        CAUTION_FOR_CHANGE_VOICE_ASSISTANT_WITHOUT_REBOOT_ASSIGNABLE_BUTTON = 0x02,
+        CAUTION_FOR_CHANGE_VOICE_ASSISTANT_WITHOUT_REBOOT_ASSIGNABLE_SENSOR = 0x03,
+        CAUTION_FOR_CHANGE_VOICE_ASSISTANT_WITH_SVA_ASSIGNABLE_BUTTON = 0x04,
+        CAUTION_FOR_CHANGE_VOICE_ASSISTANT_WITH_SVA_ASSIGNABLE_SENSOR = 0x05,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class AmbientSoundMode : UInt8
+    {
+        NORMAL = 0x00,
+        VOICE = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class AudioCodec : UInt8
+    {
+        UNSETTLED = 0x00,
+        SBC = 0x01,
+        AAC = 0x02,
+        LDAC = 0x10,
+        APT_X = 0x20,
+        APT_X_HD = 0x21,
+        LC3 = 0x30,
+        OTHER = 0xFF,
+        OUT_OF_RANGE = 0xFE,
+    };
+
+    enum class AudioExclusiveFunctionType : UInt8
+    {
+        EQUALIZER = 0x00,
+        DSEE = 0x01,
+        HEAD_TRACKER = 0x02,
+        LE_AUDIO = 0x03,
+        IMMERSIVE_AUDIO = 0x04,
+        SAR_OPTIMIZATION = 0x05,
+        GOOGLE_ASSISTANT = 0x06,
+        SPATIAL_AUDIO = 0x07,
+        BGM_MODE = 0x08,
+        UPMIX_CINEMA = 0x09,
+        SONY_VOICE_ASSISTANT = 0x0A,
+        TENCENT_XIAOWEI = 0x0B,
+        VOICE_CONTENTS = 0x0C,
+        SOUND_LEAKAGE_REDUCTION = 0x0D,
+        BRAVIA_3D_SURROUND = 0x0E,
+        UPMIX_SERIES = 0x0F,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class AudioInquiredType : UInt8
+    {
+        CONNECTION_MODE = 0x00,
+        UPSCALING = 0x01,
+        CONNECTION_MODE_WITH_LDAC_STATUS = 0x02,
+        BGM_MODE = 0x03,
+        UPMIX_CINEMA = 0x04,
+        CONNECTION_MODE_CLASSIC_AUDIO_LE_AUDIO = 0x05,
+        VOICE_CONTENTS = 0x06,
+        SOUND_LEAKAGE_REDUCTION = 0x07,
+        LISTENING_OPTION_ASSIGN_CUSTOMIZABLE = 0x08,
+        BGM_MODE_AND_ERRORCODE = 0x09,
+        UPMIX_SERIES = 0x0A,
+        UPSCALING_AUTO_OFF_WITH_STATUS_DISABLE_REASON = 0x0B,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class AutoPowerOffElements : UInt8
+    {
+        POWER_OFF_IN_5_MIN = 0x00,
+        POWER_OFF_IN_30_MIN = 0x01,
+        POWER_OFF_IN_60_MIN = 0x02,
+        POWER_OFF_IN_180_MIN = 0x03,
+        POWER_OFF_IN_15_MIN = 0x04,
+        POWER_OFF_DISABLE = 0x11,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class AutoPowerOffWearingDetectionElements : UInt8
+    {
+        POWER_OFF_IN_5_MIN = 0x00,
+        POWER_OFF_IN_30_MIN = 0x01,
+        POWER_OFF_IN_60_MIN = 0x02,
+        POWER_OFF_IN_180_MIN = 0x03,
+        POWER_OFF_IN_15_MIN = 0x04,
+        POWER_OFF_WHEN_REMOVED_FROM_EARS = 0x10,
+        POWER_OFF_DISABLE = 0x11,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class BarometricPressure : UInt8
+    {
+        UNMEASURED = 0x00,
+        MEASURED_0_7 = 0x07,
+        MEASURED_0_8 = 0x08,
+        MEASURED_0_9 = 0x09,
+        MEASURED_1_0 = 0x0A,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class BatteryChargingStatus : UInt8
+    {
+        NOT_CHARGING = 0x00,
+        CHARGING = 0x01,
+        UNKNOWN = 0x02,
+        CHARGED = 0x03,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class BatterySafeModeEffectStatusControl : UInt8
+    {
+        NOT_TO_CHANGE = 0x00,
+        TURN_OFF_THE_EFFECT = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class CallSettingsCallingStatus : UInt8
+    {
+        IN_CALLING = 0x00,
+        OUT_OF_CALLING = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class CallSettingsModeOperation : UInt8
+    {
+        MODE_START = 0x00,
+        MODE_FINISH = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class CallSettingsSettingModeStatus : UInt8
+    {
+        MODE_OUT = 0x00,
+        MODE_IN = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class CallSettingsTestSoundControl : UInt8
+    {
+        START = 0x00,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class CallSettingsTestSoundControlAck : UInt8
+    {
+        ACK = 0x00,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class CallSettingsTestSoundStatus : UInt8
+    {
+        TEST_SOUND_ENABLED = 0x00,
+        TEST_SOUND_DISABLED = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class ChangeType : UInt8
+    {
+        SETTING_AND_CONNECTION_METHOD_CHANGE = 0x00,
+        SETTING_CHANGE = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class Command : UInt8
+    {
+        CONNECT_GET_PROTOCOL_INFO = 0x00,
+        CONNECT_RET_PROTOCOL_INFO = 0x01,
+        CONNECT_GET_CAPABILITY_INFO = 0x02,
+        CONNECT_RET_CAPABILITY_INFO = 0x03,
+        CONNECT_GET_DEVICE_INFO = 0x04,
+        CONNECT_RET_DEVICE_INFO = 0x05,
+        CONNECT_GET_SUPPORT_FUNCTION = 0x06,
+        CONNECT_RET_SUPPORT_FUNCTION = 0x07,
+        GET_TEST = 0x0F,
+        COMMON_GET_CAPABILITY = 0x10,
+        COMMON_RET_CAPABILITY = 0x11,
+        COMMON_GET_STATUS = 0x12,
+        COMMON_RET_STATUS = 0x13,
+        COMMON_NTFY_STATUS = 0x15,
+        COMMON_SET_PARAM = 0x18,
+        COMMON_NTFY_PARAM = 0x19,
+        POWER_GET_CAPABILITY = 0x20,
+        POWER_RET_CAPABILITY = 0x21,
+        POWER_GET_STATUS = 0x22,
+        POWER_RET_STATUS = 0x23,
+        POWER_SET_STATUS = 0x24,
+        POWER_NTFY_STATUS = 0x25,
+        POWER_GET_PARAM = 0x26,
+        POWER_RET_PARAM = 0x27,
+        POWER_SET_PARAM = 0x28,
+        POWER_NTFY_PARAM = 0x29,
+        UPDT_GET_CAPABILITY = 0x30,
+        UPDT_RET_CAPABILITY = 0x31,
+        UPDT_GET_STATUS = 0x32,
+        UPDT_RET_STATUS = 0x33,
+        UPDT_SET_STATUS = 0x34,
+        UPDT_NTFY_STATUS = 0x35,
+        UPDT_GET_PARAM = 0x36,
+        UPDT_RET_PARAM = 0x37,
+        UPDT_SET_PARAM = 0x38,
+        UPDT_NTFY_PARAM = 0x39,
+        UPDT_TRANSFER_DATA = 0x3E,
+        UPDT_NTFY_MESSAGE = 0x3F,
+        LEA_GET_CAPABILITY = 0x40,
+        LEA_RET_CAPABILITY = 0x41,
+        LEA_GET_STATUS = 0x42,
+        LEA_RET_STATUS = 0x43,
+        LEA_NTFY_STATUS = 0x45,
+        LEA_GET_PARAM = 0x46,
+        LEA_RET_PARAM = 0x47,
+        LEA_SET_PARAM = 0x48,
+        LEA_NTFY_PARAM = 0x49,
+        LEA_GET_EXTENDED_PARAM = 0x4A,
+        LEA_RET_EXTENDED_PARAM = 0x4B,
+        LEA_SET_EXTENDED_PARAM = 0x4C,
+        LEA_NTFY_EXTENDED_PARAM = 0x4D,
+        EQEBB_GET_CAPABILITY = 0x50,
+        EQEBB_RET_CAPABILITY = 0x51,
+        EQEBB_GET_STATUS = 0x52,
+        EQEBB_RET_STATUS = 0x53,
+        EQEBB_NTFY_STATUS = 0x55,
+        EQEBB_GET_PARAM = 0x56,
+        EQEBB_RET_PARAM = 0x57,
+        EQEBB_SET_PARAM = 0x58,
+        EQEBB_NTFY_PARAM = 0x59,
+        EQEBB_GET_EXTENDED_INFO = 0x5A,
+        EQEBB_RET_EXTENDED_INFO = 0x5B,
+        NCASM_GET_CAPABILITY = 0x60,
+        NCASM_RET_CAPABILITY = 0x61,
+        NCASM_GET_STATUS = 0x62,
+        NCASM_RET_STATUS = 0x63,
+        NCASM_SET_STATUS = 0x64,
+        NCASM_NTFY_STATUS = 0x65,
+        NCASM_GET_PARAM = 0x66,
+        NCASM_RET_PARAM = 0x67,
+        NCASM_SET_PARAM = 0x68,
+        NCASM_NTFY_PARAM = 0x69,
+        SENSE_GET_CAPABILITY = 0x70,
+        SENSE_RET_CAPABILITY = 0x71,
+        SENSE_SET_STATUS = 0x74,
+        SENSE_NTFY_STATUS = 0x75,
+        SENSE_SET_PARAM = 0x78,
+        SENSE_NTFY_PARAM = 0x79,
+        SENSE_GET_EXT_INFO = 0x7A,
+        SENSE_RET_EXT_INFO = 0x7B,
+        OPT_GET_CAPABILITY = 0x80,
+        OPT_RET_CAPABILITY = 0x81,
+        OPT_GET_STATUS = 0x82,
+        OPT_RET_STATUS = 0x83,
+        OPT_SET_STATUS = 0x84,
+        OPT_NTFY_STATUS = 0x85,
+        OPT_GET_PARAM = 0x86,
+        OPT_RET_PARAM = 0x87,
+        OPT_SET_PARAM = 0x88,
+        OPT_NTFY_PARAM = 0x89,
+        ALERT_GET_CAPABILITY = 0x90,
+        ALERT_RET_CAPABILITY = 0x91,
+        ALERT_GET_STATUS = 0x92,
+        ALERT_RET_STATUS = 0x93,
+        ALERT_SET_STATUS = 0x94,
+        ALERT_NTFY_STATUS = 0x95,
+        ALERT_SET_PARAM = 0x98,
+        ALERT_NTFY_PARAM = 0x99,
+        PLAY_GET_CAPABILITY = 0xA0,
+        PLAY_RET_CAPABILITY = 0xA1,
+        PLAY_GET_STATUS = 0xA2,
+        PLAY_RET_STATUS = 0xA3,
+        PLAY_SET_STATUS = 0xA4,
+        PLAY_NTFY_STATUS = 0xA5,
+        PLAY_GET_PARAM = 0xA6,
+        PLAY_RET_PARAM = 0xA7,
+        PLAY_SET_PARAM = 0xA8,
+        PLAY_NTFY_PARAM = 0xA9,
+        SAR_AUTO_PLAY_GET_CAPABILITY = 0xB0,
+        SAR_AUTO_PLAY_RET_CAPABILITY = 0xB1,
+        SAR_AUTO_PLAY_GET_STATUS = 0xB2,
+        SAR_AUTO_PLAY_RET_STATUS = 0xB3,
+        SAR_AUTO_PLAY_NTFY_STATUS = 0xB5,
+        SAR_AUTO_PLAY_GET_PARAM = 0xB6,
+        SAR_AUTO_PLAY_RET_PARAM = 0xB7,
+        SAR_AUTO_PLAY_SET_PARAM = 0xB8,
+        SAR_AUTO_PLAY_NTFY_PARAM = 0xB9,
+        LOG_SET_STATUS = 0xC4,
+        LOG_NTFY_PARAM = 0xC9,
+        GENERAL_SETTING_GET_CAPABILITY = 0xD0,
+        GENERAL_SETTING_RET_CAPABILITY = 0xD1,
+        GENERAL_SETTING_GET_STATUS = 0xD2,
+        GENERAL_SETTING_RET_STATUS = 0xD3,
+        GENERAL_SETTING_NTFY_STATUS = 0xD5,
+        GENERAL_SETTING_GET_PARAM = 0xD6,
+        GENERAL_SETTING_RET_PARAM = 0xD7,
+        GENERAL_SETTING_SET_PARAM = 0xD8,
+        GENERAL_SETTING_NTNY_PARAM = 0xD9,
+        AUDIO_GET_CAPABILITY = 0xE0,
+        AUDIO_RET_CAPABILITY = 0xE1,
+        AUDIO_GET_STATUS = 0xE2,
+        AUDIO_RET_STATUS = 0xE3,
+        AUDIO_NTFY_STATUS = 0xE5,
+        AUDIO_GET_PARAM = 0xE6,
+        AUDIO_RET_PARAM = 0xE7,
+        AUDIO_SET_PARAM = 0xE8,
+        AUDIO_NTFY_PARAM = 0xE9,
+        SYSTEM_GET_CAPABILITY = 0xF0,
+        SYSTEM_RET_CAPABILITY = 0xF1,
+        SYSTEM_GET_STATUS = 0xF2,
+        SYSTEM_RET_STATUS = 0xF3,
+        SYSTEM_SET_STATUS = 0xF4,
+        SYSTEM_NTFY_STATUS = 0xF5,
+        SYSTEM_GET_PARAM = 0xF6,
+        SYSTEM_RET_PARAM = 0xF7,
+        SYSTEM_SET_PARAM = 0xF8,
+        SYSTEM_NTFY_PARAM = 0xF9,
+        SYSTEM_GET_EXT_PARAM = 0xFA,
+        SYSTEM_RET_EXT_PARAM = 0xFB,
+        SYSTEM_SET_EXT_PARAM = 0xFC,
+        SYSTEM_NTFY_EXT_PARAM = 0xFD,
+        UNKNOWN = 0xFF,
+    };
+
+    enum class CommonConnectionStatus : UInt8
+    {
+        NOT_CONNECTED = 0x00,
+        CONNECTED = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class CommonInquiredType : UInt8
+    {
+        CONCIERGE = 0x00,
+        CONNECTION_STATUS = 0x01,
+        AUDIO_CODEC = 0x02,
+        UPSCALING_EFFECT = 0x03,
+        BLE_SETUP = 0x04,
+        CONNECTION_ESTABLISHED_TIME = 0x05,
+        DEVICE_SPECIAL_MODE = 0x06,
+        SMART_PHONE_AND_CONNECTED_DEVICE_INFORMATION = 0x07,
+        TANDEM_RECONNECTION_REQUEST = 0x08,
+        DISPLAY_FW_VERSION = 0x09,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class ConfirmationType : UInt8
+    {
+        CONFIRMED = 0x00,
+        CONFIRMED_DONT_SHOW_AGAIN = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class ConnectInquiredType : UInt8
+    {
+        FIXED_VALUE = 0x00,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class ConnectionEstablishedTimeStatus : UInt8
+    {
+        VALID = 0x00,
+        INVALID = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class ConnectionStandbyModeChangeAction : UInt8
+    {
+        DISCONNECT_CLASSIC_BY_CONNECT_LE = 0x00,
+        DISCONNECT_LE_BY_CONNECT_CLASSIC = 0x01,
+        DISCONNECT_CLASSIC_BY_PAIRING_LE = 0x02,
+        DISCONNECT_LE_BY_PAIRING_CLASSIC = 0x03,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class ConnectionStandbyModeResult : UInt8
+    {
+        WILL_DISCONNECT = 0x00,
+        DISCONNECT_USER_CANCEL = 0x01,
+        DISCONNECT_BY_USER_OPERATION = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class ConnectionType : UInt8
+    {
+        SPP = 0x00,
+        BLE_GATT = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class DefaultSelectedLeftRightValue : UInt8
+    {
+        LEFT = 0x00,
+        RIGHT = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class DetectSensitivity : UInt8
+    {
+        AUTO = 0x00,
+        HIGH = 0x01,
+        LOW = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class DeviceInfoType : UInt8
+    {
+        MODEL_NAME = 0x01,
+        FW_VERSION = 0x02,
+        SERIES_AND_COLOR_INFO = 0x03,
+        INSTRUCTION_GUIDE = 0x04,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class DeviceSpecialMode : UInt8
+    {
+        NORMAL = 0x00,
+        TWO_DEVICES_CONNECTION_MODE = 0x01,
+        STEREO_PAIR = 0x02,
+        USB_DONGLE = 0x03,
+        PARTY_CONNECT = 0x04,
+        PARTY_CHAIN_TRANSMITTER = 0x05,
+        PARTY_CHAIN_RECEIVER = 0x06,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class DisplayLanguage : UInt8
+    {
+        UNDEFINED_LANGUAGE = 0x00,
+        ENGLISH = 0x01,
+        FRENCH = 0x02,
+        GERMAN = 0x03,
+        SPANISH = 0x04,
+        ITALIAN = 0x05,
+        PORTUGUESE = 0x06,
+        DUTCH = 0x07,
+        SWEDISH = 0x08,
+        FINNISH = 0x09,
+        RUSSIAN = 0x0A,
+        JAPANESE = 0x0B,
+        SIMPLIFIED_CHINESE = 0x0C,
+        BRAZILIAN_PORTUGUESE = 0x0D,
+        TRADITIONAL_CHINESE = 0x0E,
+        KOREAN = 0x0F,
+        TURKISH = 0x10,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class EarpieceFittingDetectionModeResultCode : UInt8
+    {
+        NO_ERROR = 0x00,
+        FORCEFULLY_CHANGED_FROM_ACC_BY_GENERAL_ERROR = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class EarpieceFittingDetectionModeStatus : UInt8
+    {
+        MODE_OUT = 0x00,
+        MODE_IN = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class EarpieceFittingDetectionOperation : UInt8
+    {
+        DETECTION_START = 0x00,
+        DETECTION_CANCEL = 0x01,
+        DETECTION_START_FORCEFUL = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class EarpieceFittingDetectionOperationErrorCode : UInt8
+    {
+        NO_ERROR = 0x00,
+        LEFT_CONNECTION_ERROR = 0x01,
+        RIGHT_CONNECTION_ERROR = 0x02,
+        FUNCTION_UNAVAILABLE_ERROR = 0x03,
+        LEFT_FITTING_ERROR = 0x04,
+        RIGHT_FITTING_ERROR = 0x05,
+        BOTH_FITTING_ERROR = 0x06,
+        MEASURING_ERROR = 0x07,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class EarpieceFittingDetectionOperationStatus : UInt8
+    {
+        DETECTION_IS_NOT_STARTED = 0x00,
+        DETECTION_STARTED = 0x01,
+        DETECTION_COMPLETED_SUCCESSFULLY = 0x02,
+        DETECTION_COMPLETED_UNSUCCESSFULLY = 0x03,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class EarpieceFittingDetectionResult : UInt8
+    {
+        GOOD = 0x00,
+        POOR = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class EarpieceSeries : UInt8
+    {
+        OTHER = 0x00,
+        POLYURETHANE = 0x01,
+        HYBRID = 0x02,
+        SOFT_FITTING_FOR_LINKBUDS_FIT = 0x03,
+        OUT_OF_RANGE = 0xFE,
+        NOT_DETERMINED = 0xFF,
+    };
+
+    enum class EarpieceSize : UInt8
+    {
+        SS = 0x00,
+        S = 0x01,
+        M = 0x02,
+        L = 0x03,
+        LL = 0x04,
+        OUT_OF_RANGE = 0xFE,
+        NOT_DETERMINED = 0xFF,
+    };
+
+    enum class EqBandInformationType : UInt8
+    {
+        NO_INFORMATION = 0x00,
+        HZ = 0x01,
+        KHZ = 0x02,
+        SPECIFIC_INFORMATION = 0x10,
+    };
+
+    enum class EqEbbInquiredType : UInt8
+    {
+        PRESET_EQ = 0x00,
+        EBB = 0x01,
+        PRESET_EQ_NONCUSTOMIZABLE = 0x02,
+        PRESET_EQ_AND_ULT_MODE = 0x03,
+        PRESET_EQ_AND_ERRORCODE = 0x04,
+        SOUND_EFFECT = 0x30,
+        CUSTOM_EQ = 0x31,
+        TURN_KEY_EQ = 0x32,
+        CUSTOMIZABLE_SOUND_EFFECT_SELECT = 0x33,
+        CUSTOMIZABLE_SOUND_EFFECT_RESET = 0x34,
+        CUSTOMIZABLE_SOUND_EFFECT_CUSTOM = 0x35,
+        CUSTOMIZABLE_SOUND_EFFECT_EXTERNAL_UPDATE = 0x36,
+        ULT_BTN_SOUND_EFFECT_ASSIGN = 0x40,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class EqPresetId : UInt8
+    {
+        OFF = 0x00,
+        ROCK = 0x01,
+        POP = 0x02,
+        JAZZ = 0x03,
+        DANCE = 0x04,
+        EDM = 0x05,
+        R_AND_B_HIP_HOP = 0x06,
+        ACOUSTIC = 0x07,
+        RESERVED_FOR_FUTURE_NO8 = 0x08,
+        RESERVED_FOR_FUTURE_NO9 = 0x09,
+        RESERVED_FOR_FUTURE_NO10 = 0x0A,
+        RESERVED_FOR_FUTURE_NO11 = 0x0B,
+        RESERVED_FOR_FUTURE_NO12 = 0x0C,
+        RESERVED_FOR_FUTURE_NO13 = 0x0D,
+        RESERVED_FOR_FUTURE_NO14 = 0x0E,
+        RESERVED_FOR_FUTURE_NO15 = 0x0F,
+        BRIGHT = 0x10,
+        EXCITED = 0x11,
+        MELLOW = 0x12,
+        RELAXED = 0x13,
+        VOCAL = 0x14,
+        TREBLE = 0x15,
+        BASS = 0x16,
+        SPEECH = 0x17,
+        RESERVED_FOR_FUTURE_NO24 = 0x18,
+        RESERVED_FOR_FUTURE_NO25 = 0x19,
+        RESERVED_FOR_FUTURE_NO26 = 0x1A,
+        RESERVED_FOR_FUTURE_NO27 = 0x1B,
+        RESERVED_FOR_FUTURE_NO28 = 0x1C,
+        RESERVED_FOR_FUTURE_NO29 = 0x1D,
+        RESERVED_FOR_FUTURE_NO30 = 0x1E,
+        RESERVED_FOR_FUTURE_NO31 = 0x1F,
+        GAMING_EQ = 0x20,
+        FPS_1 = 0x21,
+        FPS_2 = 0x22,
+        FPS_3 = 0x23,
+        HEAVY = 0x30,
+        CLEAR = 0x31,
+        HARD = 0x32,
+        SOFT = 0x33,
+        CUSTOM = 0xA0,
+        USER_SETTING1 = 0xA1,
+        USER_SETTING2 = 0xA2,
+        USER_SETTING3 = 0xA3,
+        USER_SETTING4 = 0xA4,
+        USER_SETTING5 = 0xA5,
+        ARTIST_COLLAB1 = 0xB0,
+        ARTIST_COLLAB2 = 0xB1,
+        ARTIST_COLLAB3 = 0xB2,
+        ARTIST_COLLAB4 = 0xB3,
+        ARTIST_COLLAB5 = 0xB4,
+        ARTIST_COLLAB6 = 0xB5,
+        ARTIST_COLLAB7 = 0xB6,
+        ARTIST_COLLAB8 = 0xB7,
+        ARTIST_COLLAB9 = 0xB8,
+        ARTIST_COLLAB10 = 0xB9,
+        ARTIST_COLLAB11 = 0xBA,
+        ARTIST_COLLAB12 = 0xBB,
+        UNSPECIFIED = 0xFF,
+    };
+
+    enum class EqUltModeStatus : UInt8
+    {
+        OFF = 0x00,
+        ULT_1 = 0x01,
+        ULT_2 = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class ExclusiveFunctionId : UInt8
+    {
+        STAMINA = 0x00,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class FaceTapAction : UInt8
+    {
+        DOUBLE_TAP = 0x00,
+        TRIPLE_TAP = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class FaceTapKey : UInt8
+    {
+        LEFT_SIDE_KEY = 0x00,
+        RIGHT_SIDE_KEY = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class FaceTapTestModeOperation : UInt8
+    {
+        TEST_MODE_START = 0x00,
+        TEST_MODE_FINISH = 0x01,
+        OUT_OF_RANGE = 0x99,
+    };
+
+    enum class FaceTapTestModeStatus : UInt8
+    {
+        IN_TEST_MODE = 0x00,
+        OUT_OF_TEST_MODE = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class FlexibleMessageItemId : UInt8
+    {
+        EQUALIZER = 0x00,
+        DSEE = 0x01,
+        SPEAK_TO_CHAT = 0x02,
+        AUTO_VOLUME_CONTROL = 0x03,
+        ACTIVATE_VOICE_ASSISTANT_WITH_YOUR_VOICE = 0x04,
+        GATT = 0x05,
+        LDAC = 0x06,
+        SOUND_QUALITY_PRIOR = 0x07,
+        GOOGLE_ASSISTANT = 0x08,
+        VOICE_ASSISTANT = 0x09,
+        FW_UPDATE = 0x0A,
+        MULTI_POINT = 0x0B,
+        VOICE_ASSISTANT_WAKE_WORD = 0x0C,
+        BGM_MODE = 0x0D,
+        BATTERY_SAFE_MODE = 0x0E,
+        HEAD_TRACKING = 0x0F,
+        LE_AUDIO = 0x10,
+        IMMERSIVE_AUDIO = 0x11,
+        LINK_AUTO_SWITCHING = 0x12,
+        AUTO_PLAY_PARTIAL_FUNCTION = 0x13,
+        NOISE_CANCELLING = 0x14,
+        SOUND_AR = 0x15,
+        VOICE_UI = 0x16,
+        QUICK_ACCESS = 0x17,
+        CONNECTION_MODE = 0x18,
+        AUTO_PLAY = 0x19,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class Function : UInt8
+    {
+        NO_FUNCTION = 0x00,
+        NC_ASM_OFF = 0x01,
+        NC_ASM = 0x02,
+        NC_OFF = 0x03,
+        ASM_OFF = 0x04,
+        QUICK_ATTENTION = 0x10,
+        NC_OPTIMIZER = 0x11,
+        PLAY_PAUSE = 0x20,
+        NEXT_TRACK = 0x21,
+        PREV_TRACK = 0x22,
+        VOLUME_UP = 0x23,
+        VOLUME_DOWN = 0x24,
+        VOICE_RECOGNITION = 0x30,
+        GET_YOUR_NOTIFICATION = 0x31,
+        TALK_TO_GOOGLE_ASSISTANT = 0x32,
+        STOP_GOOGLE_ASSISTANT = 0x33,
+        VOICE_INPUT_CANCEL = 0x34,
+        TALK_TO_TENCENT_XIAOWEI = 0x35,
+        CANCEL_VOICE_RECOGNITION = 0x36,
+        VOICE_INPUT_AMAZON_ALEXA = 0x37,
+        CANCEL_AMAZON_ALEXA = 0x38,
+        CANCEL_TENCENT_XIAOWEI = 0x39,
+        NEXT_TRACK_STOP_GEMINI_LIVE = 0x3A,
+        PREV_TRACK_STOP_GEMINI_LIVE = 0x3B,
+        LAUNCH_MLP = 0x40,
+        TALK_TO_YOUR_MLP = 0x41,
+        SPTF_ONE_TOUCH = 0x42,
+        QUICK_ACCESS1 = 0x43,
+        QUICK_ACCESS2 = 0x44,
+        TALK_TO_TENCENT_XIAOWEI_CANCEL = 0x45,
+        Q_MSC_ONE_TOUCH = 0x46,
+        TEAMS = 0x47,
+        TEAMS_VOICE_SKILLS = 0x48,
+        NC_NCSS_ASM_OFF = 0x50,
+        NC_NCSS_ASM = 0x51,
+        NC_NCSS_OFF = 0x52,
+        NCSS_ASM_OFF = 0x53,
+        NC_NCSS = 0x54,
+        NCSS_ASM = 0x55,
+        NCSS_OFF = 0x56,
+        AMB_SETTING = 0x57,
+        STANDARD_VOICE_SOUND = 0x58,
+        LISTENING_MODE = 0x59,
+        MIC_MUTE = 0x70,
+        GAME_UP = 0x71,
+        CHAT_UP = 0x72,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class GsInquiredType : UInt8
+    {
+        GENERAL_SETTING1 = 0xD1,
+        GENERAL_SETTING2 = 0xD2,
+        GENERAL_SETTING3 = 0xD3,
+        GENERAL_SETTING4 = 0xD4,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class GsSettingType : UInt8
+    {
+        BOOLEAN_TYPE = 0x00,
+        LIST_TYPE = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class GsSettingValue : UInt8
+    {
+        ON = 0x00,
+        OFF = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class GsStringFormat : UInt8
+    {
+        RAW_NAME = 0x00,
+        ENUM_NAME = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class GuidanceCategory : UInt8
+    {
+        CHANGE_EARPIECE = 0x00,
+        CHANGE_EARPIECE_WITH_EARPIECE_ASSISTANT = 0x01,
+        WEAR_EARPHONE = 0x10,
+        PLAY_BUTTON_OPERATION = 0x20,
+        TOUCH_PAD_OPERATION = 0x30,
+        FACE_TAP_OPERATION = 0x31,
+        MAIN_BODY_OPERATION = 0x40,
+        FIXED_LEFT_KEY_OPERATION = 0x41,
+        FIXED_RIGHT_KEY_OPERATION = 0x42,
+        QUICK_ATTENTION = 0x50,
+        ASSIGNABLE_BUTTON_SETTINGS = 0x60,
+        SPEAK_TO_CHAT = 0x80,
+        TWS_ONE_SIDE_USE = 0x90,
+        AUTO_NC_OPTIMIZER = 0xA0,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class HeadGestureAction : UInt8
+    {
+        NOD = 0x00,
+        SWING = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class HeadGestureTrainingModeStatus : UInt8
+    {
+        IN_TEST_MODE = 0x00,
+        OUT_OF_TEST_MODE = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class Key : UInt8
+    {
+        LEFT_SIDE = 0x00,
+        RIGHT_SIDE = 0x01,
+        CUSTOM = 0x02,
+        C = 0x03,
+        NC_AMB_KEY = 0x04,
+        NC_AMBIENT_KEY = 0x05,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class LDACExclusiveFeature : UInt8
+    {
+        GATT_CONNECTABLE = 0x00,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class LEAInquiredType : UInt8
+    {
+        TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD = 0x00,
+        HBS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD = 0x01,
+        TWS_SUPPORTS_LEA_UNI_LEA_BROAD = 0x02,
+        CLASSIC_ONLY_LE_CLASSIC_SETTING = 0x0C,
+        EXECUTE_TANDEM_TARGET_CHANGE = 0x0D,
+        CHANGE_TANDEM_CONNECTION_PROFILE_FOR_ANDROID = 0x0E,
+        NOTIFY_DISCONNECTING_TANDEM = 0x0F,
+        BGM_MODE_CANT_BE_USED_WITH_LEA_CONNECTION = 0xF5,
+        HEAD_TRACKER_CANT_BE_USED_WITH_LEA_CONNECTION = 0xF6,
+        PAIRING_DEVICE_MANAGEMENT_CANT_BE_USED_WITH_LEA_CONNECTION = 0xF7,
+        SOUND_AR_CANT_BE_USED_WITH_LEA_CONNECTION = 0xF8,
+        AUTO_PLAY_CANT_BE_USED_WITH_LEA_CONNECTION = 0xF9,
+        GATT_CONNECTABLE_CANT_BE_USED_WITH_LEA_CONNECTION = 0xFA,
+        SOUND_AR_OPTIMIZATION_CANT_BE_USED_WITH_LEA_CONNECTION = 0xFB,
+        QUICK_ACCESS_CANT_BE_USED_WITH_LEA_CONNECTION = 0xFC,
+        CONNECTION_MODE_CANT_BE_USED_WITH_LEA_CONNECTION = 0xFD,
+        VOICE_ASSISTANT_SETTINGS_CANT_BE_USED_WITH_LEA_CONNECTION = 0xFE,
+        VOICE_ASSISTANT_WAKE_WORD_CANT_BE_USED_WITH_LEA_CONNECTION = 0xFF,
+        OUT_OF_RANGE = 0x0B,
+    };
+
+    enum class LimitationType : UInt8
+    {
+        NO_DESCRIPTION = 0x00,
+        CANT_USE_VOICE_ASSISTANT_PRESET_WHILE_LE_AUDIO_CONNECTION = 0x01,
+        CANT_USE_VOICE_ASSISTANT_FUNCTION_UNDER_PLAYBACK_CONTROL_WHILE_LE_AUDIO_CONNECTION = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class ListeningOptionAssignCustomizableItem : UInt8
+    {
+        STANDARD = 0x00,
+        BGM = 0x01,
+        UPMIX_CINEMA = 0x02,
+        UPMIX_GAME = 0x03,
+        UPMIX_MUSIC = 0x04,
+        OUT_OF_RANGE = 0x05,
+    };
+
+    enum class ListeningOptionAssignFlexibility : UInt8
+    {
+        FIXED = 0x00,
+        FLEXIBLE = 0x01,
+        OUT_OF_RANGE = 0x02,
+    };
+
+    enum class ListeningOptionAssignIsMandatory : UInt8
+    {
+        MANDATORY = 0x00,
+        NOT_MANDATORY = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class LogInquiredType : UInt8
+    {
+        ACTION_LOG_NOTIFIER = 0x00,
+        TIME_SERIES_OPERATIONLOG_NOTIFIER = 0x01,
+        SOUND_DROPOUT_NOTIFIER = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class MacType : UInt8
+    {
+        NONE = 0x00,
+        MD5 = 0x01,
+        SHA1 = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class MessageType : UInt8
+    {
+        NO_USE = 0x00,
+        FW_UPDATE_COMPLETED = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class ModeOutTime : UInt8
+    {
+        FAST = 0x00,
+        MID = 0x01,
+        SLOW = 0x02,
+        NONE = 0x03,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class ModelSeries : UInt8
+    {
+        NO_SERIES = 0x00,
+        EXTRA_BASS = 0x10,
+        ULT_POWER_SOUND = 0x11,
+        HEAR = 0x20,
+        PREMIUM = 0x30,
+        SPORTS = 0x40,
+        CASUAL = 0x50,
+        LINK_BUDS = 0x60,
+        NECKBAND = 0x70,
+        LINKPOD = 0x80,
+        GAMING = 0x90,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class MusicCallStatus : UInt8
+    {
+        MUSIC = 0x00,
+        CALL = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class NcAsmInquiredType : UInt8
+    {
+        NC_ON_OFF = 0x01,
+        NC_ON_OFF_AND_ASM_ON_OFF = 0x11,
+        NC_MODE_SWITCH_AND_ASM_ON_OFF = 0x12,
+        NC_ON_OFF_AND_ASM_SEAMLESS = 0x13,
+        NC_MODE_SWITCH_AND_ASM_SEAMLESS = 0x14,
+        MODE_NC_ASM_AUTO_NC_MODE_SWITCH_AND_ASM_SEAMLESS = 0x15,
+        MODE_NC_ASM_DUAL_SINGLE_NC_MODE_SWITCH_AND_ASM_SEAMLESS = 0x16,
+        MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS = 0x17,
+        MODE_NC_NCSS_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS = 0x18,
+        MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS_NA = 0x19,
+        ASM_ON_OFF = 0x21,
+        ASM_SEAMLESS = 0x22,
+        NC_AMB_TOGGLE = 0x30,
+        NC_TEST_MODE = 0x40,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class NcAsmMode : UInt8
+    {
+        NC = 0x00,
+        ASM = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class NcAsmOnOffValue : UInt8
+    {
+        OFF = 0x00,
+        ON = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class NcNcssAsmMode : UInt8
+    {
+        NC = 0x00,
+        ASM = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class NcTestModeOperation : UInt8
+    {
+        TEST_MODE_START = 0x00,
+        TEST_MODE_FINISH = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class NcTestModeStatus : UInt8
+    {
+        IN_TEST_MODE = 0x00,
+        OUT_OF_TEST_MODE = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class NcValue : UInt8
+    {
+        OFF = 0x00,
+        ON_SINGLE = 0x01,
+        ON_DUAL = 0x02,
+        AUTO = 0x03,
+        AUTO_SINGLE = 0x04,
+        AUTO_DUAL = 0x05,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class NoiseAdaptiveMode : UInt8
+    {
+        ON = 0x00,
+        OFF = 0x01,
+        PAUSED = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class NoiseAdaptiveSensitivity : UInt8
+    {
+        STANDARD = 0x00,
+        HIGH = 0x01,
+        LOW = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class OptExclusiveFunctionType : UInt8
+    {
+        NONE = 0x00,
+        SOUND_EFFECT_CUSTOM = 0x01,
+        SOUND_FIELD_OPTIMIZATION = 0x02,
+        STAMINA = 0x03,
+        STEREO_PAIR = 0x04,
+        TV_SOUND_BOOSTER = 0x05,
+        PARTY_CONNECT = 0x06,
+        HANDSFREE = 0x07,
+        PARTY_CHAIN_TRANSMITTER = 0x08,
+        PARTY_CHAIN_RECEIVER = 0x09,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class OptInquiredType : UInt8
+    {
+        NC_OPTIMIZER_PERSONAL_BAROMETRIC = 0x00,
+        NC_OPTIMIZER_PERSONAL = 0x01,
+        NC_OPTIMIZER_BAROMETRIC = 0x02,
+        SOUND_FIELD_OPTIMIZATION = 0x30,
+        TV_SOUND_BOOSTER = 0x31,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class OptimizerControl : UInt8
+    {
+        CANCEL = 0x00,
+        START = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class OptimizerStatus : UInt8
+    {
+        IDLE = 0x00,
+        IN_PROGRESS_OF_PERSONAL = 0x01,
+        IN_PROGRESS_OF_BAROMETRIC_PRESSURE = 0x02,
+        OPTIMIZING = 0x10,
+        OPTIMIZER_END = 0x11,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class PersonalValue : UInt8
+    {
+        UNMEASURED = 0x00,
+        MEASURED = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class PlayInquiredType : UInt8
+    {
+        PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT = 0x01,
+        PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT_AND_FUNCTION_CHANGE = 0x02,
+        PLAYBACK_CONTROL_WITH_FUNCTION_CHANGE = 0x03,
+        MUSIC_VOLUME = 0x20,
+        CALL_VOLUME = 0x21,
+        MUSIC_VOLUME_WITH_MUTE = 0x30,
+        CALL_VOLUME_WITH_MUTE = 0x31,
+        PLAY_MODE = 0x40,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class PlayMode : UInt8
+    {
+        PLAY_MODE_OFF = 0x00,
+        PLAY_FOLDER = 0x01,
+        REPEAT_ALL = 0x02,
+        REPEAT_FOLDER = 0x03,
+        REPEAT_TRACK = 0x04,
+        SHUFFLE_ALL = 0x05,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class PlaybackControl : UInt8
+    {
+        KEY_OFF = 0x00,
+        PAUSE = 0x01,
+        TRACK_UP = 0x02,
+        TRACK_DOWN = 0x03,
+        GROUP_UP = 0x04,
+        GROUP_DOWN = 0x05,
+        STOP = 0x06,
+        PLAY = 0x07,
+        FAST_FORWARD = 0x08,
+        FAST_REWIND = 0x09,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class PlaybackNameStatus : UInt8
+    {
+        UNSETTLED = 0x00,
+        NOTHING = 0x01,
+        SETTLED = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class PlaybackStatus : UInt8
+    {
+        UNSETTLED = 0x00,
+        PLAY = 0x01,
+        PAUSE = 0x02,
+        STOP = 0x03,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class PowerExclusiveFunctionType : UInt8
+    {
+        SOUND_EFFECT = 0x00,
+        LIGHTING_MODE = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class PowerInquiredType : UInt8
+    {
+        BATTERY = 0x00,
+        LEFT_RIGHT_BATTERY = 0x01,
+        CRADLE_BATTERY = 0x02,
+        POWER_OFF = 0x03,
+        AUTO_POWER_OFF = 0x04,
+        AUTO_POWER_OFF_WEARING_DETECTION = 0x05,
+        POWER_SAVE_MODE = 0x06,
+        LINK_CONTROL = 0x07,
+        BATTERY_WITH_THRESHOLD = 0x08,
+        LR_BATTERY_WITH_THRESHOLD = 0x09,
+        CRADLE_BATTERY_WITH_THRESHOLD = 0x0A,
+        BATTERY_SAFE_MODE = 0x0B,
+        CARING_CHARGE = 0x0C,
+        BT_STANDBY = 0x0D,
+        STAMINA = 0x0E,
+        AUTOMATIC_TOUCH_PANEL_BACKLIGHT_TURN_OFF = 0x0F,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class PowerOffSettingValue : UInt8
+    {
+        USER_POWER_OFF = 0x01,
+        FACTORY_POWER_OFF = 0xFF,
+        OUT_OF_RANGE = 0xFE,
+    };
+
+    enum class PreferredSoundEffect : UInt8
+    {
+        MDR_UPMIX = 0x00,
+        BRAVIA_3D_SURROUND = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class Preset : UInt8
+    {
+        AMBIENT_SOUND_CONTROL = 0x00,
+        VOLUME_CONTROL = 0x10,
+        PLAYBACK_CONTROL = 0x20,
+        TRACK_CONTROL = 0x21,
+        PLAYBACK_CONTROL_VOICE_ASSISTANT_LIMITATION = 0x22,
+        VOICE_RECOGNITION = 0x30,
+        GOOGLE_ASSIST = 0x31,
+        AMAZON_ALEXA = 0x32,
+        TENCENT_XIAOWEI = 0x33,
+        MS = 0x34,
+        AMBIENT_SOUND_CONTROL_QUICK_ACCESS = 0x35,
+        QUICK_ACCESS = 0x36,
+        TENCENT_XIAOWEI_Q_MSC = 0x37,
+        TEAMS = 0x38,
+        GOOGLE_ASSISTANT_WITH_AVAILABLE_ONLY_ON_BT_CLASSIC_CONNECTION_CAUTION = 0x39,
+        AMAZON_ALEXA_WITH_AVAILABLE_ONLY_ON_BT_CLASSIC_CONNECTION_CAUTION = 0x40,
+        TENCENT_XIAOWEI_WITH_AVAILABLE_ONLY_ON_BT_CLASSIC_CONNECTION_CAUTION = 0x41,
+        QUICK_ACCESS_WITH_AVAILABLE_ONLY_ON_BT_CLASSIC_CONNECTION_CAUTION = 0x42,
+        AMBIENT_SOUND_CONTROL_QUICK_ACCESS_WITH_AVAILABLE_ONLY_ON_BT_CLASSIC_CONNECTION_CAUTION = 0x43,
+        TENCENT_XIAOWEI_Q_MSC_WITH_AVAILABLE_ONLY_ON_BT_CLASSIC_CONNECTION_CAUTION = 0x44,
+        AMBIENT_SOUND_CONTROL_MIC = 0x45,
+        LISTENING_MODE_QUICK_ACCESS = 0x46,
+        AMBIENT_SOUND_CONTROL_LISTENING_MODE = 0x47,
+        CHAT_MIX = 0x70,
+        CUSTOM1 = 0x71,
+        CUSTOM2 = 0x72,
+        NO_FUNCTION = 0xFF,
+        OUT_OF_RANGE = 0xFE,
+    };
+
+    enum class PresetEqErrorCodeType : UInt8
+    {
+        CALLING = 0x00,
+        DEMO_MODE = 0x01,
+        LISTENING_MODE = 0x02,
+        OTHER = 0xFE,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class PriorMode : UInt8
+    {
+        SOUND_QUALITY_PRIOR = 0x00,
+        CONNECTION_QUALITY_PRIOR = 0x01,
+        LOW_LATENCY_PRIOR_BETA = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class QuickAccessKey : UInt8
+    {
+        L_R_KEY = 0x00,
+        NC_AMB_KEY = 0x01,
+        FIXED_QUICK_ACCESS_KEY = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class RequestType : UInt8
+    {
+        UNDER_CONFIRMATION = 0x00,
+        EXECUTE = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class ResetResult : UInt8
+    {
+        SUCCESS = 0x00,
+        ERROR_CONNECTION_LEFT = 0x01,
+        ERROR_CONNECTION_RIGHT = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class ResetType : UInt8
+    {
+        SETTINGS_ONLY = 0x00,
+        FACTORY_RESET = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class RoomSize : UInt8
+    {
+        SMALL = 0x00,
+        MIDDLE = 0x01,
+        LARGE = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class SARAutoPlayExclusiveFunction : UInt8
+    {
+        FW_UPDATE = 0x00,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class SARAutoPlayInquiredType : UInt8
+    {
+        SAR = 0x00,
+        AUTO_PLAY = 0x01,
+        INTEGRATED_AUTO_PLAY = 0x02,
+        GATT_CONNECTABLE = 0x10,
+        SAR_OPTIMIZATION_COMPASS_ACCEL_TYPE = 0x20,
+        SAR_OPTIMIZATION_ACCEL_TYPE = 0x21,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class SARAutoPlaySensorCalibrationState : UInt8
+    {
+        ACCEL_MEASURING_START = 0x00,
+        ACCEL_MEASURING_FAIL = 0x01,
+        ACCEL_MEASURING_SUCCESS = 0x02,
+        COMPASS_MEASURING_START = 0x03,
+        COMPASS_MEASURING_FAIL = 0x04,
+        COMPASS_MEASURING_SUCCESS = 0x05,
+        MEASURING_FINISH = 0x06,
+        MEASURING_INTERRUPTED = 0x07,
+        ACCEL_MEASURING_FAIL_L_R_ARE_REVERSED = 0x08,
+        ACCEL_MEASURING_FAIL_SWING_ANGLE_INSUFFICIENT = 0x09,
+        ACCEL_MEASURING_FAIL_KEEP_TIME_OF_PEEK_OF_SWING_INSUFFICIENT = 0x0A,
+        MEASURING_INTERRUPTED_DISCONNECT_L = 0x0B,
+        MEASURING_INTERRUPTED_DISCONNECT_R = 0x0C,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class SARAutoPlaySensorCalibrationValue : UInt8
+    {
+        UNOPTIMIZED = 0x00,
+        OPTIMIZED = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class SARAutoPlaySupportedAutoPlayService : UInt8
+    {
+        MS = 0x00,
+        SPTF = 0x01,
+        EDL = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class SARAutoPlaySupportedSARService : UInt8
+    {
+        LOCA_APP = 0x00,
+        SSCP = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class SenseApplicableFunction : UInt8
+    {
+        NC_ON_OFF_AND_ASM_ON_OFF = 0x00,
+        NC_MODE_SWITCH_AND_ASM_ON_OFF = 0x01,
+        NC_ON_OFF_AND_ASM_SEAMLESS = 0x02,
+        NC_MODE_SWITCH_AND_ASM_SEAMLESS = 0x03,
+        MODE_NC_ASM_AUTO_NC_MODE_SWITCH_AND_ASM_SEAMLESS = 0x04,
+        MODE_NC_ASM_DUAL_SINGLE_NC_MODE_SWITCH_AND_ASM_SEAMLESS = 0x05,
+        MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS = 0x06,
+        MODE_NC_NCSS_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS = 0x07,
+        MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS_NA = 0x08,
+        EQ_PRESET_ID = 0x10,
+        SMART_TALKING_MODE = 0x20,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class SenseInquiredType : UInt8
+    {
+        ADAPTIVE_CONTROL = 0x00,
+        ADAPTIVE_CONTROL_WITH_PARAMETER_NOTIFICATION = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class SenseSettingControl : UInt8
+    {
+        START_SETTING = 0x00,
+        END_SETTING = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class SmartTalkingModeEffectStatus : UInt8
+    {
+        NOT_ACTIVE = 0x00,
+        ACTIVE = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class SmartTalkingModePreviewType : UInt8
+    {
+        NOT_SUPPORT = 0x00,
+        SUPPORT = 0x01,
+        OUT_OF_RANGE = 0x7F,
+    };
+
+    enum class SoundEffectType : UInt8
+    {
+        SOUND_EFFECT_OFF = 0x00,
+        SOUND_EFFECT_ULT = 0x01,
+        SOUND_EFFECT_ULT1 = 0x02,
+        SOUND_EFFECT_ULT2 = 0x03,
+        SOUND_EFFECT_CUSTOM = 0x04,
+        SOUND_EFFECT_FLAT = 0x05,
+        SOUND_EFFECT_LIVE = 0x06,
+        SOUND_EFFECT_NONE = 0xFF,
+        OUT_OF_RANGE = 0xFE,
+    };
+
+    enum class StatusErrorCodeType : UInt8
+    {
+        CALLING = 0x00,
+        DEMO_MODE = 0x01,
+        LE_AUDIO_CONNECTED = 0x02,
+        LE_AUDION_MUSIC_PLAYING = 0x03,
+        TANDEM_OVER_GATT_CONNECTED = 0x04,
+        VOICE_UI_GOOGLE = 0x05,
+        VOICE_UI_SONY = 0x06,
+        VOICE_UI_TENCENT = 0x07,
+        UPMIX_CINEMA = 0x08,
+        UPMIX_GAME = 0x09,
+        UPMIX_MUSIC = 0x0A,
+        LISTENING_MODE_IS_NOT_STANDARD = 0x0B,
+        OTHER = 0xFE,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class SwitchingStream : UInt8
+    {
+        NONE = 0x00,
+        LE_AUDIO = 0x01,
+        CLASSIC_AUDIO = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class SystemInquiredType : UInt8
+    {
+        VIBRATOR = 0x00,
+        PLAYBACK_CONTROL_BY_WEARING = 0x01,
+        SMART_TALKING_MODE_TYPE1 = 0x02,
+        ASSIGNABLE_SETTINGS = 0x03,
+        VOICE_ASSISTANT_SETTINGS = 0x04,
+        VOICE_ASSISTANT_WAKE_WORD = 0x05,
+        WEARING_STATUS_DETECTOR = 0x06,
+        EARPIECE_SELECTION = 0x07,
+        CALL_SETTINGS = 0x08,
+        RESET_SETTINGS = 0x09,
+        AUTO_VOLUME = 0x0A,
+        FACE_TAP_TEST_MODE = 0x0B,
+        SMART_TALKING_MODE_TYPE2 = 0x0C,
+        QUICK_ACCESS = 0x0D,
+        ASSIGNABLE_SETTINGS_WITH_LIMITATION = 0x0E,
+        HEAD_GESTURE_ON_OFF = 0x0F,
+        HEAD_GESTURE_TRAINING = 0x10,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class TandemFotaCommand : UInt8
+    {
+        ENTER_FW_UPDATE_MODE = 0x01,
+        EXIT_FW_UPDATE_MODE = 0x02,
+        START_TRANSFER = 0x03,
+        FINISH_TRANSFER = 0x04,
+        CANCEL_TRANSFER = 0x05,
+        EXECUTE_FW_UPDATE = 0x06,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class TandemFotaResult : UInt8
+    {
+        OK = 0x00,
+        ERROR_OTHER_THAN_SPECIFIC_ERROR = 0x01,
+        ERROR_ILLEGAL_STATE = 0x02,
+        ERROR_ILLEGAL_ARGUMENTS = 0x03,
+        ERROR_NO_NEED_OF_DATA_TRANSFER = 0x04,
+        ERROR_FIRMWARE_TRANSFER_INCOMPLETED = 0x05,
+        ERROR_NEED_POWER_CABLE_CONNECTED_AND_ENOUGH_BATTERY = 0x06,
+        ERROR_TEMPERATURE_IS_TOO_HIGH = 0x07,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class TandemFotaStatus : UInt8
+    {
+        INVALID = 0x00,
+        IDLE = 0x01,
+        NOT_READY = 0x02,
+        DATA_RECEIVING = 0x03,
+        UPDATING = 0x04,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class Topology : UInt8
+    {
+        SINGLE_SPEAKER = 0x00,
+        TWS = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class TrainingModeOperation : UInt8
+    {
+        TRAINING_MODE_START = 0x00,
+        TRAINING_MODE_FINISH = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class TurnKeyEqResult : UInt8
+    {
+        SUCCESS = 0x00,
+        NOT_SUPPORTED = 0x01,
+        JUDGEMENT_FAIL = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class Type : UInt8
+    {
+        TOUCH_SENSOR = 0x00,
+        BUTTON = 0x01,
+        FACE_TAP = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class UpdtInquiredType : UInt8
+    {
+        FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION = 0x02,
+        FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION_AUTO_UPDATE = 0x04,
+        FW_UPDATE_MTK_TRANSFER_WITH_REPAIR_MODE = 0x05,
+        FW_UPDATE_MTK_TRANSFER_WITH_AC_CONNECTION_CHECK = 0x06,
+        FW_UPDATE_USING_MC_APP = 0x07,
+        FW_UPDATE_TANDEM_PART1 = 0x10,
+        FW_UPDATE_TANDEM_PART2 = 0x11,
+        FW_UPDATE_TANDEM_PART3 = 0x12,
+        FW_UPDATE_TANDEM_PART4 = 0x13,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class UpmixItemId : UInt8
+    {
+        NONE = 0x00,
+        CINEMA = 0x01,
+        GAME = 0x02,
+        MUSIC = 0x03,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class UpscalingEffectStatus : UInt8
+    {
+        OFF = 0x00,
+        VALID = 0x01,
+        INVALID = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class UpscalingEffectType : UInt8
+    {
+        DSEE_HX = 0x00,
+        DSEE = 0x01,
+        DSEE_HX_AI = 0x02,
+        DSEE_ULTIMATE = 0x03,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class UpscalingType : UInt8
+    {
+        DSEE_HX = 0x00,
+        DSEE = 0x01,
+        DSEE_HX_AI = 0x02,
+        DSEE_ULTIMATE = 0x03,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class UpscalingTypeAutoOff : UInt8
+    {
+        OFF = 0x00,
+        AUTO = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class ValueChangeStatus : UInt8
+    {
+        UNDER_CHANGING = 0x00,
+        CHANGED = 0x01,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class VibrationType : UInt8
+    {
+        NO_PATTERN_SPECIFIED = 0x00,
+    };
+
+    enum class VoiceAssistant : UInt8
+    {
+        VOICE_RECOGNITION = 0x30,
+        GOOGLE_ASSISTANT = 0x31,
+        AMAZON_ALEXA = 0x32,
+        TENCENT_XIAOWEI = 0x33,
+        SONY_VOICE_ASSISTANT = 0x34,
+        VOICE_ASSISTANT_ENABLED_IN_OTHER_DEVICE = 0x3F,
+        OUT_OF_RANGE = 0xFE,
+        NO_FUNCTION = 0xFF,
+    };
+
+    enum class VoiceAssistantKeyType : UInt8
+    {
+        FIXED_BUTTON = 0x00,
+        TOUCH_SENSOR_CONTROL_PANEL = 0x01,
+        ASSIGNABLE_BUTTON = 0x02,
+        ASSIGNABLE_SENSOR = 0x03,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class VoiceAssistantType : UInt8
+    {
+        GOOGLE_ASSISTANT = 0x00,
+        AMAZON_ALEXA = 0x01,
+        TENCENT_XIAOWEI = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+
+    enum class VoiceAssistantWakeWordStatus : UInt8
+    {
+        ENABLE = 0x00,
+        DISABLE = 0x01,
+        INVISIBLE = 0x02,
+        OUT_OF_RANGE = 0xFF,
+    };
+#pragma endregion Enums
+
+#pragma region Declarations
+
+    // THMSGV2T1AfEqPresetId
+    struct AfEqPresetId
+    {
+        EqPresetId eqPresetId{EqPresetId::OFF}; // 0x0
+        MDRPodArray<UInt8> bytes; // 0x1
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AfEqPresetId);
+    };
+
+    // THMSGV2T1AfModeNcDualModeSwitchAsmSeamless
+    struct AfModeNcDualModeSwitchAsmSeamless
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmMode ncAsmMode{NcAsmMode::NC}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x3
+        UInt8 ambientSoundLevelValue{}; // 0x4
+        MDRPodArray<UInt8> bytes; // 0x5
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AfModeNcDualModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1AfModeNcDualModeSwitchAsmSeamlessNa
+    struct AfModeNcDualModeSwitchAsmSeamlessNa
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmMode ncAsmMode{NcAsmMode::NC}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x3
+        UInt8 ambientSoundLevelValue{}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NoiseAdaptiveMode noiseAdaptiveMode{NoiseAdaptiveMode::ON}; // 0x5
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NoiseAdaptiveSensitivity noiseAdaptiveSensitivitySettings{NoiseAdaptiveSensitivity::STANDARD}; // 0x6
+        MDRPodArray<UInt8> bytes; // 0x7
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AfModeNcDualModeSwitchAsmSeamlessNa);
+    };
+
+    // THMSGV2T1AfModeNcDualSingleModeSwitchAsmSeamless
+    struct AfModeNcDualSingleModeSwitchAsmSeamless
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmMode ncAsmMode{NcAsmMode::NC}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcValue ncValue{NcValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x4
+        UInt8 ambientSoundLevelValue{}; // 0x5
+        MDRPodArray<UInt8> bytes; // 0x6
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AfModeNcDualSingleModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1AfModeNcModeSwitchAsmSeamless
+    struct AfModeNcModeSwitchAsmSeamless
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmMode ncAsmMode{NcAsmMode::NC}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcValue ncValue{NcValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x4
+        UInt8 ambientSoundLevelValue{}; // 0x5
+        MDRPodArray<UInt8> bytes; // 0x6
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AfModeNcModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1AfModeNcNcssAsmNcDualModeSwitchAsmSeamless
+    struct AfModeNcNcssAsmNcDualModeSwitchAsmSeamless
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcNcssAsmMode ncNcssAsmMode{NcNcssAsmMode::NC}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x3
+        UInt8 ambientSoundLevelValue{}; // 0x4
+        MDRPodArray<UInt8> bytes; // 0x5
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AfModeNcNcssAsmNcDualModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1AfNcAsmBase
+    struct AfNcAsmBase
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SenseApplicableFunction senseApplicableFunction{SenseApplicableFunction::NC_ON_OFF_AND_ASM_ON_OFF}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmEffect{NcAsmOnOffValue::OFF}; // 0x2
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AfNcAsmBase);
+    };
+
+    // THMSGV2T1AfNcAsmInterface_AfAsmSeamlessInterface
+    struct AfNcAsmInterface_AfAsmSeamlessInterface
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x0
+        UInt8 ambientSoundLevelValue{}; // 0x1
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AfNcAsmInterface_AfAsmSeamlessInterface);
+    };
+
+    // THMSGV2T1AfNcAsmInterface_AfAsmValueInterface
+    struct AfNcAsmInterface_AfAsmValueInterface
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ambientSoundValue{NcAsmOnOffValue::OFF}; // 0x1
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AfNcAsmInterface_AfAsmValueInterface);
+    };
+
+    // THMSGV2T1AfNcAsmInterface_AfNcAsmModeInterface
+    struct AfNcAsmInterface_AfNcAsmModeInterface
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmMode ncAsmMode{NcAsmMode::NC}; // 0x0
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AfNcAsmInterface_AfNcAsmModeInterface);
+    };
+
+    // THMSGV2T1AfNcAsmInterface_AfNcNcssAsmModeInterface
+    struct AfNcAsmInterface_AfNcNcssAsmModeInterface
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcNcssAsmMode ncNcssAsmMode{NcNcssAsmMode::NC}; // 0x0
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AfNcAsmInterface_AfNcNcssAsmModeInterface);
+    };
+
+    // THMSGV2T1AfNcAsmInterface_AfNcOnOffValueInterface
+    struct AfNcAsmInterface_AfNcOnOffValueInterface
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncOnOffValue{NcAsmOnOffValue::OFF}; // 0x0
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AfNcAsmInterface_AfNcOnOffValueInterface);
+    };
+
+    // THMSGV2T1AfNcAsmInterface_AfNcValueInterface
+    struct AfNcAsmInterface_AfNcValueInterface
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcValue ncValue{NcValue::OFF}; // 0x0
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AfNcAsmInterface_AfNcValueInterface);
+    };
+
+    // THMSGV2T1AfNcAsmInterface_AfNoiseAdaptiveSensitivityInterface
+    struct AfNcAsmInterface_AfNoiseAdaptiveSensitivityInterface
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NoiseAdaptiveMode noiseAdaptiveMode{NoiseAdaptiveMode::ON}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NoiseAdaptiveSensitivity noiseAdaptiveSensitivitySettings{NoiseAdaptiveSensitivity::STANDARD}; // 0x1
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AfNcAsmInterface_AfNoiseAdaptiveSensitivityInterface);
+    };
+
+    // THMSGV2T1AfNcModeSwitchAsmOnOff
+    struct AfNcModeSwitchAsmOnOff
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ambientSoundValue{NcAsmOnOffValue::OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcValue ncValue{NcValue::OFF}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x4
+        MDRPodArray<UInt8> bytes; // 0x5
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AfNcModeSwitchAsmOnOff);
+    };
+
+    // THMSGV2T1AfNcModeSwitchAsmSeamless
+    struct AfNcModeSwitchAsmSeamless
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcValue ncValue{NcValue::OFF}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x3
+        UInt8 ambientSoundLevelValue{}; // 0x4
+        MDRPodArray<UInt8> bytes; // 0x5
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AfNcModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1AfNcOnOffAsmOnOff
+    struct AfNcOnOffAsmOnOff
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncOnOffValue{NcAsmOnOffValue::OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ambientSoundValue{NcAsmOnOffValue::OFF}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x4
+        MDRPodArray<UInt8> bytes; // 0x5
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AfNcOnOffAsmOnOff);
+    };
+
+    // THMSGV2T1AfNcOnOffAsmSeamless
+    struct AfNcOnOffAsmSeamless
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncOnOffValue{NcAsmOnOffValue::OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x3
+        UInt8 ambientSoundLevelValue{}; // 0x4
+        MDRPodArray<UInt8> bytes; // 0x5
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AfNcOnOffAsmSeamless);
+    };
+
+    // THMSGV2T1AfSmartTalkingMode
+    struct AfSmartTalkingMode
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue smartTalkingMode{OnOffSettingValue::ON}; // 0x0
+        MDRPodArray<UInt8> bytes; // 0x1
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AfSmartTalkingMode);
+    };
+
+    // THMSGV2T1AlertGetStatus
+    struct AlertGetStatus
+    {
+        // CODEGEN EnumRange Command::ALERT_GET_STATUS
+        Command command{Command::ALERT_GET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AlertInquiredType type{AlertInquiredType::FIXED_MESSAGE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AlertGetStatus);
+    };
+
+    // THMSGV2T1AlertNotifyParam
+    struct AlertNotifyParam
+    {
+        // CODEGEN EnumRange Command::ALERT_NTFY_PARAM
+        Command command{Command::ALERT_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AlertInquiredType type{AlertInquiredType::FIXED_MESSAGE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AlertNotifyParam);
+    };
+
+    // THMSGV2T1AlertNotifyParamAppBecomesForeground
+    struct AlertNotifyParamAppBecomesForeground
+    {
+        // CODEGEN EnumRange Command::ALERT_NTFY_PARAM
+        Command command{Command::ALERT_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange AlertInquiredType::APP_BECOMES_FOREGROUND
+        AlertInquiredType type{AlertInquiredType::APP_BECOMES_FOREGROUND}; // 0x1
+        // CODEGEN EnumRange AlertMessageType::FOREGROUND_CAUTION_NEED_DISCONNECTION_FOR_ENABLING_WAKE_WORD
+        AlertMessageType messageType{AlertMessageType::FOREGROUND_CAUTION_NEED_DISCONNECTION_FOR_ENABLING_WAKE_WORD}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AlertActionType actionType{AlertActionType::CONFIRMATION_ONLY}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AlertNotifyParamAppBecomesForeground);
+    };
+
+    // THMSGV2T1AlertNotifyParamFixedMessage
+    struct AlertNotifyParamFixedMessage
+    {
+        // CODEGEN EnumRange Command::ALERT_NTFY_PARAM
+        Command command{Command::ALERT_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange AlertInquiredType::FIXED_MESSAGE
+        AlertInquiredType type{AlertInquiredType::FIXED_MESSAGE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AlertMessageType messageType{AlertMessageType::DISCONNECT_CAUSED_BY_CONNECTION_MODE_CHANGE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AlertActionType actionType{AlertActionType::CONFIRMATION_ONLY}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AlertNotifyParamFixedMessage);
+    };
+
+    // THMSGV2T1AlertNotifyParamFixedMessageWithLeftRightSelection
+    struct AlertNotifyParamFixedMessageWithLeftRightSelection
+    {
+        // CODEGEN EnumRange Command::ALERT_NTFY_PARAM
+        Command command{Command::ALERT_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange AlertInquiredType::FIXED_MESSAGE_WITH_LEFT_RIGHT_SELECTION
+        AlertInquiredType type{AlertInquiredType::FIXED_MESSAGE_WITH_LEFT_RIGHT_SELECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AlertMessageTypeWithLeftRightSelection messageType{AlertMessageTypeWithLeftRightSelection::CAUTION_FOR_CHANGE_VOICE_ASSISTANT_ASSIGNABLE_BUTTON}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        DefaultSelectedLeftRightValue defaultSelectedValue{DefaultSelectedLeftRightValue::LEFT}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AlertNotifyParamFixedMessageWithLeftRightSelection);
+    };
+
+    // THMSGV2T1AlertNotifyParamFlexibleMessage
+    struct AlertNotifyParamFlexibleMessage
+    {
+        // CODEGEN EnumRange Command::ALERT_NTFY_PARAM
+        Command command{Command::ALERT_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange AlertInquiredType::FLEXIBLE_MESSAGE
+        AlertInquiredType type{AlertInquiredType::FLEXIBLE_MESSAGE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AlertFlexibleMessageType messageType{AlertFlexibleMessageType::BATTERY_CONSUMPTION_INCREASE_DUE_TO_SIMULTANEOUS_3_SETTINGS}; // 0x2
+        MDRPodArray<FlexibleMessageItemId> settingIdList; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AlertActionType actionType{AlertActionType::CONFIRMATION_ONLY};
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(AlertNotifyParamFlexibleMessage);
+    };
+
+    // THMSGV2T1AlertNotifyStatus
+    struct AlertNotifyStatus
+    {
+        // CODEGEN EnumRange Command::ALERT_NTFY_STATUS
+        Command command{Command::ALERT_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AlertInquiredType type{AlertInquiredType::FIXED_MESSAGE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AlertNotifyStatus);
+    };
+
+    // THMSGV2T1AlertNotifyStatusLEAudioAlertNotification
+    struct AlertNotifyStatusLEAudioAlertNotification
+    {
+        // CODEGEN EnumRange Command::ALERT_NTFY_STATUS
+        Command command{Command::ALERT_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange AlertInquiredType::LE_AUDIO_ALERT_NOTIFICATION
+        AlertInquiredType type{AlertInquiredType::LE_AUDIO_ALERT_NOTIFICATION}; // 0x1
+        UInt8 value{}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AlertNotifyStatusLEAudioAlertNotification);
+    };
+
+    // THMSGV2T1AlertRetStatus
+    struct AlertRetStatus
+    {
+        // CODEGEN EnumRange Command::ALERT_RET_STATUS
+        Command command{Command::ALERT_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AlertInquiredType type{AlertInquiredType::FIXED_MESSAGE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AlertRetStatus);
+    };
+
+    // THMSGV2T1AlertRetStatusLEAudioAlertNotification
+    struct AlertRetStatusLEAudioAlertNotification
+    {
+        // CODEGEN EnumRange Command::ALERT_RET_STATUS
+        Command command{Command::ALERT_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange AlertInquiredType::LE_AUDIO_ALERT_NOTIFICATION
+        AlertInquiredType type{AlertInquiredType::LE_AUDIO_ALERT_NOTIFICATION}; // 0x1
+        UInt8 value{}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AlertRetStatusLEAudioAlertNotification);
+    };
+
+    // THMSGV2T1AlertRetStatusVoiceAssistant
+    struct AlertRetStatusVoiceAssistant
+    {
+        // CODEGEN EnumRange Command::ALERT_RET_STATUS
+        Command command{Command::ALERT_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange AlertInquiredType::VOICE_ASSISTANT_ALERT_NOTIFICATION
+        AlertInquiredType type{AlertInquiredType::VOICE_ASSISTANT_ALERT_NOTIFICATION}; // 0x1
+        MDRPodArray<VoiceAssistantType> voiceAssistants; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(AlertRetStatusVoiceAssistant);
+    };
+
+    // THMSGV2T1AlertSetParam
+    struct AlertSetParam
+    {
+        // CODEGEN EnumRange Command::ALERT_SET_PARAM
+        Command command{Command::ALERT_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AlertInquiredType type{AlertInquiredType::FIXED_MESSAGE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AlertSetParam);
+    };
+
+    // THMSGV2T1AlertSetParamAppBecomesForeground
+    struct AlertSetParamAppBecomesForeground
+    {
+        // CODEGEN EnumRange Command::ALERT_SET_PARAM
+        Command command{Command::ALERT_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange AlertInquiredType::APP_BECOMES_FOREGROUND
+        AlertInquiredType type{AlertInquiredType::APP_BECOMES_FOREGROUND}; // 0x1
+        // CODEGEN EnumRange AlertMessageType::FOREGROUND_CAUTION_NEED_DISCONNECTION_FOR_ENABLING_WAKE_WORD
+        AlertMessageType messageType{AlertMessageType::FOREGROUND_CAUTION_NEED_DISCONNECTION_FOR_ENABLING_WAKE_WORD}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AlertAction actionType{AlertAction::NEGATIVE}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AlertSetParamAppBecomesForeground);
+    };
+
+    // THMSGV2T1AlertSetParamFixedMessage
+    struct AlertSetParamFixedMessage
+    {
+        // CODEGEN EnumRange Command::ALERT_SET_PARAM
+        Command command{Command::ALERT_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange AlertInquiredType::FIXED_MESSAGE
+        AlertInquiredType type{AlertInquiredType::FIXED_MESSAGE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AlertMessageType messageType{AlertMessageType::DISCONNECT_CAUSED_BY_CONNECTION_MODE_CHANGE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AlertAction actionType{AlertAction::NEGATIVE}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AlertSetParamFixedMessage);
+    };
+
+    // THMSGV2T1AlertSetParamFixedMessageWithLeftRightSelection
+    struct AlertSetParamFixedMessageWithLeftRightSelection
+    {
+        // CODEGEN EnumRange Command::ALERT_SET_PARAM
+        Command command{Command::ALERT_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange AlertInquiredType::FIXED_MESSAGE_WITH_LEFT_RIGHT_SELECTION
+        AlertInquiredType type{AlertInquiredType::FIXED_MESSAGE_WITH_LEFT_RIGHT_SELECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AlertMessageTypeWithLeftRightSelection messageType{AlertMessageTypeWithLeftRightSelection::CAUTION_FOR_CHANGE_VOICE_ASSISTANT_ASSIGNABLE_BUTTON}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AlertLeftRightAction actionType{AlertLeftRightAction::NEGATIVE}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AlertSetParamFixedMessageWithLeftRightSelection);
+    };
+
+    // THMSGV2T1AlertSetParamFlexibleMessage
+    struct AlertSetParamFlexibleMessage
+    {
+        // CODEGEN EnumRange Command::ALERT_SET_PARAM
+        Command command{Command::ALERT_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange AlertInquiredType::FLEXIBLE_MESSAGE
+        AlertInquiredType type{AlertInquiredType::FLEXIBLE_MESSAGE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AlertFlexibleMessageType messageType{AlertFlexibleMessageType::BATTERY_CONSUMPTION_INCREASE_DUE_TO_SIMULTANEOUS_3_SETTINGS}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AlertAction actionType{AlertAction::NEGATIVE}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AlertSetParamFlexibleMessage);
+    };
+
+    // THMSGV2T1AlertSetParamVibrator
+    struct AlertSetParamVibrator
+    {
+        // CODEGEN EnumRange Command::ALERT_SET_PARAM
+        Command command{Command::ALERT_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange AlertInquiredType::VIBRATOR_ALERT_NOTIFICATION
+        AlertInquiredType type{AlertInquiredType::VIBRATOR_ALERT_NOTIFICATION}; // 0x1
+        VibrationType vibrationType{VibrationType::NO_PATTERN_SPECIFIED}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AlertSetParamVibrator);
+    };
+
+    // THMSGV2T1AlertSetStatus
+    struct AlertSetStatus
+    {
+        // CODEGEN EnumRange Command::ALERT_SET_STATUS
+        Command command{Command::ALERT_SET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AlertInquiredType type{AlertInquiredType::FIXED_MESSAGE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AlertSetStatus);
+    };
+
+    // THMSGV2T1AlertSetStatusAppBecomesForeground
+    struct AlertSetStatusAppBecomesForeground
+    {
+        // CODEGEN EnumRange Command::ALERT_SET_STATUS
+        Command command{Command::ALERT_SET_STATUS}; // 0x0
+        // CODEGEN EnumRange AlertInquiredType::APP_BECOMES_FOREGROUND
+        AlertInquiredType type{AlertInquiredType::APP_BECOMES_FOREGROUND}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AlertSetStatusAppBecomesForeground);
+    };
+
+    // THMSGV2T1AlertSetStatusFixedMessage
+    struct AlertSetStatusFixedMessage
+    {
+        // CODEGEN EnumRange Command::ALERT_SET_STATUS
+        Command command{Command::ALERT_SET_STATUS}; // 0x0
+        // CODEGEN EnumRange AlertInquiredType::FIXED_MESSAGE
+        AlertInquiredType type{AlertInquiredType::FIXED_MESSAGE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AlertSetStatusFixedMessage);
+    };
+
+    // THMSGV2T1AlertSetStatusLEAudioAlertNotification
+    struct AlertSetStatusLEAudioAlertNotification
+    {
+        // CODEGEN EnumRange Command::ALERT_SET_STATUS
+        Command command{Command::ALERT_SET_STATUS}; // 0x0
+        // CODEGEN EnumRange AlertInquiredType::LE_AUDIO_ALERT_NOTIFICATION
+        AlertInquiredType type{AlertInquiredType::LE_AUDIO_ALERT_NOTIFICATION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ConfirmationType confirmationType{ConfirmationType::CONFIRMED}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AlertSetStatusLEAudioAlertNotification);
+    };
+
+    // THMSGV2T1AmbientSoundModeLevelSet
+    struct AmbientSoundModeLevelSet
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x0
+        Range asLevelRange{}; // 0x1
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AmbientSoundModeLevelSet);
+    };
+
+    // THMSGV2T1ApplicableFunction
+    struct ApplicableFunction
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SenseApplicableFunction senseApplicableFunction{SenseApplicableFunction::NC_ON_OFF_AND_ASM_ON_OFF}; // 0x0
+        MDRPodArray<UInt8> bytes; // 0x1
+
+        MDR_DEFINE_EXTERN_READ_WRITE(ApplicableFunction);
+    };
+
+    // THMSGV2T1AssignableSettingsAction
+    struct AssignableSettingsAction
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        Action action{Action::SINGLE_TAP}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        Function function{Function::NO_FUNCTION}; // 0x1
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AssignableSettingsAction);
+    };
+
+    // THMSGV2T1AssignableSettingsCustomizableAction
+    struct AssignableSettingsCustomizableAction
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        Action action{Action::SINGLE_TAP}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        Function defaultFunction{Function::NO_FUNCTION}; // 0x1
+        MDRPodArray<Function> functions; // 0x2
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AssignableSettingsCustomizableAction);
+    };
+
+    // THMSGV2T1AudioGetCapability
+    struct AudioGetCapability
+    {
+        // CODEGEN EnumRange Command::AUDIO_GET_CAPABILITY
+        Command command{Command::AUDIO_GET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioGetCapability);
+    };
+
+    // THMSGV2T1AudioGetParam
+    struct AudioGetParam
+    {
+        // CODEGEN EnumRange Command::AUDIO_GET_PARAM
+        Command command{Command::AUDIO_GET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioGetParam);
+    };
+
+    // THMSGV2T1AudioGetStatus
+    struct AudioGetStatus
+    {
+        // CODEGEN EnumRange Command::AUDIO_GET_STATUS
+        Command command{Command::AUDIO_GET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioGetStatus);
+    };
+
+    // THMSGV2T1AudioNotifyParamBGMMode
+    struct AudioNotifyParamBGMMode
+    {
+        // CODEGEN EnumRange Command::AUDIO_NTFY_PARAM
+        Command command{Command::AUDIO_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        RoomSize targetRoomSize{RoomSize::SMALL}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioNotifyParamBGMMode);
+    };
+
+    // THMSGV2T1AudioNotifyParamListeningOptionAssignCustomizable
+    struct AudioNotifyParamListeningOptionAssignCustomizable
+    {
+        // CODEGEN EnumRange Command::AUDIO_NTFY_PARAM
+        Command command{Command::AUDIO_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::LISTENING_OPTION_ASSIGN_CUSTOMIZABLE
+        AudioInquiredType type{AudioInquiredType::LISTENING_OPTION_ASSIGN_CUSTOMIZABLE}; // 0x1
+        MDRPodArray<ListeningOptionAssignCustomizableItem> assignedItems; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(AudioNotifyParamListeningOptionAssignCustomizable);
+    };
+
+    // THMSGV2T1AudioNotifyParamSoundLeakageReduction
+    struct AudioNotifyParamSoundLeakageReduction
+    {
+        // CODEGEN EnumRange Command::AUDIO_NTFY_PARAM
+        Command command{Command::AUDIO_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::SOUND_LEAKAGE_REDUCTION
+        AudioInquiredType type{AudioInquiredType::SOUND_LEAKAGE_REDUCTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioNotifyParamSoundLeakageReduction);
+    };
+
+    // THMSGV2T1AudioNotifyParamUpmixCinema
+    struct AudioNotifyParamUpmixCinema
+    {
+        // CODEGEN EnumRange Command::AUDIO_NTFY_PARAM
+        Command command{Command::AUDIO_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::UPMIX_CINEMA
+        AudioInquiredType type{AudioInquiredType::UPMIX_CINEMA}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioNotifyParamUpmixCinema);
+    };
+
+    // THMSGV2T1AudioNotifyParamUpmixSeries
+    struct AudioNotifyParamUpmixSeries
+    {
+        // CODEGEN EnumRange Command::AUDIO_NTFY_PARAM
+        Command command{Command::AUDIO_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::UPMIX_SERIES
+        AudioInquiredType type{AudioInquiredType::UPMIX_SERIES}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpmixItemId upmixItemId{UpmixItemId::NONE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioNotifyParamUpmixSeries);
+    };
+
+    // THMSGV2T1AudioNotifyParamVoiceContents
+    struct AudioNotifyParamVoiceContents
+    {
+        // CODEGEN EnumRange Command::AUDIO_NTFY_PARAM
+        Command command{Command::AUDIO_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::VOICE_CONTENTS
+        AudioInquiredType type{AudioInquiredType::VOICE_CONTENTS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioNotifyParamVoiceContents);
+    };
+
+    // THMSGV2T1AudioNotifyStatus
+    struct AudioNotifyStatus
+    {
+        // CODEGEN EnumRange Command::AUDIO_NTFY_STATUS
+        Command command{Command::AUDIO_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioNotifyStatus);
+    };
+
+    // THMSGV2T1AudioNotifyStatusBGMModeErrorCode
+    struct AudioNotifyStatusBGMModeErrorCode
+    {
+        // CODEGEN EnumRange Command::AUDIO_NTFY_STATUS
+        Command command{Command::AUDIO_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        UInt8 numberOfErrorCode{}; // 0x3
+        MDRPodArray<StatusErrorCodeType> errorCodeList; // 0x4
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(AudioNotifyStatusBGMModeErrorCode);
+    };
+
+    // THMSGV2T1AudioNotifyStatusCommon
+    struct AudioNotifyStatusCommon
+    {
+        // CODEGEN EnumRange Command::AUDIO_NTFY_STATUS
+        Command command{Command::AUDIO_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioNotifyStatusCommon);
+    };
+
+    // THMSGV2T1AudioNotifyStatusConnection
+    struct AudioNotifyStatusConnection
+    {
+        // CODEGEN EnumRange Command::AUDIO_NTFY_STATUS
+        Command command{Command::AUDIO_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::CONNECTION_MODE_WITH_LDAC_STATUS
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE_WITH_LDAC_STATUS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioNotifyStatusConnection);
+    };
+
+    // THMSGV2T1AudioNotifyStatusConnectionModeClassicAudioLeAudio
+    struct AudioNotifyStatusConnectionModeClassicAudioLeAudio
+    {
+        // CODEGEN EnumRange Command::AUDIO_NTFY_STATUS
+        Command command{Command::AUDIO_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::CONNECTION_MODE_CLASSIC_AUDIO_LE_AUDIO
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE_CLASSIC_AUDIO_LE_AUDIO}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable value1{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable value2{}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioNotifyStatusConnectionModeClassicAudioLeAudio);
+    };
+
+    // THMSGV2T1AudioNotifyStatusConnectionWithLdacStatus
+    struct AudioNotifyStatusConnectionWithLdacStatus
+    {
+        // CODEGEN EnumRange Command::AUDIO_NTFY_STATUS
+        Command command{Command::AUDIO_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::CONNECTION_MODE_WITH_LDAC_STATUS
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE_WITH_LDAC_STATUS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable ldacEnable{EnableDisable::ENABLE}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioNotifyStatusConnectionWithLdacStatus);
+    };
+
+    // THMSGV2T1AudioNotifyStatusListeningOptionAssignCustomizable
+    struct AudioNotifyStatusListeningOptionAssignCustomizable
+    {
+        // CODEGEN EnumRange Command::AUDIO_NTFY_STATUS
+        Command command{Command::AUDIO_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::LISTENING_OPTION_ASSIGN_CUSTOMIZABLE
+        AudioInquiredType type{AudioInquiredType::LISTENING_OPTION_ASSIGN_CUSTOMIZABLE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioNotifyStatusListeningOptionAssignCustomizable);
+    };
+
+    // THMSGV2T1AudioNotifyStatusUpmixSeries
+    struct AudioNotifyStatusUpmixSeries
+    {
+        // CODEGEN EnumRange Command::AUDIO_NTFY_STATUS
+        Command command{Command::AUDIO_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::UPMIX_SERIES
+        AudioInquiredType type{AudioInquiredType::UPMIX_SERIES}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PreferredSoundEffect preferredSoundEffect{PreferredSoundEffect::MDR_UPMIX}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioNotifyStatusUpmixSeries);
+    };
+
+    // THMSGV2T1AudioNotifyStatusUpscalingAutoOffWithStatusDisableReason
+    struct AudioNotifyStatusUpscalingAutoOffWithStatusDisableReason
+    {
+        // CODEGEN EnumRange Command::AUDIO_NTFY_STATUS
+        Command command{Command::AUDIO_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::UPSCALING_AUTO_OFF_WITH_STATUS_DISABLE_REASON
+        AudioInquiredType type{AudioInquiredType::UPSCALING_AUTO_OFF_WITH_STATUS_DISABLE_REASON}; // 0x1
+        // CODEGEN EnumRange EnableDisable::DISABLE
+        EnableDisable status{EnableDisable::DISABLE}; // 0x2
+        MDRPodArray<StatusErrorCodeType> disableReasonList; // 0x3
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(AudioNotifyStatusUpscalingAutoOffWithStatusDisableReason);
+    };
+
+    // THMSGV2T1AudioNtfyParam
+    struct AudioNtfyParam
+    {
+        // CODEGEN EnumRange Command::AUDIO_NTFY_PARAM
+        Command command{Command::AUDIO_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioNtfyParam);
+    };
+
+    // THMSGV2T1AudioNtfyParamConnection
+    struct AudioNtfyParamConnection
+    {
+        // CODEGEN EnumRange Command::AUDIO_NTFY_PARAM
+        Command command{Command::AUDIO_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::CONNECTION_MODE_CLASSIC_AUDIO_LE_AUDIO
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE_CLASSIC_AUDIO_LE_AUDIO}; // 0x1
+        // CODEGEN EnumRange PriorMode::CONNECTION_QUALITY_PRIOR
+        PriorMode settingValue{PriorMode::CONNECTION_QUALITY_PRIOR}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioNtfyParamConnection);
+    };
+
+    // THMSGV2T1AudioNtfyParamConnectionModeClassicAudioLeAudio
+    struct AudioNtfyParamConnectionModeClassicAudioLeAudio
+    {
+        // CODEGEN EnumRange Command::AUDIO_NTFY_PARAM
+        Command command{Command::AUDIO_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::CONNECTION_MODE_CLASSIC_AUDIO_LE_AUDIO
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE_CLASSIC_AUDIO_LE_AUDIO}; // 0x1
+        // CODEGEN EnumRange PriorMode::CONNECTION_QUALITY_PRIOR
+        PriorMode settingValue{PriorMode::CONNECTION_QUALITY_PRIOR}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SwitchingStream switchingStream{SwitchingStream::NONE}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioNtfyParamConnectionModeClassicAudioLeAudio);
+    };
+
+    // THMSGV2T1AudioNtfyParamConnectionWithLdacStatus
+    struct AudioNtfyParamConnectionWithLdacStatus
+    {
+        // CODEGEN EnumRange Command::AUDIO_NTFY_PARAM
+        Command command{Command::AUDIO_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::CONNECTION_MODE_WITH_LDAC_STATUS
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE_WITH_LDAC_STATUS}; // 0x1
+        // CODEGEN EnumRange PriorMode::CONNECTION_QUALITY_PRIOR
+        PriorMode settingValue{PriorMode::CONNECTION_QUALITY_PRIOR}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioNtfyParamConnectionWithLdacStatus);
+    };
+
+    // THMSGV2T1AudioNtfyParamUpscaling
+    struct AudioNtfyParamUpscaling
+    {
+        // CODEGEN EnumRange Command::AUDIO_NTFY_PARAM
+        Command command{Command::AUDIO_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::UPSCALING
+        AudioInquiredType type{AudioInquiredType::UPSCALING}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpscalingTypeAutoOff settingValue{UpscalingTypeAutoOff::OFF}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioNtfyParamUpscaling);
+    };
+
+    // THMSGV2T1AudioRetCapability
+    struct AudioRetCapability
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_CAPABILITY
+        Command command{Command::AUDIO_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioRetCapability);
+    };
+
+    // THMSGV2T1AudioRetCapabilityBGMMode
+    struct AudioRetCapabilityBGMMode
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_CAPABILITY
+        Command command{Command::AUDIO_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE}; // 0x1
+        MDRPodArray<AudioExclusiveFunctionType> exclusiveFunctions; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(AudioRetCapabilityBGMMode);
+    };
+
+    // THMSGV2T1AudioRetCapabilityConnectionModeClassicAudioLeAudio
+    struct AudioRetCapabilityConnectionModeClassicAudioLeAudio
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_CAPABILITY
+        Command command{Command::AUDIO_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::CONNECTION_MODE_CLASSIC_AUDIO_LE_AUDIO
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE_CLASSIC_AUDIO_LE_AUDIO}; // 0x1
+        MDRPodArray<PriorMode> priorModeList; // 0x2
+        MDRPodArray<LDACExclusiveFeature> lDACExclusiveFeatureList;
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(AudioRetCapabilityConnectionModeClassicAudioLeAudio);
+    };
+
+    // THMSGV2T1AudioRetCapabilityListeningOptionAssignCustomizable
+    struct AudioRetCapabilityListeningOptionAssignCustomizable
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_CAPABILITY
+        Command command{Command::AUDIO_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::LISTENING_OPTION_ASSIGN_CUSTOMIZABLE
+        AudioInquiredType type{AudioInquiredType::LISTENING_OPTION_ASSIGN_CUSTOMIZABLE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ListeningOptionAssignFlexibility listeningOptionAssignFlexibility{ListeningOptionAssignFlexibility::FIXED}; // 0x2
+        MDRMap<ListeningOptionAssignCustomizableItem, ListeningOptionAssignIsMandatory> itemMap; // 0x3
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(AudioRetCapabilityListeningOptionAssignCustomizable);
+    };
+
+    // THMSGV2T1AudioRetCapabilitySoundLeakageReduction
+    struct AudioRetCapabilitySoundLeakageReduction
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_CAPABILITY
+        Command command{Command::AUDIO_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::SOUND_LEAKAGE_REDUCTION
+        AudioInquiredType type{AudioInquiredType::SOUND_LEAKAGE_REDUCTION}; // 0x1
+        MDRPodArray<AudioExclusiveFunctionType> exclusiveFunctions; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(AudioRetCapabilitySoundLeakageReduction);
+    };
+
+    // THMSGV2T1AudioRetCapabilityUpmixCinema
+    struct AudioRetCapabilityUpmixCinema
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_CAPABILITY
+        Command command{Command::AUDIO_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::UPMIX_CINEMA
+        AudioInquiredType type{AudioInquiredType::UPMIX_CINEMA}; // 0x1
+        MDRPodArray<AudioExclusiveFunctionType> exclusiveFunctions; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(AudioRetCapabilityUpmixCinema);
+    };
+
+    // THMSGV2T1AudioRetCapabilityUpmixSeries
+    struct AudioRetCapabilityUpmixSeries
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_CAPABILITY
+        Command command{Command::AUDIO_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::UPMIX_SERIES
+        AudioInquiredType type{AudioInquiredType::UPMIX_SERIES}; // 0x1
+        MDRPodArray<UpmixItemId> upmixItemIdList; // 0x2
+        MDRPodArray<AudioExclusiveFunctionType> exclusiveFunctions;
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(AudioRetCapabilityUpmixSeries);
+    };
+
+    // THMSGV2T1AudioRetCapabilityUpscaling
+    struct AudioRetCapabilityUpscaling
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_CAPABILITY
+        Command command{Command::AUDIO_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::UPSCALING
+        AudioInquiredType type{AudioInquiredType::UPSCALING}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpscalingType upscalingType{UpscalingType::DSEE_HX}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioRetCapabilityUpscaling);
+    };
+
+    // THMSGV2T1AudioRetCapabilityVoiceContents
+    struct AudioRetCapabilityVoiceContents
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_CAPABILITY
+        Command command{Command::AUDIO_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::VOICE_CONTENTS
+        AudioInquiredType type{AudioInquiredType::VOICE_CONTENTS}; // 0x1
+        MDRPodArray<AudioExclusiveFunctionType> exclusiveFunctions; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(AudioRetCapabilityVoiceContents);
+    };
+
+    // THMSGV2T1AudioRetParam
+    struct AudioRetParam
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_PARAM
+        Command command{Command::AUDIO_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioRetParam);
+    };
+
+    // THMSGV2T1AudioRetParamBGMMode
+    struct AudioRetParamBGMMode
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_PARAM
+        Command command{Command::AUDIO_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        RoomSize targetRoomSize{RoomSize::SMALL}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioRetParamBGMMode);
+    };
+
+    // THMSGV2T1AudioRetParamConnection
+    struct AudioRetParamConnection
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_PARAM
+        Command command{Command::AUDIO_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE}; // 0x1
+        // CODEGEN EnumRange PriorMode::CONNECTION_QUALITY_PRIOR
+        PriorMode settingValue{PriorMode::CONNECTION_QUALITY_PRIOR}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioRetParamConnection);
+    };
+
+    // THMSGV2T1AudioRetParamConnectionWithLdacStatus
+    struct AudioRetParamConnectionWithLdacStatus
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_PARAM
+        Command command{Command::AUDIO_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::CONNECTION_MODE_WITH_LDAC_STATUS
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE_WITH_LDAC_STATUS}; // 0x1
+        // CODEGEN EnumRange PriorMode::CONNECTION_QUALITY_PRIOR
+        PriorMode settingValue{PriorMode::CONNECTION_QUALITY_PRIOR}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioRetParamConnectionWithLdacStatus);
+    };
+
+    // THMSGV2T1AudioRetParamListeningOptionAssignCustomizable
+    struct AudioRetParamListeningOptionAssignCustomizable
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_PARAM
+        Command command{Command::AUDIO_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::LISTENING_OPTION_ASSIGN_CUSTOMIZABLE
+        AudioInquiredType type{AudioInquiredType::LISTENING_OPTION_ASSIGN_CUSTOMIZABLE}; // 0x1
+        MDRPodArray<ListeningOptionAssignCustomizableItem> assignedItems; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(AudioRetParamListeningOptionAssignCustomizable);
+    };
+
+    // THMSGV2T1AudioRetParamSoundLeakageReduction
+    struct AudioRetParamSoundLeakageReduction
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_PARAM
+        Command command{Command::AUDIO_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::SOUND_LEAKAGE_REDUCTION
+        AudioInquiredType type{AudioInquiredType::SOUND_LEAKAGE_REDUCTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioRetParamSoundLeakageReduction);
+    };
+
+    // THMSGV2T1AudioRetParamUpmixCinema
+    struct AudioRetParamUpmixCinema
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_PARAM
+        Command command{Command::AUDIO_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::UPMIX_CINEMA
+        AudioInquiredType type{AudioInquiredType::UPMIX_CINEMA}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioRetParamUpmixCinema);
+    };
+
+    // THMSGV2T1AudioRetParamUpmixSeries
+    struct AudioRetParamUpmixSeries
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_PARAM
+        Command command{Command::AUDIO_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::UPMIX_SERIES
+        AudioInquiredType type{AudioInquiredType::UPMIX_SERIES}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpmixItemId upmixItemId{UpmixItemId::NONE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioRetParamUpmixSeries);
+    };
+
+    // THMSGV2T1AudioRetParamUpscaling
+    struct AudioRetParamUpscaling
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_PARAM
+        Command command{Command::AUDIO_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::UPSCALING
+        AudioInquiredType type{AudioInquiredType::UPSCALING}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpscalingTypeAutoOff settingValue{UpscalingTypeAutoOff::OFF}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioRetParamUpscaling);
+    };
+
+    // THMSGV2T1AudioRetParamVoiceContents
+    struct AudioRetParamVoiceContents
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_PARAM
+        Command command{Command::AUDIO_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::VOICE_CONTENTS
+        AudioInquiredType type{AudioInquiredType::VOICE_CONTENTS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioRetParamVoiceContents);
+    };
+
+    // THMSGV2T1AudioRetStatus
+    struct AudioRetStatus
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_STATUS
+        Command command{Command::AUDIO_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioRetStatus);
+    };
+
+    // THMSGV2T1AudioRetStatusBGMModeErrorCode
+    struct AudioRetStatusBGMModeErrorCode
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_STATUS
+        Command command{Command::AUDIO_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        UInt8 numberOfErrorCode{}; // 0x3
+        MDRPodArray<StatusErrorCodeType> errorCodeList; // 0x4
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(AudioRetStatusBGMModeErrorCode);
+    };
+
+    // THMSGV2T1AudioRetStatusCommon
+    struct AudioRetStatusCommon
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_STATUS
+        Command command{Command::AUDIO_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioRetStatusCommon);
+    };
+
+    // THMSGV2T1AudioRetStatusConnection
+    struct AudioRetStatusConnection
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_STATUS
+        Command command{Command::AUDIO_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::CONNECTION_MODE_WITH_LDAC_STATUS
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE_WITH_LDAC_STATUS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioRetStatusConnection);
+    };
+
+    // THMSGV2T1AudioRetStatusConnectionModeClassicAudioLeAudio
+    struct AudioRetStatusConnectionModeClassicAudioLeAudio
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_STATUS
+        Command command{Command::AUDIO_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::CONNECTION_MODE_CLASSIC_AUDIO_LE_AUDIO
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE_CLASSIC_AUDIO_LE_AUDIO}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable value1{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable value2{}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioRetStatusConnectionModeClassicAudioLeAudio);
+    };
+
+    // THMSGV2T1AudioRetStatusConnectionWithLdacStatus
+    struct AudioRetStatusConnectionWithLdacStatus
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_STATUS
+        Command command{Command::AUDIO_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::CONNECTION_MODE_WITH_LDAC_STATUS
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE_WITH_LDAC_STATUS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable ldacEnable{EnableDisable::ENABLE}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioRetStatusConnectionWithLdacStatus);
+    };
+
+    // THMSGV2T1AudioRetStatusListeningOptionAssignCustomizable
+    struct AudioRetStatusListeningOptionAssignCustomizable
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_STATUS
+        Command command{Command::AUDIO_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::LISTENING_OPTION_ASSIGN_CUSTOMIZABLE
+        AudioInquiredType type{AudioInquiredType::LISTENING_OPTION_ASSIGN_CUSTOMIZABLE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioRetStatusListeningOptionAssignCustomizable);
+    };
+
+    // THMSGV2T1AudioRetStatusUpmixSeries
+    struct AudioRetStatusUpmixSeries
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_STATUS
+        Command command{Command::AUDIO_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::UPMIX_SERIES
+        AudioInquiredType type{AudioInquiredType::UPMIX_SERIES}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PreferredSoundEffect preferredSoundEffect{PreferredSoundEffect::MDR_UPMIX}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioRetStatusUpmixSeries);
+    };
+
+    // THMSGV2T1AudioRetStatusUpscalingAutoOffWithStatusDisableReason
+    struct AudioRetStatusUpscalingAutoOffWithStatusDisableReason
+    {
+        // CODEGEN EnumRange Command::AUDIO_RET_STATUS
+        Command command{Command::AUDIO_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::UPSCALING_AUTO_OFF_WITH_STATUS_DISABLE_REASON
+        AudioInquiredType type{AudioInquiredType::UPSCALING_AUTO_OFF_WITH_STATUS_DISABLE_REASON}; // 0x1
+        // CODEGEN EnumRange EnableDisable::DISABLE
+        EnableDisable status{EnableDisable::DISABLE}; // 0x2
+        MDRPodArray<StatusErrorCodeType> disableReasonList; // 0x3
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(AudioRetStatusUpscalingAutoOffWithStatusDisableReason);
+    };
+
+    // THMSGV2T1AudioSetParam
+    struct AudioSetParam
+    {
+        // CODEGEN EnumRange Command::AUDIO_SET_PARAM
+        Command command{Command::AUDIO_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioSetParam);
+    };
+
+    // THMSGV2T1AudioSetParamBGMMode
+    struct AudioSetParamBGMMode
+    {
+        // CODEGEN EnumRange Command::AUDIO_SET_PARAM
+        Command command{Command::AUDIO_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        RoomSize targetRoomSize{RoomSize::SMALL}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioSetParamBGMMode);
+    };
+
+    // THMSGV2T1AudioSetParamConnection
+    struct AudioSetParamConnection
+    {
+        // CODEGEN EnumRange Command::AUDIO_SET_PARAM
+        Command command{Command::AUDIO_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::CONNECTION_MODE_CLASSIC_AUDIO_LE_AUDIO
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE_CLASSIC_AUDIO_LE_AUDIO}; // 0x1
+        // CODEGEN EnumRange PriorMode::CONNECTION_QUALITY_PRIOR
+        PriorMode settingValue{PriorMode::CONNECTION_QUALITY_PRIOR}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioSetParamConnection);
+    };
+
+    // THMSGV2T1AudioSetParamConnectionModeClassicAudioLeAudio
+    struct AudioSetParamConnectionModeClassicAudioLeAudio
+    {
+        // CODEGEN EnumRange Command::AUDIO_SET_PARAM
+        Command command{Command::AUDIO_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::CONNECTION_MODE_CLASSIC_AUDIO_LE_AUDIO
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE_CLASSIC_AUDIO_LE_AUDIO}; // 0x1
+        // CODEGEN EnumRange PriorMode::CONNECTION_QUALITY_PRIOR
+        PriorMode settingValue{PriorMode::CONNECTION_QUALITY_PRIOR}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable value2{}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioSetParamConnectionModeClassicAudioLeAudio);
+    };
+
+    // THMSGV2T1AudioSetParamConnectionWithLdacStatus
+    struct AudioSetParamConnectionWithLdacStatus
+    {
+        // CODEGEN EnumRange Command::AUDIO_SET_PARAM
+        Command command{Command::AUDIO_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::CONNECTION_MODE_WITH_LDAC_STATUS
+        AudioInquiredType type{AudioInquiredType::CONNECTION_MODE_WITH_LDAC_STATUS}; // 0x1
+        // CODEGEN EnumRange PriorMode::CONNECTION_QUALITY_PRIOR
+        PriorMode settingValue{PriorMode::CONNECTION_QUALITY_PRIOR}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioSetParamConnectionWithLdacStatus);
+    };
+
+    // THMSGV2T1AudioSetParamListeningOptionAssignCustomizable
+    struct AudioSetParamListeningOptionAssignCustomizable
+    {
+        // CODEGEN EnumRange Command::AUDIO_SET_PARAM
+        Command command{Command::AUDIO_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::LISTENING_OPTION_ASSIGN_CUSTOMIZABLE
+        AudioInquiredType type{AudioInquiredType::LISTENING_OPTION_ASSIGN_CUSTOMIZABLE}; // 0x1
+        MDRPodArray<ListeningOptionAssignCustomizableItem> assignedItems; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(AudioSetParamListeningOptionAssignCustomizable);
+    };
+
+    // THMSGV2T1AudioSetParamSoundLeakageReduction
+    struct AudioSetParamSoundLeakageReduction
+    {
+        // CODEGEN EnumRange Command::AUDIO_SET_PARAM
+        Command command{Command::AUDIO_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::SOUND_LEAKAGE_REDUCTION
+        AudioInquiredType type{AudioInquiredType::SOUND_LEAKAGE_REDUCTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioSetParamSoundLeakageReduction);
+    };
+
+    // THMSGV2T1AudioSetParamUpmixCinema
+    struct AudioSetParamUpmixCinema
+    {
+        // CODEGEN EnumRange Command::AUDIO_SET_PARAM
+        Command command{Command::AUDIO_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::UPMIX_CINEMA
+        AudioInquiredType type{AudioInquiredType::UPMIX_CINEMA}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioSetParamUpmixCinema);
+    };
+
+    // THMSGV2T1AudioSetParamUpmixSeries
+    struct AudioSetParamUpmixSeries
+    {
+        // CODEGEN EnumRange Command::AUDIO_SET_PARAM
+        Command command{Command::AUDIO_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::UPMIX_SERIES
+        AudioInquiredType type{AudioInquiredType::UPMIX_SERIES}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpmixItemId upmixItemId{UpmixItemId::NONE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioSetParamUpmixSeries);
+    };
+
+    // THMSGV2T1AudioSetParamUpscaling
+    struct AudioSetParamUpscaling
+    {
+        // CODEGEN EnumRange Command::AUDIO_SET_PARAM
+        Command command{Command::AUDIO_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::UPSCALING
+        AudioInquiredType type{AudioInquiredType::UPSCALING}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpscalingTypeAutoOff settingValue{UpscalingTypeAutoOff::OFF}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioSetParamUpscaling);
+    };
+
+    // THMSGV2T1AudioSetParamVoiceContents
+    struct AudioSetParamVoiceContents
+    {
+        // CODEGEN EnumRange Command::AUDIO_SET_PARAM
+        Command command{Command::AUDIO_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange AudioInquiredType::VOICE_CONTENTS
+        AudioInquiredType type{AudioInquiredType::VOICE_CONTENTS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(AudioSetParamVoiceContents);
+    };
+
+    // THMSGV2T1BandStep
+    struct BandStep
+    {
+        MDRPodArray<UInt8> bandSteps; // 0x0
+
+        MDR_DEFINE_EXTERN_READ_WRITE(BandStep);
+    };
+
+    // THMSGV2T1CommonGetCapability
+    struct CommonGetCapability
+    {
+        // CODEGEN EnumRange Command::COMMON_GET_CAPABILITY
+        Command command{Command::COMMON_GET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        CommonInquiredType inquiredType{CommonInquiredType::CONCIERGE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(CommonGetCapability);
+    };
+
+    // THMSGV2T1CommonGetStatus
+    struct CommonGetStatus
+    {
+        // CODEGEN EnumRange Command::COMMON_GET_STATUS
+        Command command{Command::COMMON_GET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        CommonInquiredType type{CommonInquiredType::CONCIERGE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(CommonGetStatus);
+    };
+
+    // THMSGV2T1CommonNotifyParam
+    struct CommonNotifyParam
+    {
+        // CODEGEN EnumRange Command::COMMON_NTFY_PARAM
+        Command command{Command::COMMON_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        CommonInquiredType inquiredType{CommonInquiredType::CONCIERGE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(CommonNotifyParam);
+    };
+
+    // THMSGV2T1CommonNotifyParamTandemReconnectionRequest
+    struct CommonNotifyParamTandemReconnectionRequest
+    {
+        // CODEGEN EnumRange Command::COMMON_NTFY_PARAM
+        Command command{Command::COMMON_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange CommonInquiredType::TANDEM_RECONNECTION_REQUEST
+        CommonInquiredType inquiredType{CommonInquiredType::TANDEM_RECONNECTION_REQUEST}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        RequestType requestType{RequestType::UNDER_CONFIRMATION}; // 0x2
+        Array<UInt8, 17> targetDeviceBdAddressOfAccessory{}; // 0x3
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(CommonNotifyParamTandemReconnectionRequest);
+    };
+
+    // THMSGV2T1CommonNotifyStatusAudioCodec
+    struct CommonNotifyStatusAudioCodec
+    {
+        // CODEGEN EnumRange Command::COMMON_NTFY_STATUS
+        Command command{Command::COMMON_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange CommonInquiredType::AUDIO_CODEC
+        CommonInquiredType inquiredType{CommonInquiredType::AUDIO_CODEC}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AudioCodec audioCodec{AudioCodec::UNSETTLED}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(CommonNotifyStatusAudioCodec);
+    };
+
+    // THMSGV2T1CommonNotifyStatusConnection
+    struct CommonNotifyStatusConnection
+    {
+        // CODEGEN EnumRange Command::COMMON_NTFY_STATUS
+        Command command{Command::COMMON_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange CommonInquiredType::CONNECTION_STATUS
+        CommonInquiredType inquiredType{CommonInquiredType::CONNECTION_STATUS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        CommonConnectionStatus leftConnectionStatus{CommonConnectionStatus::NOT_CONNECTED}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        CommonConnectionStatus rightConnectionStatus{CommonConnectionStatus::NOT_CONNECTED}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(CommonNotifyStatusConnection);
+    };
+
+    // THMSGV2T1CommonNotifyStatusDeviceSpecialMode
+    struct CommonNotifyStatusDeviceSpecialMode
+    {
+        // CODEGEN EnumRange Command::COMMON_NTFY_STATUS
+        Command command{Command::COMMON_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange CommonInquiredType::DEVICE_SPECIAL_MODE
+        CommonInquiredType inquiredType{CommonInquiredType::DEVICE_SPECIAL_MODE}; // 0x1
+        MDRPodArray<DeviceSpecialMode> deviceSpecialModeList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(CommonNotifyStatusDeviceSpecialMode);
+    };
+
+    // THMSGV2T1CommonNotifyStatusUpscalingEffect
+    struct CommonNotifyStatusUpscalingEffect
+    {
+        // CODEGEN EnumRange Command::COMMON_NTFY_STATUS
+        Command command{Command::COMMON_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange CommonInquiredType::UPSCALING_EFFECT
+        CommonInquiredType inquiredType{CommonInquiredType::UPSCALING_EFFECT}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpscalingEffectType effectType{UpscalingEffectType::DSEE_HX}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpscalingEffectStatus effectStatus{UpscalingEffectStatus::OFF}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(CommonNotifyStatusUpscalingEffect);
+    };
+
+    // THMSGV2T1CommonNtfyStatus
+    struct CommonNtfyStatus
+    {
+        // CODEGEN EnumRange Command::COMMON_NTFY_STATUS
+        Command command{Command::COMMON_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        CommonInquiredType inquiredType{CommonInquiredType::CONCIERGE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(CommonNtfyStatus);
+    };
+
+    // THMSGV2T1CommonRetCapability
+    struct CommonRetCapability
+    {
+        // CODEGEN EnumRange Command::COMMON_RET_CAPABILITY
+        Command command{Command::COMMON_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        CommonInquiredType inquiredType{CommonInquiredType::CONCIERGE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(CommonRetCapability);
+    };
+
+    // THMSGV2T1CommonRetCapabilityBLESetup
+    struct CommonRetCapabilityBLESetup
+    {
+        // CODEGEN EnumRange Command::COMMON_RET_CAPABILITY
+        Command command{Command::COMMON_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange CommonInquiredType::BLE_SETUP
+        CommonInquiredType inquiredType{CommonInquiredType::BLE_SETUP}; // 0x1
+        Array<UInt8, 17> btAddress{}; // 0x2
+        MDRPrefixedString bleHash;
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(CommonRetCapabilityBLESetup);
+    };
+
+    // THMSGV2T1CommonRetCapabilityDisplayFwVersion
+    struct CommonRetCapabilityDisplayFwVersion
+    {
+        // CODEGEN EnumRange Command::COMMON_RET_CAPABILITY
+        Command command{Command::COMMON_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange CommonInquiredType::DISPLAY_FW_VERSION
+        CommonInquiredType inquiredType{CommonInquiredType::DISPLAY_FW_VERSION}; // 0x1
+        MDRPrefixedString displayFwVersion; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(CommonRetCapabilityDisplayFwVersion);
+    };
+
+    // THMSGV2T1CommonRetCapabilitySmartPhoneAndDeviceInformation
+    struct CommonRetCapabilitySmartPhoneAndDeviceInformation
+    {
+        // CODEGEN EnumRange Command::COMMON_RET_CAPABILITY
+        Command command{Command::COMMON_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange CommonInquiredType::SMART_PHONE_AND_CONNECTED_DEVICE_INFORMATION
+        CommonInquiredType inquiredType{CommonInquiredType::SMART_PHONE_AND_CONNECTED_DEVICE_INFORMATION}; // 0x1
+        Array<UInt8, 17> smartPhoneBDAddress{}; // 0x2
+        MDRPrefixedString deviceBDAddress;
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(CommonRetCapabilitySmartPhoneAndDeviceInformation);
+    };
+
+    // THMSGV2T1CommonRetStatus
+    struct CommonRetStatus
+    {
+        // CODEGEN EnumRange Command::COMMON_RET_STATUS
+        Command command{Command::COMMON_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        CommonInquiredType inquiredType{CommonInquiredType::CONCIERGE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(CommonRetStatus);
+    };
+
+    // THMSGV2T1CommonRetStatusAudioCodec
+    struct CommonRetStatusAudioCodec
+    {
+        // CODEGEN EnumRange Command::COMMON_RET_STATUS
+        Command command{Command::COMMON_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange CommonInquiredType::AUDIO_CODEC
+        CommonInquiredType inquiredType{CommonInquiredType::AUDIO_CODEC}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AudioCodec audioCodec{AudioCodec::UNSETTLED}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(CommonRetStatusAudioCodec);
+    };
+
+    // THMSGV2T1CommonRetStatusConcierge
+    struct CommonRetStatusConcierge
+    {
+        // CODEGEN EnumRange Command::COMMON_RET_STATUS
+        Command command{Command::COMMON_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        CommonInquiredType inquiredType{CommonInquiredType::CONCIERGE}; // 0x1
+        MDRPrefixedString conciergeData; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(CommonRetStatusConcierge);
+    };
+
+    // THMSGV2T1CommonRetStatusConnection
+    struct CommonRetStatusConnection
+    {
+        // CODEGEN EnumRange Command::COMMON_RET_STATUS
+        Command command{Command::COMMON_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange CommonInquiredType::CONNECTION_STATUS
+        CommonInquiredType inquiredType{CommonInquiredType::CONNECTION_STATUS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        CommonConnectionStatus leftConnectionStatus{CommonConnectionStatus::NOT_CONNECTED}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        CommonConnectionStatus rightConnectionStatus{CommonConnectionStatus::NOT_CONNECTED}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(CommonRetStatusConnection);
+    };
+
+    // THMSGV2T1CommonRetStatusDeviceSpecialMode
+    struct CommonRetStatusDeviceSpecialMode
+    {
+        // CODEGEN EnumRange Command::COMMON_RET_STATUS
+        Command command{Command::COMMON_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange CommonInquiredType::DEVICE_SPECIAL_MODE
+        CommonInquiredType inquiredType{CommonInquiredType::DEVICE_SPECIAL_MODE}; // 0x1
+        MDRPodArray<DeviceSpecialMode> deviceSpecialModeList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(CommonRetStatusDeviceSpecialMode);
+    };
+
+    // THMSGV2T1CommonRetStatusUpscalingEffect
+    struct CommonRetStatusUpscalingEffect
+    {
+        // CODEGEN EnumRange Command::COMMON_RET_STATUS
+        Command command{Command::COMMON_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange CommonInquiredType::UPSCALING_EFFECT
+        CommonInquiredType inquiredType{CommonInquiredType::UPSCALING_EFFECT}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpscalingEffectType effectType{UpscalingEffectType::DSEE_HX}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpscalingEffectStatus effectStatus{UpscalingEffectStatus::OFF}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(CommonRetStatusUpscalingEffect);
+    };
+
+    // THMSGV2T1CommonSetParam
+    struct CommonSetParam
+    {
+        // CODEGEN EnumRange Command::COMMON_SET_PARAM
+        Command command{Command::COMMON_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        CommonInquiredType inquiredType{CommonInquiredType::CONCIERGE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(CommonSetParam);
+    };
+
+    // THMSGV2T1CommonSetParamConnectionEstablishedTime
+    struct CommonSetParamConnectionEstablishedTime
+    {
+        // CODEGEN EnumRange Command::COMMON_SET_PARAM
+        Command command{Command::COMMON_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange CommonInquiredType::CONNECTION_ESTABLISHED_TIME
+        CommonInquiredType inquiredType{CommonInquiredType::CONNECTION_ESTABLISHED_TIME}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ConnectionEstablishedTimeStatus timeValidation{ConnectionEstablishedTimeStatus::VALID}; // 0x2
+        UInt64BE unixTime{}; // 0x3
+        Int16BE utcYear{}; // 0xB
+        UInt8 utcMonth{}; // 0xD
+        UInt8 utcDay{}; // 0xE
+        UInt8 utcHour{}; // 0xF
+        UInt8 utcMinute{}; // 0x10
+        UInt8 utcSecond{}; // 0x11
+        UInt8 timeZoneHour{}; // 0x12
+        UInt8 timeZoneMinute{}; // 0x13
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(CommonSetParamConnectionEstablishedTime);
+    };
+
+    // THMSGV2T1ConnectGetCapabilityInfo
+    struct ConnectGetCapabilityInfo
+    {
+        // CODEGEN EnumRange Command::CONNECT_GET_CAPABILITY_INFO
+        Command command{Command::CONNECT_GET_CAPABILITY_INFO}; // 0x0
+        // CODEGEN EnumRange ConnectInquiredType::FIXED_VALUE
+        ConnectInquiredType type{ConnectInquiredType::FIXED_VALUE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(ConnectGetCapabilityInfo);
+    };
+
+    // THMSGV2T1ConnectGetDeviceInfo
+    struct ConnectGetDeviceInfo
+    {
+        // CODEGEN EnumRange Command::CONNECT_GET_DEVICE_INFO
+        Command command{Command::CONNECT_GET_DEVICE_INFO}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        DeviceInfoType deviceInfoType{DeviceInfoType::MODEL_NAME}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(ConnectGetDeviceInfo);
+    };
+
+    // THMSGV2T1ConnectGetProtocolInfo
+    struct ConnectGetProtocolInfo
+    {
+        // CODEGEN EnumRange Command::CONNECT_GET_PROTOCOL_INFO
+        Command command{Command::CONNECT_GET_PROTOCOL_INFO}; // 0x0
+        // CODEGEN EnumRange ConnectInquiredType::FIXED_VALUE
+        ConnectInquiredType type{ConnectInquiredType::FIXED_VALUE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(ConnectGetProtocolInfo);
+    };
+
+    // THMSGV2T1ConnectGetSupportFunction
+    struct ConnectGetSupportFunction
+    {
+        // CODEGEN EnumRange Command::CONNECT_GET_SUPPORT_FUNCTION
+        Command command{Command::CONNECT_GET_SUPPORT_FUNCTION}; // 0x0
+        // CODEGEN EnumRange ConnectInquiredType::FIXED_VALUE
+        ConnectInquiredType type{ConnectInquiredType::FIXED_VALUE}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(ConnectGetSupportFunction);
+    };
+
+    // THMSGV2T1ConnectRetCapabilityInfo
+    struct ConnectRetCapabilityInfo
+    {
+        // CODEGEN EnumRange Command::CONNECT_RET_CAPABILITY_INFO
+        Command command{Command::CONNECT_RET_CAPABILITY_INFO}; // 0x0
+        // CODEGEN EnumRange ConnectInquiredType::FIXED_VALUE
+        ConnectInquiredType type{ConnectInquiredType::FIXED_VALUE}; // 0x1
+        UInt8 capabilityCounter{}; // 0x2
+        MDRPrefixedString uniqueId; // 0x3
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(ConnectRetCapabilityInfo);
+    };
+
+    // THMSGV2T1ConnectRetDeviceInfo
+    struct ConnectRetDeviceInfo
+    {
+        // CODEGEN EnumRange Command::CONNECT_RET_DEVICE_INFO
+        Command command{Command::CONNECT_RET_DEVICE_INFO}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        DeviceInfoType type{DeviceInfoType::MODEL_NAME}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(ConnectRetDeviceInfo);
+    };
+
+    // THMSGV2T1ConnectRetDeviceInfoFwVersion
+    struct ConnectRetDeviceInfoFwVersion
+    {
+        // CODEGEN EnumRange Command::CONNECT_RET_DEVICE_INFO
+        Command command{Command::CONNECT_RET_DEVICE_INFO}; // 0x0
+        // CODEGEN EnumRange DeviceInfoType::FW_VERSION
+        DeviceInfoType type{DeviceInfoType::FW_VERSION}; // 0x1
+        MDRPrefixedString fwVersion; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(ConnectRetDeviceInfoFwVersion);
+    };
+
+    // THMSGV2T1ConnectRetDeviceInfoInstructionGuide
+    struct ConnectRetDeviceInfoInstructionGuide
+    {
+        // CODEGEN EnumRange Command::CONNECT_RET_DEVICE_INFO
+        Command command{Command::CONNECT_RET_DEVICE_INFO}; // 0x0
+        // CODEGEN EnumRange DeviceInfoType::INSTRUCTION_GUIDE
+        DeviceInfoType type{DeviceInfoType::INSTRUCTION_GUIDE}; // 0x1
+        MDRPodArray<GuidanceCategory> guidanceCategories; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(ConnectRetDeviceInfoInstructionGuide);
+    };
+
+    // THMSGV2T1ConnectRetDeviceInfoModelName
+    struct ConnectRetDeviceInfoModelName
+    {
+        // CODEGEN EnumRange Command::CONNECT_RET_DEVICE_INFO
+        Command command{Command::CONNECT_RET_DEVICE_INFO}; // 0x0
+        // CODEGEN EnumRange DeviceInfoType::MODEL_NAME
+        DeviceInfoType type{DeviceInfoType::MODEL_NAME}; // 0x1
+        MDRPrefixedString modelName; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(ConnectRetDeviceInfoModelName);
+    };
+
+    // THMSGV2T1ConnectRetDeviceInfoSeriesAndColor
+    struct ConnectRetDeviceInfoSeriesAndColor
+    {
+        // CODEGEN EnumRange Command::CONNECT_RET_DEVICE_INFO
+        Command command{Command::CONNECT_RET_DEVICE_INFO}; // 0x0
+        // CODEGEN EnumRange DeviceInfoType::SERIES_AND_COLOR_INFO
+        DeviceInfoType type{DeviceInfoType::SERIES_AND_COLOR_INFO}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ModelSeries modelSeries{ModelSeries::NO_SERIES}; // 0x2
+        ModelColor modelColor{ModelColor::DEFAULT}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(ConnectRetDeviceInfoSeriesAndColor);
+    };
+
+    // THMSGV2T1ConnectRetProtocolInfo
+    struct ConnectRetProtocolInfo
+    {
+        // CODEGEN EnumRange Command::CONNECT_RET_PROTOCOL_INFO
+        Command command{Command::CONNECT_RET_PROTOCOL_INFO}; // 0x0
+        // CODEGEN EnumRange ConnectInquiredType::FIXED_VALUE
+        ConnectInquiredType type{ConnectInquiredType::FIXED_VALUE}; // 0x1
+        Int32BE protocolVersion{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable supportTable1Value{EnableDisable::ENABLE}; // 0x6
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable supportTable2Value{EnableDisable::ENABLE}; // 0x7
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(ConnectRetProtocolInfo);
+    };
+
+    // THMSGV2T1ConnectRetSupportFunction
+    struct ConnectRetSupportFunction
+    {
+        // CODEGEN EnumRange Command::CONNECT_RET_SUPPORT_FUNCTION
+        Command command{Command::CONNECT_RET_SUPPORT_FUNCTION}; // 0x0
+        // CODEGEN EnumRange ConnectInquiredType::FIXED_VALUE
+        ConnectInquiredType type{ConnectInquiredType::FIXED_VALUE}; // 0x1
+        MDRPodArray<SupportFunction> supportFunctions; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(ConnectRetSupportFunction);
+    };
+
+    // THMSGV2T1EarpieceInfo
+    struct EarpieceInfo
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceSeries series{EarpieceSeries::OTHER}; // 0x0
+        MDRPodArray<EarpieceSize> earpieceSizeList; // 0x1
+
+        MDR_DEFINE_EXTERN_READ_WRITE(EarpieceInfo);
+    };
+
+    // THMSGV2T1EqBandInformation
+    struct EqBandInformation
+    {
+        EqBandInformationType infoType{EqBandInformationType::NO_INFORMATION}; // 0x0
+        UInt8 valueAsFrequency{}; // 0x1
+
+        MDR_DEFINE_EXTERN_READ_WRITE(EqBandInformation);
+    };
+
+    // THMSGV2T1EqEbbGetCapability
+    struct EqEbbGetCapability
+    {
+        // CODEGEN EnumRange Command::EQEBB_GET_CAPABILITY
+        Command command{Command::EQEBB_GET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbGetCapability);
+    };
+
+    // THMSGV2T1EqEbbGetCapabilityLanguage
+    struct EqEbbGetCapabilityLanguage
+    {
+        // CODEGEN EnumRange Command::EQEBB_GET_CAPABILITY
+        Command command{Command::EQEBB_GET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType eqEbbInquiredType{EqEbbInquiredType::PRESET_EQ}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        DisplayLanguage language{DisplayLanguage::UNDEFINED_LANGUAGE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbGetCapabilityLanguage);
+    };
+
+    // THMSGV2T1EqEbbGetExtendedInfo
+    struct EqEbbGetExtendedInfo
+    {
+        // CODEGEN EnumRange Command::EQEBB_GET_EXTENDED_INFO
+        Command command{Command::EQEBB_GET_EXTENDED_INFO}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbGetExtendedInfo);
+    };
+
+    // THMSGV2T1EqEbbGetParam
+    struct EqEbbGetParam
+    {
+        // CODEGEN EnumRange Command::EQEBB_GET_PARAM
+        Command command{Command::EQEBB_GET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbGetParam);
+    };
+
+    // THMSGV2T1EqEbbGetStatus
+    struct EqEbbGetStatus
+    {
+        // CODEGEN EnumRange Command::EQEBB_GET_STATUS
+        Command command{Command::EQEBB_GET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbGetStatus);
+    };
+
+    // THMSGV2T1EqEbbNtfyParam
+    struct EqEbbNtfyParam
+    {
+        // CODEGEN EnumRange Command::EQEBB_NTFY_PARAM
+        Command command{Command::EQEBB_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbNtfyParam);
+    };
+
+    // THMSGV2T1EqEbbNtfyParamCustomizableSoundEffectSelect
+    struct EqEbbNtfyParamCustomizableSoundEffectSelect
+    {
+        // CODEGEN EnumRange Command::EQEBB_NTFY_PARAM
+        Command command{Command::EQEBB_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::CUSTOMIZABLE_SOUND_EFFECT_SELECT
+        EqEbbInquiredType type{EqEbbInquiredType::CUSTOMIZABLE_SOUND_EFFECT_SELECT}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SoundEffectType soundEffectValue{SoundEffectType::SOUND_EFFECT_OFF}; // 0x2
+        MDRPodArray<ExclusiveFunctionId> exclusiveFunctionIdList; // 0x3
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbNtfyParamCustomizableSoundEffectSelect);
+    };
+
+    // THMSGV2T1EqEbbNtfyParamEbb
+    struct EqEbbNtfyParamEbb
+    {
+        // CODEGEN EnumRange Command::EQEBB_NTFY_PARAM
+        Command command{Command::EQEBB_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::EBB
+        EqEbbInquiredType type{EqEbbInquiredType::EBB}; // 0x1
+        // CODEGEN Range -127 127
+        Int8 level{}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbNtfyParamEbb);
+    };
+
+    // THMSGV2T1EqEbbNtfyParamSoundEffect
+    struct EqEbbNtfyParamSoundEffect
+    {
+        // CODEGEN EnumRange Command::EQEBB_NTFY_PARAM
+        Command command{Command::EQEBB_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::SOUND_EFFECT
+        EqEbbInquiredType type{EqEbbInquiredType::SOUND_EFFECT}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SoundEffectType soundEffectValue{SoundEffectType::SOUND_EFFECT_OFF}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbNtfyParamSoundEffect);
+    };
+
+    // THMSGV2T1EqEbbNtfyParamTurnKeyEq
+    struct EqEbbNtfyParamTurnKeyEq
+    {
+        // CODEGEN EnumRange Command::EQEBB_NTFY_PARAM
+        Command command{Command::EQEBB_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::TURN_KEY_EQ
+        EqEbbInquiredType type{EqEbbInquiredType::TURN_KEY_EQ}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        TurnKeyEqResult result{TurnKeyEqResult::SUCCESS}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbNtfyParamTurnKeyEq);
+    };
+
+    // THMSGV2T1EqEbbNtfyStatus
+    struct EqEbbNtfyStatus
+    {
+        // CODEGEN EnumRange Command::EQEBB_NTFY_STATUS
+        Command command{Command::EQEBB_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable enableDisable{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbNtfyStatus);
+    };
+
+    // THMSGV2T1EqEbbNtfyStatusBase
+    struct EqEbbNtfyStatusBase
+    {
+        // CODEGEN EnumRange Command::EQEBB_NTFY_STATUS
+        Command command{Command::EQEBB_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable enableDisable{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbNtfyStatusBase);
+    };
+
+    // THMSGV2T1EqEbbNtfyStatusErrorCode
+    struct EqEbbNtfyStatusErrorCode
+    {
+        // CODEGEN EnumRange Command::EQEBB_NTFY_STATUS
+        Command command{Command::EQEBB_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable enableDisable{EnableDisable::ENABLE}; // 0x2
+        UInt8 numberOfErrorCode{}; // 0x3
+        MDRPodArray<PresetEqErrorCodeType> errorCodeList; // 0x4
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbNtfyStatusErrorCode);
+    };
+
+    // THMSGV2T1EqEbbNtfyStatusSoundEffect
+    struct EqEbbNtfyStatusSoundEffect
+    {
+        // CODEGEN EnumRange Command::EQEBB_NTFY_STATUS
+        Command command{Command::EQEBB_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::SOUND_EFFECT
+        EqEbbInquiredType type{EqEbbInquiredType::SOUND_EFFECT}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable enableDisable{EnableDisable::ENABLE}; // 0x2
+        MDRMap<SoundEffectType, EnableDisable> soundEffectValueAndStatusMap; // 0x3
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbNtfyStatusSoundEffect);
+    };
+
+    // THMSGV2T1EqEbbRetCapability
+    struct EqEbbRetCapability
+    {
+        // CODEGEN EnumRange Command::EQEBB_RET_CAPABILITY
+        Command command{Command::EQEBB_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbRetCapability);
+    };
+
+    // THMSGV2T1EqEbbRetCapabilityCustomEq
+    struct EqEbbRetCapabilityCustomEq
+    {
+        // CODEGEN EnumRange Command::EQEBB_RET_CAPABILITY
+        Command command{Command::EQEBB_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+        // CODEGEN Range 0 127
+        UInt8 band{}; // 0x2
+        // CODEGEN Range 0 127
+        UInt8 step{}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbRetCapabilityCustomEq);
+    };
+
+    // THMSGV2T1EqEbbRetCapabilityCustomizableSoundEffectSelect
+    struct EqEbbRetCapabilityCustomizableSoundEffectSelect
+    {
+        // CODEGEN EnumRange Command::EQEBB_RET_CAPABILITY
+        Command command{Command::EQEBB_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::CUSTOMIZABLE_SOUND_EFFECT_SELECT
+        EqEbbInquiredType type{EqEbbInquiredType::CUSTOMIZABLE_SOUND_EFFECT_SELECT}; // 0x1
+        UInt8 band{}; // 0x2
+        UInt8 step{}; // 0x3
+        MDRPodArray<SoundEffectType> soundEffectList; // 0x4
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbRetCapabilityCustomizableSoundEffectSelect);
+    };
+
+    // THMSGV2T1EqEbbRetCapabilityEbb
+    struct EqEbbRetCapabilityEbb
+    {
+        // CODEGEN EnumRange Command::EQEBB_RET_CAPABILITY
+        Command command{Command::EQEBB_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::EBB
+        EqEbbInquiredType type{EqEbbInquiredType::EBB}; // 0x1
+        // CODEGEN Range -127 127
+        Int8 minValue{}; // 0x2
+        // CODEGEN Range -127 127
+        Int8 maxValue{}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbRetCapabilityEbb);
+    };
+
+    // THMSGV2T1EqEbbRetCapabilitySoundEffect
+    struct EqEbbRetCapabilitySoundEffect
+    {
+        // CODEGEN EnumRange Command::EQEBB_RET_CAPABILITY
+        Command command{Command::EQEBB_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::SOUND_EFFECT
+        EqEbbInquiredType type{EqEbbInquiredType::SOUND_EFFECT}; // 0x1
+        MDRPodArray<SoundEffectType> soundEffectList; // 0x2
+        MDRPodArray<ExclusiveFunctionId> exclusiveFunctionIdList;
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbRetCapabilitySoundEffect);
+    };
+
+    // THMSGV2T1EqEbbRetCapabilityUltBtnSoundEffectAssign
+    struct EqEbbRetCapabilityUltBtnSoundEffectAssign
+    {
+        // CODEGEN EnumRange Command::EQEBB_RET_CAPABILITY
+        Command command{Command::EQEBB_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::ULT_BTN_SOUND_EFFECT_ASSIGN
+        EqEbbInquiredType type{EqEbbInquiredType::ULT_BTN_SOUND_EFFECT_ASSIGN}; // 0x1
+        // CODEGEN Range 0 127
+        UInt8 minAssignableCnt{}; // 0x2
+        // CODEGEN Range 0 127
+        UInt8 maxAssignableCnt{}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbRetCapabilityUltBtnSoundEffectAssign);
+    };
+
+    // THMSGV2T1EqEbbRetExtendedInfo
+    struct EqEbbRetExtendedInfo
+    {
+        // CODEGEN EnumRange Command::EQEBB_RET_EXTENDED_INFO
+        Command command{Command::EQEBB_RET_EXTENDED_INFO}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbRetExtendedInfo);
+    };
+
+    // THMSGV2T1EqEbbRetParam
+    struct EqEbbRetParam
+    {
+        // CODEGEN EnumRange Command::EQEBB_RET_PARAM
+        Command command{Command::EQEBB_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbRetParam);
+    };
+
+    // THMSGV2T1EqEbbRetParamEbb
+    struct EqEbbRetParamEbb
+    {
+        // CODEGEN EnumRange Command::EQEBB_RET_PARAM
+        Command command{Command::EQEBB_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::EBB
+        EqEbbInquiredType type{EqEbbInquiredType::EBB}; // 0x1
+        // CODEGEN Range -127 127
+        Int8 level{}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbRetParamEbb);
+    };
+
+    // THMSGV2T1EqEbbRetParamSoundEffect
+    struct EqEbbRetParamSoundEffect
+    {
+        // CODEGEN EnumRange Command::EQEBB_RET_PARAM
+        Command command{Command::EQEBB_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::SOUND_EFFECT
+        EqEbbInquiredType type{EqEbbInquiredType::SOUND_EFFECT}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SoundEffectType soundEffectValue{SoundEffectType::SOUND_EFFECT_OFF}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbRetParamSoundEffect);
+    };
+
+    // THMSGV2T1EqEbbRetStatus
+    struct EqEbbRetStatus
+    {
+        // CODEGEN EnumRange Command::EQEBB_RET_STATUS
+        Command command{Command::EQEBB_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable enableDisable{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbRetStatus);
+    };
+
+    // THMSGV2T1EqEbbRetStatusBase
+    struct EqEbbRetStatusBase
+    {
+        // CODEGEN EnumRange Command::EQEBB_RET_STATUS
+        Command command{Command::EQEBB_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable enableDisable{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbRetStatusBase);
+    };
+
+    // THMSGV2T1EqEbbRetStatusErrorCode
+    struct EqEbbRetStatusErrorCode
+    {
+        // CODEGEN EnumRange Command::EQEBB_RET_STATUS
+        Command command{Command::EQEBB_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable enableDisable{EnableDisable::ENABLE}; // 0x2
+        UInt8 numberOfErrorCode{}; // 0x3
+        MDRPodArray<PresetEqErrorCodeType> errorCodeList; // 0x4
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbRetStatusErrorCode);
+    };
+
+    // THMSGV2T1EqEbbRetStatusSoundEffect
+    struct EqEbbRetStatusSoundEffect
+    {
+        // CODEGEN EnumRange Command::EQEBB_RET_STATUS
+        Command command{Command::EQEBB_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::SOUND_EFFECT
+        EqEbbInquiredType type{EqEbbInquiredType::SOUND_EFFECT}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable enableDisable{EnableDisable::ENABLE}; // 0x2
+        MDRMap<SoundEffectType, EnableDisable> soundEffectValueAndStatusMap; // 0x3
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbRetStatusSoundEffect);
+    };
+
+    // THMSGV2T1EqEbbSetParam
+    struct EqEbbSetParam
+    {
+        // CODEGEN EnumRange Command::EQEBB_SET_PARAM
+        Command command{Command::EQEBB_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbSetParam);
+    };
+
+    // THMSGV2T1EqEbbSetParamCustomizableSoundEffectReset
+    struct EqEbbSetParamCustomizableSoundEffectReset
+    {
+        // CODEGEN EnumRange Command::EQEBB_SET_PARAM
+        Command command{Command::EQEBB_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::CUSTOMIZABLE_SOUND_EFFECT_RESET
+        EqEbbInquiredType type{EqEbbInquiredType::CUSTOMIZABLE_SOUND_EFFECT_RESET}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SoundEffectType soundEffectValue{SoundEffectType::SOUND_EFFECT_OFF}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbSetParamCustomizableSoundEffectReset);
+    };
+
+    // THMSGV2T1EqEbbSetParamCustomizableSoundEffectSelect
+    struct EqEbbSetParamCustomizableSoundEffectSelect
+    {
+        // CODEGEN EnumRange Command::EQEBB_SET_PARAM
+        Command command{Command::EQEBB_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::CUSTOMIZABLE_SOUND_EFFECT_SELECT
+        EqEbbInquiredType type{EqEbbInquiredType::CUSTOMIZABLE_SOUND_EFFECT_SELECT}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SoundEffectType soundEffectValue{SoundEffectType::SOUND_EFFECT_OFF}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbSetParamCustomizableSoundEffectSelect);
+    };
+
+    // THMSGV2T1EqEbbSetParamEbb
+    struct EqEbbSetParamEbb
+    {
+        // CODEGEN EnumRange Command::EQEBB_SET_PARAM
+        Command command{Command::EQEBB_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::EBB
+        EqEbbInquiredType type{EqEbbInquiredType::EBB}; // 0x1
+        // CODEGEN Range -127 127
+        Int8 level{}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbSetParamEbb);
+    };
+
+    // THMSGV2T1EqEbbSetParamSoundEffect
+    struct EqEbbSetParamSoundEffect
+    {
+        // CODEGEN EnumRange Command::EQEBB_SET_PARAM
+        Command command{Command::EQEBB_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::SOUND_EFFECT
+        EqEbbInquiredType type{EqEbbInquiredType::SOUND_EFFECT}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SoundEffectType soundEffectValue{SoundEffectType::SOUND_EFFECT_OFF}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(EqEbbSetParamSoundEffect);
+    };
+
+    // THMSGV2T1EqEbbSetParamTurnKeyEq
+    struct EqEbbSetParamTurnKeyEq
+    {
+        // CODEGEN EnumRange Command::EQEBB_SET_PARAM
+        Command command{Command::EQEBB_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::TURN_KEY_EQ
+        EqEbbInquiredType type{EqEbbInquiredType::TURN_KEY_EQ}; // 0x1
+        MDRPrefixedString data; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbSetParamTurnKeyEq);
+    };
+
+    // THMSGV2T1EqParam
+    struct EqParam
+    {
+        EqPresetId presetId{EqPresetId::OFF}; // 0x0
+        MDRPodArray<UInt8> bandSteps; // 0x1
+
+        MDR_DEFINE_EXTERN_READ_WRITE(EqParam);
+    };
+
+    // THMSGV2T1EqParamUltMode
+    struct EqParamUltMode
+    {
+        EqPresetId presetId{EqPresetId::OFF}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqUltModeStatus eqUltModeStatus{EqUltModeStatus::OFF}; // 0x1
+        MDRPodArray<UInt8> bandSteps; // 0x2
+
+        MDR_DEFINE_EXTERN_READ_WRITE(EqParamUltMode);
+    };
+
+    // THMSGV2T1EqPreset
+    struct EqPreset
+    {
+        EqPresetId presetId{EqPresetId::OFF}; // 0x0
+        MDRPrefixedString name; // 0x1
+
+        MDR_DEFINE_EXTERN_READ_WRITE(EqPreset);
+    };
+
+    // THMSGV2T1GetPlayCapability
+    struct GetPlayCapability
+    {
+        // CODEGEN EnumRange Command::PLAY_GET_CAPABILITY
+        Command command{Command::PLAY_GET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType type{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(GetPlayCapability);
+    };
+
+    // THMSGV2T1GetPlayParam
+    struct GetPlayParam
+    {
+        // CODEGEN EnumRange Command::PLAY_GET_PARAM
+        Command command{Command::PLAY_GET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType type{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(GetPlayParam);
+    };
+
+    // THMSGV2T1GetPlayStatus
+    struct GetPlayStatus
+    {
+        // CODEGEN EnumRange Command::PLAY_GET_STATUS
+        Command command{Command::PLAY_GET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType type{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(GetPlayStatus);
+    };
+
+    // THMSGV2T1GetTest
+    struct GetTest
+    {
+        // CODEGEN EnumRange Command::GET_TEST
+        Command command{Command::GET_TEST}; // 0x0
+        MDRPodArray<UInt8> data; // 0x1
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(GetTest);
+    };
+
+    // THMSGV2T1GsGetCapability
+    struct GsGetCapability
+    {
+        // CODEGEN EnumRange Command::GENERAL_SETTING_GET_CAPABILITY
+        Command command{Command::GENERAL_SETTING_GET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsInquiredType type{GsInquiredType::GENERAL_SETTING1}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        DisplayLanguage displayLanguage{DisplayLanguage::UNDEFINED_LANGUAGE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(GsGetCapability);
+    };
+
+    // THMSGV2T1GsGetParam
+    struct GsGetParam
+    {
+        // CODEGEN EnumRange Command::GENERAL_SETTING_GET_PARAM
+        Command command{Command::GENERAL_SETTING_GET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsInquiredType type{GsInquiredType::GENERAL_SETTING1}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(GsGetParam);
+    };
+
+    // THMSGV2T1GsGetStatus
+    struct GsGetStatus
+    {
+        // CODEGEN EnumRange Command::GENERAL_SETTING_GET_STATUS
+        Command command{Command::GENERAL_SETTING_GET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsInquiredType type{GsInquiredType::GENERAL_SETTING1}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(GsGetStatus);
+    };
+
+    // THMSGV2T1GsNotifyParam
+    struct GsNotifyParam
+    {
+        // CODEGEN EnumRange Command::GENERAL_SETTING_NTNY_PARAM
+        Command command{Command::GENERAL_SETTING_NTNY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsInquiredType type{GsInquiredType::GENERAL_SETTING1}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsSettingType settingType{GsSettingType::BOOLEAN_TYPE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(GsNotifyParam);
+    };
+
+    // THMSGV2T1GsNotifyParamBoolean
+    struct GsNotifyParamBoolean
+    {
+        // CODEGEN EnumRange Command::GENERAL_SETTING_NTNY_PARAM
+        Command command{Command::GENERAL_SETTING_NTNY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsInquiredType type{GsInquiredType::GENERAL_SETTING1}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsSettingType settingType{GsSettingType::BOOLEAN_TYPE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsSettingValue value{GsSettingValue::ON}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(GsNotifyParamBoolean);
+    };
+
+    // THMSGV2T1GsNotifyParamList
+    struct GsNotifyParamList
+    {
+        // CODEGEN EnumRange Command::GENERAL_SETTING_NTNY_PARAM
+        Command command{Command::GENERAL_SETTING_NTNY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsInquiredType type{GsInquiredType::GENERAL_SETTING1}; // 0x1
+        // CODEGEN EnumRange GsSettingType::LIST_TYPE
+        GsSettingType settingType{GsSettingType::LIST_TYPE}; // 0x2
+        // CODEGEN Range 0 63
+        UInt8 currentElementIndex{}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(GsNotifyParamList);
+    };
+
+    // THMSGV2T1GsNotifyStatus
+    struct GsNotifyStatus
+    {
+        // CODEGEN EnumRange Command::GENERAL_SETTING_NTFY_STATUS
+        Command command{Command::GENERAL_SETTING_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsInquiredType type{GsInquiredType::GENERAL_SETTING1}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(GsNotifyStatus);
+    };
+
+    // THMSGV2T1GsRetCapability
+    struct GsRetCapability
+    {
+        // CODEGEN EnumRange Command::GENERAL_SETTING_RET_CAPABILITY
+        Command command{Command::GENERAL_SETTING_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsInquiredType type{GsInquiredType::GENERAL_SETTING1}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsSettingType settingType{GsSettingType::BOOLEAN_TYPE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsStringFormat gsStringFormat{GsStringFormat::RAW_NAME}; // 0x3
+        MDRPrefixedString value3; // 0x4
+        MDRPrefixedString value4;
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(GsRetCapability);
+    };
+
+    // THMSGV2T1GsRetCapabilityBoolean
+    struct GsRetCapabilityBoolean
+    {
+        // CODEGEN EnumRange Command::GENERAL_SETTING_RET_CAPABILITY
+        Command command{Command::GENERAL_SETTING_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsInquiredType type{GsInquiredType::GENERAL_SETTING1}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsSettingType settingType{GsSettingType::BOOLEAN_TYPE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsStringFormat gsStringFormat{GsStringFormat::RAW_NAME}; // 0x3
+        MDRPrefixedString value3; // 0x4
+        MDRPrefixedString value4;
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(GsRetCapabilityBoolean);
+    };
+
+    // THMSGV2T1GsRetParam
+    struct GsRetParam
+    {
+        // CODEGEN EnumRange Command::GENERAL_SETTING_RET_PARAM
+        Command command{Command::GENERAL_SETTING_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsInquiredType type{GsInquiredType::GENERAL_SETTING1}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsSettingType settingType{GsSettingType::BOOLEAN_TYPE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(GsRetParam);
+    };
+
+    // THMSGV2T1GsRetParamBoolean
+    struct GsRetParamBoolean
+    {
+        // CODEGEN EnumRange Command::GENERAL_SETTING_RET_PARAM
+        Command command{Command::GENERAL_SETTING_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsInquiredType type{GsInquiredType::GENERAL_SETTING1}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsSettingType settingType{GsSettingType::BOOLEAN_TYPE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsSettingValue value{GsSettingValue::ON}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(GsRetParamBoolean);
+    };
+
+    // THMSGV2T1GsRetParamList
+    struct GsRetParamList
+    {
+        // CODEGEN EnumRange Command::GENERAL_SETTING_RET_PARAM
+        Command command{Command::GENERAL_SETTING_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsInquiredType type{GsInquiredType::GENERAL_SETTING1}; // 0x1
+        // CODEGEN EnumRange GsSettingType::LIST_TYPE
+        GsSettingType settingType{GsSettingType::LIST_TYPE}; // 0x2
+        // CODEGEN Range 0 63
+        UInt8 currentElementIndex{}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(GsRetParamList);
+    };
+
+    // THMSGV2T1GsRetStatus
+    struct GsRetStatus
+    {
+        // CODEGEN EnumRange Command::GENERAL_SETTING_RET_STATUS
+        Command command{Command::GENERAL_SETTING_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsInquiredType type{GsInquiredType::GENERAL_SETTING1}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(GsRetStatus);
+    };
+
+    // THMSGV2T1GsSetParam
+    struct GsSetParam
+    {
+        // CODEGEN EnumRange Command::GENERAL_SETTING_SET_PARAM
+        Command command{Command::GENERAL_SETTING_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsInquiredType type{GsInquiredType::GENERAL_SETTING1}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsSettingType settingType{GsSettingType::BOOLEAN_TYPE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(GsSetParam);
+    };
+
+    // THMSGV2T1GsSetParamBoolean
+    struct GsSetParamBoolean
+    {
+        // CODEGEN EnumRange Command::GENERAL_SETTING_SET_PARAM
+        Command command{Command::GENERAL_SETTING_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsInquiredType type{GsInquiredType::GENERAL_SETTING1}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsSettingType settingType{GsSettingType::BOOLEAN_TYPE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsSettingValue value{GsSettingValue::ON}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(GsSetParamBoolean);
+    };
+
+    // THMSGV2T1GsSetParamList
+    struct GsSetParamList
+    {
+        // CODEGEN EnumRange Command::GENERAL_SETTING_SET_PARAM
+        Command command{Command::GENERAL_SETTING_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsInquiredType type{GsInquiredType::GENERAL_SETTING1}; // 0x1
+        // CODEGEN EnumRange GsSettingType::LIST_TYPE
+        GsSettingType settingType{GsSettingType::LIST_TYPE}; // 0x2
+        // CODEGEN Range 0 63
+        UInt8 currentElementIndex{}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(GsSetParamList);
+    };
+
+    // THMSGV2T1GsSettingInfo
+    struct GsSettingInfo
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsStringFormat stringFormat{GsStringFormat::RAW_NAME}; // 0x0
+        MDRPrefixedString subject; // 0x1
+        MDRPrefixedString summary;
+
+        MDR_DEFINE_EXTERN_READ_WRITE(GsSettingInfo);
+    };
+
+    // THMSGV2T1LEAGetCapability
+    struct LEAGetCapability
+    {
+        // CODEGEN EnumRange Command::LEA_GET_CAPABILITY
+        Command command{Command::LEA_GET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEAGetCapability);
+    };
+
+    // THMSGV2T1LEAGetExtParam
+    struct LEAGetExtParam
+    {
+        // CODEGEN EnumRange Command::LEA_GET_PARAM
+        Command command{Command::LEA_GET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEAGetExtParam);
+    };
+
+    // THMSGV2T1LEAGetParam
+    struct LEAGetParam
+    {
+        // CODEGEN EnumRange Command::LEA_GET_PARAM
+        Command command{Command::LEA_GET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEAGetParam);
+    };
+
+    // THMSGV2T1LEAGetStatus
+    struct LEAGetStatus
+    {
+        // CODEGEN EnumRange Command::LEA_GET_STATUS
+        Command command{Command::LEA_GET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEAGetStatus);
+    };
+
+    // THMSGV2T1LEANotifyExtParam
+    struct LEANotifyExtParam
+    {
+        // CODEGEN EnumRange Command::LEA_NTFY_PARAM
+        Command command{Command::LEA_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEANotifyExtParam);
+    };
+
+    // THMSGV2T1LEANotifyExtParamSupportsA2dpLeaUniLeaBroad
+    struct LEANotifyExtParamSupportsA2dpLeaUniLeaBroad
+    {
+        // CODEGEN EnumRange Command::LEA_NTFY_PARAM
+        Command command{Command::LEA_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ConnectionStandbyModeResult connectionStandbyModeResult{ConnectionStandbyModeResult::WILL_DISCONNECT}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEANotifyExtParamSupportsA2dpLeaUniLeaBroad);
+    };
+
+    // THMSGV2T1LEANotifyParam
+    struct LEANotifyParam
+    {
+        // CODEGEN EnumRange Command::LEA_NTFY_PARAM
+        Command command{Command::LEA_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEANotifyParam);
+    };
+
+    // THMSGV2T1LEANotifyParamChangeTandemConnectionProfileForAndroid
+    struct LEANotifyParamChangeTandemConnectionProfileForAndroid
+    {
+        // CODEGEN EnumRange Command::LEA_NTFY_PARAM
+        Command command{Command::LEA_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ConnectionType connectionType{ConnectionType::SPP}; // 0x2
+        Array<UInt8, 17> targetDeviceBdAddressOfAccessory{}; // 0x3
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(LEANotifyParamChangeTandemConnectionProfileForAndroid);
+    };
+
+    // THMSGV2T1LEANotifyParamClassicOnlyLEClassicSetting
+    struct LEANotifyParamClassicOnlyLEClassicSetting
+    {
+        // CODEGEN EnumRange Command::LEA_NTFY_PARAM
+        Command command{Command::LEA_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue lEAudioOnOffValue{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEANotifyParamClassicOnlyLEClassicSetting);
+    };
+
+    // THMSGV2T1LEANotifyParamInquiredTypeOnly
+    struct LEANotifyParamInquiredTypeOnly
+    {
+        // CODEGEN EnumRange Command::LEA_NTFY_PARAM
+        Command command{Command::LEA_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEANotifyParamInquiredTypeOnly);
+    };
+
+    // THMSGV2T1LEANotifyStatus
+    struct LEANotifyStatus
+    {
+        // CODEGEN EnumRange Command::LEA_NTFY_STATUS
+        Command command{Command::LEA_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEANotifyStatus);
+    };
+
+    // THMSGV2T1LEANotifyStatusCommonStatus
+    struct LEANotifyStatusCommonStatus
+    {
+        // CODEGEN EnumRange Command::LEA_NTFY_STATUS
+        Command command{Command::LEA_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEANotifyStatusCommonStatus);
+    };
+
+    // THMSGV2T1LEANotifyStatusCommonUnavailableReason
+    struct LEANotifyStatusCommonUnavailableReason
+    {
+        // CODEGEN EnumRange Command::LEA_NTFY_STATUS
+        Command command{Command::LEA_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UnavailableReason unavailableReason{UnavailableReason::UNAVAILABLE_BY_LE_AUDIO_PRIOR}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEANotifyStatusCommonUnavailableReason);
+    };
+
+    // THMSGV2T1LEANotifyStatusHbsSupportsA2dpLeaUniLeaBroad
+    struct LEANotifyStatusHbsSupportsA2dpLeaUniLeaBroad
+    {
+        // CODEGEN EnumRange Command::LEA_NTFY_STATUS
+        Command command{Command::LEA_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN EnumRange StreamingStatus::VIA_A2DP
+        StreamingStatus streamingStatus{StreamingStatus::VIA_A2DP}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEANotifyStatusHbsSupportsA2dpLeaUniLeaBroad);
+    };
+
+    // THMSGV2T1LEANotifyStatusTwsSupportsA2dpLeaUniLeaBroad
+    struct LEANotifyStatusTwsSupportsA2dpLeaUniLeaBroad
+    {
+        // CODEGEN EnumRange Command::LEA_NTFY_STATUS
+        Command command{Command::LEA_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN EnumRange StreamingStatus::VIA_A2DP
+        StreamingStatus leftStreamingStatus{StreamingStatus::VIA_A2DP}; // 0x3
+        // CODEGEN EnumRange StreamingStatus::VIA_A2DP
+        StreamingStatus rightStreamingStatus{StreamingStatus::VIA_A2DP}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEANotifyStatusTwsSupportsA2dpLeaUniLeaBroad);
+    };
+
+    // THMSGV2T1LEARetCapability
+    struct LEARetCapability
+    {
+        // CODEGEN EnumRange Command::LEA_RET_CAPABILITY
+        Command command{Command::LEA_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEARetCapability);
+    };
+
+    // THMSGV2T1LEARetCapabilityHbsSupportsA2dpLeaUniLeaBroad
+    struct LEARetCapabilityHbsSupportsA2dpLeaUniLeaBroad
+    {
+        // CODEGEN EnumRange Command::LEA_RET_CAPABILITY
+        Command command{Command::LEA_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        Array<UInt8, 17> deviceUniqueId{}; // 0x2
+        MDRPrefixedString bdAddressLE;
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(LEARetCapabilityHbsSupportsA2dpLeaUniLeaBroad);
+    };
+
+    // THMSGV2T1LEARetCapabilityQuickAccessCantBeUsedWithLEAConnection
+    struct LEARetCapabilityQuickAccessCantBeUsedWithLEAConnection
+    {
+        // CODEGEN EnumRange Command::LEA_RET_CAPABILITY
+        Command command{Command::LEA_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        // CODEGEN EnumRange QuickAccessKey::FIXED_QUICK_ACCESS_KEY
+        QuickAccessKey key{QuickAccessKey::FIXED_QUICK_ACCESS_KEY}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        Type keyType{Type::TOUCH_SENSOR}; // 0x3
+        MDRPodArray<UInt8> quickAccessFunctionList; // 0x4
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(LEARetCapabilityQuickAccessCantBeUsedWithLEAConnection);
+    };
+
+    // THMSGV2T1LEARetCapabilityTwsSupportsA2dpLeaUniLeaBroad
+    struct LEARetCapabilityTwsSupportsA2dpLeaUniLeaBroad
+    {
+        // CODEGEN EnumRange Command::LEA_RET_CAPABILITY
+        Command command{Command::LEA_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        Array<UInt8, 17> deviceUniqueId{}; // 0x2
+        MDRPrefixedString bdAddressLELeft;
+        MDRPrefixedString bdAddressLERight;
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(LEARetCapabilityTwsSupportsA2dpLeaUniLeaBroad);
+    };
+
+    // THMSGV2T1LEARetCapabilityTwsSupportsLeaUniLeaBroad
+    struct LEARetCapabilityTwsSupportsLeaUniLeaBroad
+    {
+        // CODEGEN EnumRange Command::LEA_RET_CAPABILITY
+        Command command{Command::LEA_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        Array<UInt8, 17> deviceUniqueId{}; // 0x2
+        MDRPrefixedString bdAddressLELeft;
+        MDRPrefixedString bdAddressLERight;
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(LEARetCapabilityTwsSupportsLeaUniLeaBroad);
+    };
+
+    // THMSGV2T1LEARetCapabilityVoiceAssistantSettingsCantBeUsedWithLEAConnection
+    struct LEARetCapabilityVoiceAssistantSettingsCantBeUsedWithLEAConnection
+    {
+        // CODEGEN EnumRange Command::LEA_RET_CAPABILITY
+        Command command{Command::LEA_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        VoiceAssistantKeyType vAKeyType{VoiceAssistantKeyType::FIXED_BUTTON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEARetCapabilityVoiceAssistantSettingsCantBeUsedWithLEAConnection);
+    };
+
+    // THMSGV2T1LEARetExtParam
+    struct LEARetExtParam
+    {
+        // CODEGEN EnumRange Command::LEA_RET_PARAM
+        Command command{Command::LEA_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEARetExtParam);
+    };
+
+    // THMSGV2T1LEARetExtParamHbsSupportsA2dpLeaUniLeaBroad
+    struct LEARetExtParamHbsSupportsA2dpLeaUniLeaBroad
+    {
+        // CODEGEN EnumRange Command::LEA_RET_PARAM
+        Command command{Command::LEA_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        UInt8 adPacketIdentifierStartIndex{}; // 0x2
+        UInt8 adPacketIdentifierEndIndex{}; // 0x3
+        MDRPodArray<UInt8> adPacketIdentifier; // 0x4
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(LEARetExtParamHbsSupportsA2dpLeaUniLeaBroad);
+    };
+
+    // THMSGV2T1LEARetExtParamTwsSupportsA2dpLeaUniLeaBroad
+    struct LEARetExtParamTwsSupportsA2dpLeaUniLeaBroad
+    {
+        // CODEGEN EnumRange Command::LEA_RET_PARAM
+        Command command{Command::LEA_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        UInt8 leftAdPacketIdentifierStartIndex{}; // 0x2
+        UInt8 leftAdPacketIdentifierEndIndex{}; // 0x3
+        MDRPodArray<UInt8> leftAdPacketIdentifier; // 0x4
+        UInt8 rightAdPacketIdentifierStartIndex{};
+        UInt8 rightAdPacketIdentifierEndIndex{};
+        MDRPodArray<UInt8> rightAdPacketIdentifier;
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(LEARetExtParamTwsSupportsA2dpLeaUniLeaBroad);
+    };
+
+    // THMSGV2T1LEARetParam
+    struct LEARetParam
+    {
+        // CODEGEN EnumRange Command::LEA_RET_PARAM
+        Command command{Command::LEA_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEARetParam);
+    };
+
+    // THMSGV2T1LEARetParamClassicOnlyLEClassicSetting
+    struct LEARetParamClassicOnlyLEClassicSetting
+    {
+        // CODEGEN EnumRange Command::LEA_RET_PARAM
+        Command command{Command::LEA_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue lEAudioOnOffValue{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEARetParamClassicOnlyLEClassicSetting);
+    };
+
+    // THMSGV2T1LEARetParamHbsSupportsA2dpLeaUniLeaBroad
+    struct LEARetParamHbsSupportsA2dpLeaUniLeaBroad
+    {
+        // CODEGEN EnumRange Command::LEA_RET_PARAM
+        Command command{Command::LEA_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PairedHistory pairedHistory{PairedHistory::BOTH_CLASSIC_BT_BLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEARetParamHbsSupportsA2dpLeaUniLeaBroad);
+    };
+
+    // THMSGV2T1LEARetParamTwsSupportsA2dpLeaUniLeaBroad
+    struct LEARetParamTwsSupportsA2dpLeaUniLeaBroad
+    {
+        // CODEGEN EnumRange Command::LEA_RET_PARAM
+        Command command{Command::LEA_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PairedHistory pairedHistory{PairedHistory::BOTH_CLASSIC_BT_BLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEARetParamTwsSupportsA2dpLeaUniLeaBroad);
+    };
+
+    // THMSGV2T1LEARetStatus
+    struct LEARetStatus
+    {
+        // CODEGEN EnumRange Command::LEA_RET_STATUS
+        Command command{Command::LEA_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEARetStatus);
+    };
+
+    // THMSGV2T1LEARetStatusCommonStatus
+    struct LEARetStatusCommonStatus
+    {
+        // CODEGEN EnumRange Command::LEA_RET_STATUS
+        Command command{Command::LEA_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEARetStatusCommonStatus);
+    };
+
+    // THMSGV2T1LEARetStatusCommonUnavailableReason
+    struct LEARetStatusCommonUnavailableReason
+    {
+        // CODEGEN EnumRange Command::LEA_RET_STATUS
+        Command command{Command::LEA_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UnavailableReason unavailableReason{UnavailableReason::UNAVAILABLE_BY_LE_AUDIO_PRIOR}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEARetStatusCommonUnavailableReason);
+    };
+
+    // THMSGV2T1LEARetStatusHbsSupportsA2dpLeaUniLeaBroad
+    struct LEARetStatusHbsSupportsA2dpLeaUniLeaBroad
+    {
+        // CODEGEN EnumRange Command::LEA_RET_STATUS
+        Command command{Command::LEA_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN EnumRange StreamingStatus::VIA_A2DP
+        StreamingStatus streamingStatus{StreamingStatus::VIA_A2DP}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEARetStatusHbsSupportsA2dpLeaUniLeaBroad);
+    };
+
+    // THMSGV2T1LEARetStatusTwsSupportsA2dpLeaUniLeaBroad
+    struct LEARetStatusTwsSupportsA2dpLeaUniLeaBroad
+    {
+        // CODEGEN EnumRange Command::LEA_RET_STATUS
+        Command command{Command::LEA_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN EnumRange StreamingStatus::VIA_A2DP
+        StreamingStatus leftStreamingStatus{StreamingStatus::VIA_A2DP}; // 0x3
+        // CODEGEN EnumRange StreamingStatus::VIA_A2DP
+        StreamingStatus rightStreamingStatus{StreamingStatus::VIA_A2DP}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEARetStatusTwsSupportsA2dpLeaUniLeaBroad);
+    };
+
+    // THMSGV2T1LEASetExtParam
+    struct LEASetExtParam
+    {
+        // CODEGEN EnumRange Command::LEA_SET_PARAM
+        Command command{Command::LEA_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEASetExtParam);
+    };
+
+    // THMSGV2T1LEASetExtParamSupportsA2dpLeaUniLeaBroad
+    struct LEASetExtParamSupportsA2dpLeaUniLeaBroad
+    {
+        // CODEGEN EnumRange Command::LEA_SET_PARAM
+        Command command{Command::LEA_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ConnectionStandbyModeChangeAction connectionStandbyModeChangeAction{ConnectionStandbyModeChangeAction::DISCONNECT_CLASSIC_BY_CONNECT_LE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEASetExtParamSupportsA2dpLeaUniLeaBroad);
+    };
+
+    // THMSGV2T1LEASetParam
+    struct LEASetParam
+    {
+        // CODEGEN EnumRange Command::LEA_SET_PARAM
+        Command command{Command::LEA_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEASetParam);
+    };
+
+    // THMSGV2T1LEASetParamClassicOnlyLEClassicSetting
+    struct LEASetParamClassicOnlyLEClassicSetting
+    {
+        // CODEGEN EnumRange Command::LEA_SET_PARAM
+        Command command{Command::LEA_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue lEAudioOnOffValue{OnOffSettingValue::ON}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ChangeType changeType{ChangeType::SETTING_AND_CONNECTION_METHOD_CHANGE}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(LEASetParamClassicOnlyLEClassicSetting);
+    };
+
+    // THMSGV2T1NcAsmGetCapability
+    struct NcAsmGetCapability
+    {
+        // CODEGEN EnumRange Command::NCASM_GET_CAPABILITY
+        Command command{Command::NCASM_GET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType inquiredType{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmGetCapability);
+    };
+
+    // THMSGV2T1NcAsmGetParam
+    struct NcAsmGetParam
+    {
+        // CODEGEN EnumRange Command::NCASM_GET_PARAM
+        Command command{Command::NCASM_GET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType inquiredType{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmGetParam);
+    };
+
+    // THMSGV2T1NcAsmGetStatus
+    struct NcAsmGetStatus
+    {
+        // CODEGEN EnumRange Command::NCASM_GET_STATUS
+        Command command{Command::NCASM_GET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType inquiredType{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmGetStatus);
+    };
+
+    // THMSGV2T1NcAsmNtfyParam
+    struct NcAsmNtfyParam
+    {
+        // CODEGEN EnumRange Command::NCASM_NTFY_PARAM
+        Command command{Command::NCASM_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmNtfyParam);
+    };
+
+    // THMSGV2T1NcAsmNtfyParamAsmOnOff
+    struct NcAsmNtfyParamAsmOnOff
+    {
+        // CODEGEN EnumRange Command::NCASM_NTFY_PARAM
+        Command command{Command::NCASM_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::ASM_ON_OFF
+        NcAsmInquiredType type{NcAsmInquiredType::ASM_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmNtfyParamAsmOnOff);
+    };
+
+    // THMSGV2T1NcAsmNtfyParamAsmSeamless
+    struct NcAsmNtfyParamAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_NTFY_PARAM
+        Command command{Command::NCASM_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x4
+        UInt8 ambientSoundLevelValue{}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmNtfyParamAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmNtfyParamModeNcDualModeSwitchAsmSeamless
+    struct NcAsmNtfyParamModeNcDualModeSwitchAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_NTFY_PARAM
+        Command command{Command::NCASM_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS
+        NcAsmInquiredType type{NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmMode ncAsmMode{NcAsmMode::NC}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x5
+        UInt8 ambientSoundLevelValue{}; // 0x6
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmNtfyParamModeNcDualModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmNtfyParamModeNcDualModeSwitchAsmSeamlessNa
+    struct NcAsmNtfyParamModeNcDualModeSwitchAsmSeamlessNa
+    {
+        // CODEGEN EnumRange Command::NCASM_NTFY_PARAM
+        Command command{Command::NCASM_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS_NA
+        NcAsmInquiredType type{NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS_NA}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmMode ncAsmMode{NcAsmMode::NC}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x5
+        UInt8 ambientSoundLevelValue{}; // 0x6
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x7
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NoiseAdaptiveSensitivity noiseAdaptiveSensitivitySettings{NoiseAdaptiveSensitivity::STANDARD}; // 0x8
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmNtfyParamModeNcDualModeSwitchAsmSeamlessNa);
+    };
+
+    // THMSGV2T1NcAsmNtfyParamModeNcDualSingleModeSwitchAsmSeamless
+    struct NcAsmNtfyParamModeNcDualSingleModeSwitchAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_NTFY_PARAM
+        Command command{Command::NCASM_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::MODE_NC_ASM_DUAL_SINGLE_NC_MODE_SWITCH_AND_ASM_SEAMLESS
+        NcAsmInquiredType type{NcAsmInquiredType::MODE_NC_ASM_DUAL_SINGLE_NC_MODE_SWITCH_AND_ASM_SEAMLESS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmMode ncAsmMode{NcAsmMode::NC}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcValue ncValue{NcValue::OFF}; // 0x5
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x6
+        UInt8 ambientSoundLevelValue{}; // 0x7
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmNtfyParamModeNcDualSingleModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmNtfyParamModeNcModeSwitchAsmSeamless
+    struct NcAsmNtfyParamModeNcModeSwitchAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_NTFY_PARAM
+        Command command{Command::NCASM_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmMode ncAsmMode{NcAsmMode::NC}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcValue ncValue{NcValue::OFF}; // 0x5
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x6
+        UInt8 ambientSoundLevelValue{}; // 0x7
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmNtfyParamModeNcModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmNtfyParamNcAmbToggle
+    struct NcAsmNtfyParamNcAmbToggle
+    {
+        // CODEGEN EnumRange Command::NCASM_NTFY_PARAM
+        Command command{Command::NCASM_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_AMB_TOGGLE
+        NcAsmInquiredType type{NcAsmInquiredType::NC_AMB_TOGGLE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        Function function{Function::NO_FUNCTION}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmNtfyParamNcAmbToggle);
+    };
+
+    // THMSGV2T1NcAsmNtfyParamNcModeSwitchAsmOnOff
+    struct NcAsmNtfyParamNcModeSwitchAsmOnOff
+    {
+        // CODEGEN EnumRange Command::NCASM_NTFY_PARAM
+        Command command{Command::NCASM_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_MODE_SWITCH_AND_ASM_ON_OFF
+        NcAsmInquiredType type{NcAsmInquiredType::NC_MODE_SWITCH_AND_ASM_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcValue ncValue{NcValue::OFF}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x5
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x6
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmNtfyParamNcModeSwitchAsmOnOff);
+    };
+
+    // THMSGV2T1NcAsmNtfyParamNcModeSwitchAsmSeamless
+    struct NcAsmNtfyParamNcModeSwitchAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_NTFY_PARAM
+        Command command{Command::NCASM_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcValue ncValue{NcValue::OFF}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x5
+        UInt8 ambientSoundLevelValue{}; // 0x6
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmNtfyParamNcModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmNtfyParamNcNcssAsmModeNcDualModeSwitchAsmSeamless
+    struct NcAsmNtfyParamNcNcssAsmModeNcDualModeSwitchAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_NTFY_PARAM
+        Command command{Command::NCASM_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS
+        NcAsmInquiredType type{NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcNcssAsmMode ncNcssAsmMode{NcNcssAsmMode::NC}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x5
+        UInt8 ambientSoundLevelValue{}; // 0x6
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmNtfyParamNcNcssAsmModeNcDualModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmNtfyParamNcOnOff
+    struct NcAsmNtfyParamNcOnOff
+    {
+        // CODEGEN EnumRange Command::NCASM_NTFY_PARAM
+        Command command{Command::NCASM_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_ON_OFF
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmNtfyParamNcOnOff);
+    };
+
+    // THMSGV2T1NcAsmNtfyParamNcOnOffAsmOnOff
+    struct NcAsmNtfyParamNcOnOffAsmOnOff
+    {
+        // CODEGEN EnumRange Command::NCASM_NTFY_PARAM
+        Command command{Command::NCASM_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_ON_OFF_AND_ASM_SEAMLESS
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF_AND_ASM_SEAMLESS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ambientSoundValue{NcAsmOnOffValue::OFF}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x5
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x6
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmNtfyParamNcOnOffAsmOnOff);
+    };
+
+    // THMSGV2T1NcAsmNtfyParamNcOnOffAsmSeamless
+    struct NcAsmNtfyParamNcOnOffAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_NTFY_PARAM
+        Command command{Command::NCASM_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_ON_OFF_AND_ASM_SEAMLESS
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF_AND_ASM_SEAMLESS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x5
+        UInt8 ambientSoundLevelValue{}; // 0x6
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmNtfyParamNcOnOffAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmNtfyStatus
+    struct NcAsmNtfyStatus
+    {
+        // CODEGEN EnumRange Command::NCASM_NTFY_STATUS
+        Command command{Command::NCASM_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable availability{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmNtfyStatus);
+    };
+
+    // THMSGV2T1NcAsmNtfyStatusBase
+    struct NcAsmNtfyStatusBase
+    {
+        // CODEGEN EnumRange Command::NCASM_NTFY_STATUS
+        Command command{Command::NCASM_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmNtfyStatusBase);
+    };
+
+    // THMSGV2T1NcAsmNtfyStatusNcTestMode
+    struct NcAsmNtfyStatusNcTestMode
+    {
+        // CODEGEN EnumRange Command::NCASM_NTFY_STATUS
+        Command command{Command::NCASM_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_TEST_MODE
+        NcAsmInquiredType type{NcAsmInquiredType::NC_TEST_MODE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcTestModeStatus status{NcTestModeStatus::IN_TEST_MODE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmNtfyStatusNcTestMode);
+    };
+
+    // THMSGV2T1NcAsmRetCapability
+    struct NcAsmRetCapability
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_CAPABILITY
+        Command command{Command::NCASM_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmRetCapability);
+    };
+
+    // THMSGV2T1NcAsmRetCapabilityAsmOnOff
+    struct NcAsmRetCapabilityAsmOnOff
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_CAPABILITY
+        Command command{Command::NCASM_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::ASM_ON_OFF
+        NcAsmInquiredType type{NcAsmInquiredType::ASM_ON_OFF}; // 0x1
+        MDRPodArray<AmbientSoundMode> ambientSoundModeList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(NcAsmRetCapabilityAsmOnOff);
+    };
+
+    // THMSGV2T1NcAsmRetCapabilityNcAmbToggle
+    struct NcAsmRetCapabilityNcAmbToggle
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_CAPABILITY
+        Command command{Command::NCASM_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_AMB_TOGGLE
+        NcAsmInquiredType type{NcAsmInquiredType::NC_AMB_TOGGLE}; // 0x1
+        // CODEGEN EnumRange Key::NC_AMB_KEY
+        Key key{Key::NC_AMB_KEY}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmRetCapabilityNcAmbToggle);
+    };
+
+    // THMSGV2T1NcAsmRetCapabilityNcModeSwitchAsmOnOff
+    struct NcAsmRetCapabilityNcModeSwitchAsmOnOff
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_CAPABILITY
+        Command command{Command::NCASM_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_MODE_SWITCH_AND_ASM_ON_OFF
+        NcAsmInquiredType type{NcAsmInquiredType::NC_MODE_SWITCH_AND_ASM_ON_OFF}; // 0x1
+        MDRPodArray<AmbientSoundMode> ambientSoundModeList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(NcAsmRetCapabilityNcModeSwitchAsmOnOff);
+    };
+
+    // THMSGV2T1NcAsmRetCapabilityNcOnOff
+    struct NcAsmRetCapabilityNcOnOff
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_CAPABILITY
+        Command command{Command::NCASM_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_ON_OFF
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmRetCapabilityNcOnOff);
+    };
+
+    // THMSGV2T1NcAsmRetCapabilityNcOnOffAsmOnOff
+    struct NcAsmRetCapabilityNcOnOffAsmOnOff
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_CAPABILITY
+        Command command{Command::NCASM_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_ON_OFF_AND_ASM_SEAMLESS
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF_AND_ASM_SEAMLESS}; // 0x1
+        MDRPodArray<AmbientSoundMode> ambientSoundModeList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(NcAsmRetCapabilityNcOnOffAsmOnOff);
+    };
+
+    // THMSGV2T1NcAsmRetParam
+    struct NcAsmRetParam
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_PARAM
+        Command command{Command::NCASM_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmRetParam);
+    };
+
+    // THMSGV2T1NcAsmRetParamAsmOnOff
+    struct NcAsmRetParamAsmOnOff
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_PARAM
+        Command command{Command::NCASM_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::ASM_ON_OFF
+        NcAsmInquiredType type{NcAsmInquiredType::ASM_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmRetParamAsmOnOff);
+    };
+
+    // THMSGV2T1NcAsmRetParamAsmSeamless
+    struct NcAsmRetParamAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_PARAM
+        Command command{Command::NCASM_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x4
+        UInt8 ambientSoundLevelValue{}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmRetParamAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmRetParamModeNcDualModeSwitchAsmSeamless
+    struct NcAsmRetParamModeNcDualModeSwitchAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_PARAM
+        Command command{Command::NCASM_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS
+        NcAsmInquiredType type{NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmMode ncAsmMode{NcAsmMode::NC}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x5
+        UInt8 ambientSoundLevelValue{}; // 0x6
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmRetParamModeNcDualModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmRetParamModeNcDualModeSwitchAsmSeamlessNa
+    struct NcAsmRetParamModeNcDualModeSwitchAsmSeamlessNa
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_PARAM
+        Command command{Command::NCASM_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS_NA
+        NcAsmInquiredType type{NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS_NA}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmMode ncAsmMode{NcAsmMode::NC}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x5
+        UInt8 ambientSoundLevelValue{}; // 0x6
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x7
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NoiseAdaptiveSensitivity noiseAdaptiveSensitivitySettings{NoiseAdaptiveSensitivity::STANDARD}; // 0x8
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmRetParamModeNcDualModeSwitchAsmSeamlessNa);
+    };
+
+    // THMSGV2T1NcAsmRetParamModeNcDualSingleModeSwitchAsmSeamless
+    struct NcAsmRetParamModeNcDualSingleModeSwitchAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_PARAM
+        Command command{Command::NCASM_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::MODE_NC_ASM_DUAL_SINGLE_NC_MODE_SWITCH_AND_ASM_SEAMLESS
+        NcAsmInquiredType type{NcAsmInquiredType::MODE_NC_ASM_DUAL_SINGLE_NC_MODE_SWITCH_AND_ASM_SEAMLESS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmMode ncAsmMode{NcAsmMode::NC}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcValue ncValue{NcValue::OFF}; // 0x5
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x6
+        UInt8 ambientSoundLevelValue{}; // 0x7
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmRetParamModeNcDualSingleModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmRetParamModeNcModeSwitchAsmSeamless
+    struct NcAsmRetParamModeNcModeSwitchAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_PARAM
+        Command command{Command::NCASM_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmMode ncAsmMode{NcAsmMode::NC}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcValue ncValue{NcValue::OFF}; // 0x5
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x6
+        UInt8 ambientSoundLevelValue{}; // 0x7
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmRetParamModeNcModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmRetParamNcAmbToggle
+    struct NcAsmRetParamNcAmbToggle
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_PARAM
+        Command command{Command::NCASM_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_AMB_TOGGLE
+        NcAsmInquiredType type{NcAsmInquiredType::NC_AMB_TOGGLE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        Function function{Function::NO_FUNCTION}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmRetParamNcAmbToggle);
+    };
+
+    // THMSGV2T1NcAsmRetParamNcModeSwitchAsmOnOff
+    struct NcAsmRetParamNcModeSwitchAsmOnOff
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_PARAM
+        Command command{Command::NCASM_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_MODE_SWITCH_AND_ASM_ON_OFF
+        NcAsmInquiredType type{NcAsmInquiredType::NC_MODE_SWITCH_AND_ASM_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcValue ncValue{NcValue::OFF}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x5
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x6
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmRetParamNcModeSwitchAsmOnOff);
+    };
+
+    // THMSGV2T1NcAsmRetParamNcModeSwitchAsmSeamless
+    struct NcAsmRetParamNcModeSwitchAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_PARAM
+        Command command{Command::NCASM_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcValue ncValue{NcValue::OFF}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x5
+        UInt8 ambientSoundLevelValue{}; // 0x6
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmRetParamNcModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmRetParamNcNcssAsmModeNcDualModeSwitchAsmSeamless
+    struct NcAsmRetParamNcNcssAsmModeNcDualModeSwitchAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_PARAM
+        Command command{Command::NCASM_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS
+        NcAsmInquiredType type{NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcNcssAsmMode ncNcssAsmMode{NcNcssAsmMode::NC}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x5
+        UInt8 ambientSoundLevelValue{}; // 0x6
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmRetParamNcNcssAsmModeNcDualModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmRetParamNcOnOff
+    struct NcAsmRetParamNcOnOff
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_PARAM
+        Command command{Command::NCASM_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_ON_OFF
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmRetParamNcOnOff);
+    };
+
+    // THMSGV2T1NcAsmRetParamNcOnOffAsmOnOff
+    struct NcAsmRetParamNcOnOffAsmOnOff
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_PARAM
+        Command command{Command::NCASM_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_ON_OFF_AND_ASM_SEAMLESS
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF_AND_ASM_SEAMLESS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ambientSoundValue{NcAsmOnOffValue::OFF}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmRetParamNcOnOffAsmOnOff);
+    };
+
+    // THMSGV2T1NcAsmRetParamNcOnOffAsmSeamless
+    struct NcAsmRetParamNcOnOffAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_PARAM
+        Command command{Command::NCASM_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_ON_OFF_AND_ASM_SEAMLESS
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF_AND_ASM_SEAMLESS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x5
+        UInt8 ambientSoundLevelValue{}; // 0x6
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmRetParamNcOnOffAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmRetStatus
+    struct NcAsmRetStatus
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_STATUS
+        Command command{Command::NCASM_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable availability{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmRetStatus);
+    };
+
+    // THMSGV2T1NcAsmRetStatusBase
+    struct NcAsmRetStatusBase
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_STATUS
+        Command command{Command::NCASM_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmRetStatusBase);
+    };
+
+    // THMSGV2T1NcAsmRetStatusNcTestMode
+    struct NcAsmRetStatusNcTestMode
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_STATUS
+        Command command{Command::NCASM_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_TEST_MODE
+        NcAsmInquiredType type{NcAsmInquiredType::NC_TEST_MODE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcTestModeStatus ncTestModeStatus{NcTestModeStatus::IN_TEST_MODE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmRetStatusNcTestMode);
+    };
+
+    // THMSGV2T1NcAsmSetParam
+    struct NcAsmSetParam
+    {
+        // CODEGEN EnumRange Command::NCASM_SET_PARAM
+        Command command{Command::NCASM_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmSetParam);
+    };
+
+    // THMSGV2T1NcAsmSetParamAsmOnOff
+    struct NcAsmSetParamAsmOnOff
+    {
+        // CODEGEN EnumRange Command::NCASM_SET_PARAM
+        Command command{Command::NCASM_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::ASM_ON_OFF
+        NcAsmInquiredType type{NcAsmInquiredType::ASM_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmSetParamAsmOnOff);
+    };
+
+    // THMSGV2T1NcAsmSetParamAsmSeamless
+    struct NcAsmSetParamAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_SET_PARAM
+        Command command{Command::NCASM_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x4
+        UInt8 ambientSoundLevelValue{}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmSetParamAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmSetParamModeNcDualModeSwitchAsmSeamless
+    struct NcAsmSetParamModeNcDualModeSwitchAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_SET_PARAM
+        Command command{Command::NCASM_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS
+        NcAsmInquiredType type{NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmMode ncAsmMode{NcAsmMode::NC}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x5
+        UInt8 ambientSoundLevelValue{}; // 0x6
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmSetParamModeNcDualModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmSetParamModeNcDualModeSwitchAsmSeamlessNa
+    struct NcAsmSetParamModeNcDualModeSwitchAsmSeamlessNa
+    {
+        // CODEGEN EnumRange Command::NCASM_SET_PARAM
+        Command command{Command::NCASM_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS_NA
+        NcAsmInquiredType type{NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS_NA}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmMode ncAsmMode{NcAsmMode::NC}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x5
+        UInt8 ambientSoundLevelValue{}; // 0x6
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x7
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NoiseAdaptiveSensitivity noiseAdaptiveSensitivitySettings{NoiseAdaptiveSensitivity::STANDARD}; // 0x8
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmSetParamModeNcDualModeSwitchAsmSeamlessNa);
+    };
+
+    // THMSGV2T1NcAsmSetParamModeNcDualSingleModeSwitchAsmSeamless
+    struct NcAsmSetParamModeNcDualSingleModeSwitchAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_SET_PARAM
+        Command command{Command::NCASM_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::MODE_NC_ASM_DUAL_SINGLE_NC_MODE_SWITCH_AND_ASM_SEAMLESS
+        NcAsmInquiredType type{NcAsmInquiredType::MODE_NC_ASM_DUAL_SINGLE_NC_MODE_SWITCH_AND_ASM_SEAMLESS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmMode ncAsmMode{NcAsmMode::NC}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcValue ncValue{NcValue::OFF}; // 0x5
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x6
+        UInt8 ambientSoundLevelValue{}; // 0x7
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmSetParamModeNcDualSingleModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmSetParamModeNcModeSwitchAsmSeamless
+    struct NcAsmSetParamModeNcModeSwitchAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_SET_PARAM
+        Command command{Command::NCASM_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmMode ncAsmMode{NcAsmMode::NC}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcValue ncValue{NcValue::OFF}; // 0x5
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x6
+        UInt8 ambientSoundLevelValue{}; // 0x7
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmSetParamModeNcModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmSetParamNcAmbToggle
+    struct NcAsmSetParamNcAmbToggle
+    {
+        // CODEGEN EnumRange Command::NCASM_SET_PARAM
+        Command command{Command::NCASM_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_AMB_TOGGLE
+        NcAsmInquiredType type{NcAsmInquiredType::NC_AMB_TOGGLE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        Function function{Function::NO_FUNCTION}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmSetParamNcAmbToggle);
+    };
+
+    // THMSGV2T1NcAsmSetParamNcModeSwitchAsmOnOff
+    struct NcAsmSetParamNcModeSwitchAsmOnOff
+    {
+        // CODEGEN EnumRange Command::NCASM_SET_PARAM
+        Command command{Command::NCASM_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_MODE_SWITCH_AND_ASM_ON_OFF
+        NcAsmInquiredType type{NcAsmInquiredType::NC_MODE_SWITCH_AND_ASM_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcValue ncValue{NcValue::OFF}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x5
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x6
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmSetParamNcModeSwitchAsmOnOff);
+    };
+
+    // THMSGV2T1NcAsmSetParamNcModeSwitchAsmSeamless
+    struct NcAsmSetParamNcModeSwitchAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_SET_PARAM
+        Command command{Command::NCASM_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcValue ncValue{NcValue::OFF}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x5
+        UInt8 ambientSoundLevelValue{}; // 0x6
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmSetParamNcModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmSetParamNcNcssAsmModeNcDualModeSwitchAsmSeamless
+    struct NcAsmSetParamNcNcssAsmModeNcDualModeSwitchAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_SET_PARAM
+        Command command{Command::NCASM_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS
+        NcAsmInquiredType type{NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcNcssAsmMode ncNcssAsmMode{NcNcssAsmMode::NC}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x5
+        UInt8 ambientSoundLevelValue{}; // 0x6
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmSetParamNcNcssAsmModeNcDualModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmSetParamNcOnOff
+    struct NcAsmSetParamNcOnOff
+    {
+        // CODEGEN EnumRange Command::NCASM_SET_PARAM
+        Command command{Command::NCASM_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_ON_OFF
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmSetParamNcOnOff);
+    };
+
+    // THMSGV2T1NcAsmSetParamNcOnOffAsmOnOff
+    struct NcAsmSetParamNcOnOffAsmOnOff
+    {
+        // CODEGEN EnumRange Command::NCASM_SET_PARAM
+        Command command{Command::NCASM_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_ON_OFF_AND_ASM_SEAMLESS
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF_AND_ASM_SEAMLESS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ambientSoundValue{NcAsmOnOffValue::OFF}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x5
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x6
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmSetParamNcOnOffAsmOnOff);
+    };
+
+    // THMSGV2T1NcAsmSetParamNcOnOffAsmSeamless
+    struct NcAsmSetParamNcOnOffAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_SET_PARAM
+        Command command{Command::NCASM_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_ON_OFF_AND_ASM_SEAMLESS
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF_AND_ASM_SEAMLESS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ValueChangeStatus valueChangeStatus{ValueChangeStatus::UNDER_CHANGING}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmTotalEffect{NcAsmOnOffValue::OFF}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmOnOffValue ncAsmOnOffValue{NcAsmOnOffValue::OFF}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AmbientSoundMode ambientSoundMode{AmbientSoundMode::NORMAL}; // 0x5
+        UInt8 ambientSoundLevelValue{}; // 0x6
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmSetParamNcOnOffAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmSetStatus
+    struct NcAsmSetStatus
+    {
+        // CODEGEN EnumRange Command::NCASM_SET_STATUS
+        Command command{Command::NCASM_SET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmSetStatus);
+    };
+
+    // THMSGV2T1NcAsmSetStatusNcTestMode
+    struct NcAsmSetStatusNcTestMode
+    {
+        // CODEGEN EnumRange Command::NCASM_SET_STATUS
+        Command command{Command::NCASM_SET_STATUS}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_TEST_MODE
+        NcAsmInquiredType type{NcAsmInquiredType::NC_TEST_MODE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcTestModeOperation ncTestModeOperation{NcTestModeOperation::TEST_MODE_START}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NcAsmSetStatusNcTestMode);
+    };
+
+    // THMSGV2T1NotifyLogParam
+    struct NotifyLogParam
+    {
+        // CODEGEN EnumRange Command::LOG_NTFY_PARAM
+        Command command{Command::LOG_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LogInquiredType logInquiredType{LogInquiredType::ACTION_LOG_NOTIFIER}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NotifyLogParam);
+    };
+
+    // THMSGV2T1NotifyLogParamActionLog
+    struct NotifyLogParamActionLog
+    {
+        // CODEGEN EnumRange Command::LOG_NTFY_PARAM
+        Command command{Command::LOG_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LogInquiredType logInquiredType{LogInquiredType::ACTION_LOG_NOTIFIER}; // 0x1
+        MDRPrefixedString data; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(NotifyLogParamActionLog);
+    };
+
+    // THMSGV2T1NotifyLogParamSoundDropout
+    struct NotifyLogParamSoundDropout
+    {
+        // CODEGEN EnumRange Command::LOG_NTFY_PARAM
+        Command command{Command::LOG_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LogInquiredType logInquiredType{LogInquiredType::ACTION_LOG_NOTIFIER}; // 0x1
+        Int16BE secondsAgo{}; // 0x2
+        MDRPrefixedString data; // 0x4
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(NotifyLogParamSoundDropout);
+    };
+
+    // THMSGV2T1NotifyPlayParam
+    struct NotifyPlayParam
+    {
+        // CODEGEN EnumRange Command::PLAY_NTFY_PARAM
+        Command command{Command::PLAY_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NotifyPlayParam);
+    };
+
+    // THMSGV2T1NotifyPlayParamPlayMode
+    struct NotifyPlayParamPlayMode
+    {
+        // CODEGEN EnumRange Command::PLAY_NTFY_PARAM
+        Command command{Command::PLAY_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange PlayInquiredType::PLAY_MODE
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAY_MODE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayMode playMode{PlayMode::PLAY_MODE_OFF}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NotifyPlayParamPlayMode);
+    };
+
+    // THMSGV2T1NotifyPlayParamPlaybackControllerVolume
+    struct NotifyPlayParamPlaybackControllerVolume
+    {
+        // CODEGEN EnumRange Command::PLAY_NTFY_PARAM
+        Command command{Command::PLAY_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+        // CODEGEN Range 0 255
+        UInt8 volumeValue{}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NotifyPlayParamPlaybackControllerVolume);
+    };
+
+    // THMSGV2T1NotifyPlayParamPlaybackControllerVolumeWithMute
+    struct NotifyPlayParamPlaybackControllerVolumeWithMute
+    {
+        // CODEGEN EnumRange Command::PLAY_NTFY_PARAM
+        Command command{Command::PLAY_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+        // CODEGEN Range 0 255
+        UInt8 volumeValue{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue muteSetting{OnOffSettingValue::ON}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NotifyPlayParamPlaybackControllerVolumeWithMute);
+    };
+
+    // THMSGV2T1NotifyPlayStatus
+    struct NotifyPlayStatus
+    {
+        // CODEGEN EnumRange Command::PLAY_NTFY_STATUS
+        Command command{Command::PLAY_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NotifyPlayStatus);
+    };
+
+    // THMSGV2T1NotifyPlayStatusCommon
+    struct NotifyPlayStatusCommon
+    {
+        // CODEGEN EnumRange Command::PLAY_NTFY_STATUS
+        Command command{Command::PLAY_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NotifyPlayStatusCommon);
+    };
+
+    // THMSGV2T1NotifyPlayStatusPlaybackControlWithCallVolumeAdjustmentAndFunctionChange
+    struct NotifyPlayStatusPlaybackControlWithCallVolumeAdjustmentAndFunctionChange
+    {
+        // CODEGEN EnumRange Command::PLAY_NTFY_STATUS
+        Command command{Command::PLAY_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlaybackStatus playbackStatus{PlaybackStatus::UNSETTLED}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        MusicCallStatus musicCallStatus{MusicCallStatus::MUSIC}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable playbackControlStatus{EnableDisable::ENABLE}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NotifyPlayStatusPlaybackControlWithCallVolumeAdjustmentAndFunctionChange);
+    };
+
+    // THMSGV2T1NotifyPlayStatusPlaybackControlWithFunctionChange
+    struct NotifyPlayStatusPlaybackControlWithFunctionChange
+    {
+        // CODEGEN EnumRange Command::PLAY_NTFY_STATUS
+        Command command{Command::PLAY_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlaybackStatus playbackStatus{PlaybackStatus::UNSETTLED}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable playbackControlStatus{EnableDisable::ENABLE}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NotifyPlayStatusPlaybackControlWithFunctionChange);
+    };
+
+    // THMSGV2T1NotifyPlayStatusPlaybackController
+    struct NotifyPlayStatusPlaybackController
+    {
+        // CODEGEN EnumRange Command::PLAY_NTFY_STATUS
+        Command command{Command::PLAY_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlaybackStatus playbackStatus{PlaybackStatus::UNSETTLED}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        MusicCallStatus musicCallStatus{MusicCallStatus::MUSIC}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NotifyPlayStatusPlaybackController);
+    };
+
+    // THMSGV2T1OperationSubInfo
+    struct OperationSubInfo
+    {
+        MDRPrefixedString key; // 0x0
+        MDRPrefixedString value;
+
+        MDR_DEFINE_EXTERN_READ_WRITE(OperationSubInfo);
+    };
+
+    // THMSGV2T1OptGetCapability
+    struct OptGetCapability
+    {
+        // CODEGEN EnumRange Command::OPT_GET_CAPABILITY
+        Command command{Command::OPT_GET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OptInquiredType type{OptInquiredType::NC_OPTIMIZER_PERSONAL_BAROMETRIC}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptGetCapability);
+    };
+
+    // THMSGV2T1OptGetParam
+    struct OptGetParam
+    {
+        // CODEGEN EnumRange Command::OPT_GET_PARAM
+        Command command{Command::OPT_GET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OptInquiredType type{OptInquiredType::NC_OPTIMIZER_PERSONAL_BAROMETRIC}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptGetParam);
+    };
+
+    // THMSGV2T1OptGetStatus
+    struct OptGetStatus
+    {
+        // CODEGEN EnumRange Command::OPT_GET_STATUS
+        Command command{Command::OPT_GET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OptInquiredType type{OptInquiredType::NC_OPTIMIZER_PERSONAL_BAROMETRIC}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptGetStatus);
+    };
+
+    // THMSGV2T1OptNtfyParam
+    struct OptNtfyParam
+    {
+        // CODEGEN EnumRange Command::OPT_NTFY_PARAM
+        Command command{Command::OPT_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OptInquiredType type{OptInquiredType::NC_OPTIMIZER_PERSONAL_BAROMETRIC}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptNtfyParam);
+    };
+
+    // THMSGV2T1OptNtfyParamNcBarometric
+    struct OptNtfyParamNcBarometric
+    {
+        // CODEGEN EnumRange Command::OPT_NTFY_PARAM
+        Command command{Command::OPT_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange OptInquiredType::NC_OPTIMIZER_BAROMETRIC
+        OptInquiredType type{OptInquiredType::NC_OPTIMIZER_BAROMETRIC}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BarometricPressure barometricValue{BarometricPressure::UNMEASURED}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptNtfyParamNcBarometric);
+    };
+
+    // THMSGV2T1OptNtfyParamNcPersonal
+    struct OptNtfyParamNcPersonal
+    {
+        // CODEGEN EnumRange Command::OPT_NTFY_PARAM
+        Command command{Command::OPT_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange OptInquiredType::NC_OPTIMIZER_PERSONAL
+        OptInquiredType type{OptInquiredType::NC_OPTIMIZER_PERSONAL}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PersonalValue personalValue{PersonalValue::UNMEASURED}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptNtfyParamNcPersonal);
+    };
+
+    // THMSGV2T1OptNtfyParamNcPersonalBarometric
+    struct OptNtfyParamNcPersonalBarometric
+    {
+        // CODEGEN EnumRange Command::OPT_NTFY_PARAM
+        Command command{Command::OPT_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange OptInquiredType::NC_OPTIMIZER_PERSONAL_BAROMETRIC
+        OptInquiredType type{OptInquiredType::NC_OPTIMIZER_PERSONAL_BAROMETRIC}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PersonalValue personalValue{PersonalValue::UNMEASURED}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BarometricPressure barometricValue{BarometricPressure::UNMEASURED}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptNtfyParamNcPersonalBarometric);
+    };
+
+    // THMSGV2T1OptNtfyParamSoundFieldOptimization
+    struct OptNtfyParamSoundFieldOptimization
+    {
+        // CODEGEN EnumRange Command::OPT_NTFY_PARAM
+        Command command{Command::OPT_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange OptInquiredType::SOUND_FIELD_OPTIMIZATION
+        OptInquiredType type{OptInquiredType::SOUND_FIELD_OPTIMIZATION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptNtfyParamSoundFieldOptimization);
+    };
+
+    // THMSGV2T1OptNtfyParamTvSoundBooster
+    struct OptNtfyParamTvSoundBooster
+    {
+        // CODEGEN EnumRange Command::OPT_NTFY_PARAM
+        Command command{Command::OPT_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange OptInquiredType::TV_SOUND_BOOSTER
+        OptInquiredType type{OptInquiredType::TV_SOUND_BOOSTER}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AdjustSynchronizationValue adjustSynchronizationValue{AdjustSynchronizationValue::MSEC_0}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptNtfyParamTvSoundBooster);
+    };
+
+    // THMSGV2T1OptNtfyStatus
+    struct OptNtfyStatus
+    {
+        // CODEGEN EnumRange Command::OPT_NTFY_STATUS
+        Command command{Command::OPT_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OptInquiredType type{OptInquiredType::NC_OPTIMIZER_PERSONAL_BAROMETRIC}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OptimizerStatus optimizerStatus{OptimizerStatus::IDLE}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptNtfyStatus);
+    };
+
+    // THMSGV2T1OptNtfyStatusBase
+    struct OptNtfyStatusBase
+    {
+        // CODEGEN EnumRange Command::OPT_NTFY_STATUS
+        Command command{Command::OPT_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OptInquiredType type{OptInquiredType::NC_OPTIMIZER_PERSONAL_BAROMETRIC}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptNtfyStatusBase);
+    };
+
+    // THMSGV2T1OptNtfyStatusSoundFieldOptimization
+    struct OptNtfyStatusSoundFieldOptimization
+    {
+        // CODEGEN EnumRange Command::OPT_NTFY_STATUS
+        Command command{Command::OPT_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange OptInquiredType::SOUND_FIELD_OPTIMIZATION
+        OptInquiredType type{OptInquiredType::SOUND_FIELD_OPTIMIZATION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN EnumRange OptExclusiveFunctionType::SOUND_FIELD_OPTIMIZATION
+        OptExclusiveFunctionType desctiption{OptExclusiveFunctionType::SOUND_FIELD_OPTIMIZATION}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptNtfyStatusSoundFieldOptimization);
+    };
+
+    // THMSGV2T1OptNtfyStatusTvSoundBooster
+    struct OptNtfyStatusTvSoundBooster
+    {
+        // CODEGEN EnumRange Command::OPT_NTFY_STATUS
+        Command command{Command::OPT_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange OptInquiredType::TV_SOUND_BOOSTER
+        OptInquiredType type{OptInquiredType::TV_SOUND_BOOSTER}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AdjustSynchronizationStatus adjustSynchronizationStatus{AdjustSynchronizationStatus::ENABLE}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptNtfyStatusTvSoundBooster);
+    };
+
+    // THMSGV2T1OptRetCapability
+    struct OptRetCapability
+    {
+        // CODEGEN EnumRange Command::OPT_RET_CAPABILITY
+        Command command{Command::OPT_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OptInquiredType type{OptInquiredType::NC_OPTIMIZER_PERSONAL_BAROMETRIC}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptRetCapability);
+    };
+
+    // THMSGV2T1OptRetCapabilityNcBarometric
+    struct OptRetCapabilityNcBarometric
+    {
+        // CODEGEN EnumRange Command::OPT_RET_CAPABILITY
+        Command command{Command::OPT_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange OptInquiredType::NC_OPTIMIZER_BAROMETRIC
+        OptInquiredType type{OptInquiredType::NC_OPTIMIZER_BAROMETRIC}; // 0x1
+        // CODEGEN Range 1 255
+        UInt8 optimizationTime{}; // 0x2
+        // CODEGEN Range 1 255
+        UInt8 barometricMeasureTime{}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptRetCapabilityNcBarometric);
+    };
+
+    // THMSGV2T1OptRetCapabilityNcPersonal
+    struct OptRetCapabilityNcPersonal
+    {
+        // CODEGEN EnumRange Command::OPT_RET_CAPABILITY
+        Command command{Command::OPT_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange OptInquiredType::NC_OPTIMIZER_PERSONAL
+        OptInquiredType type{OptInquiredType::NC_OPTIMIZER_PERSONAL}; // 0x1
+        // CODEGEN Range 1 255
+        UInt8 optimizationTime{}; // 0x2
+        // CODEGEN Range 1 255
+        UInt8 personalMeasureTime{}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptRetCapabilityNcPersonal);
+    };
+
+    // THMSGV2T1OptRetCapabilityNcPersonalBarometric
+    struct OptRetCapabilityNcPersonalBarometric
+    {
+        // CODEGEN EnumRange Command::OPT_RET_CAPABILITY
+        Command command{Command::OPT_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange OptInquiredType::NC_OPTIMIZER_PERSONAL_BAROMETRIC
+        OptInquiredType type{OptInquiredType::NC_OPTIMIZER_PERSONAL_BAROMETRIC}; // 0x1
+        // CODEGEN Range 1 255
+        UInt8 optimizationTime{}; // 0x2
+        // CODEGEN Range 1 255
+        UInt8 personalMeasureTime{}; // 0x3
+        // CODEGEN Range 1 255
+        UInt8 barometricMeasureTime{}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptRetCapabilityNcPersonalBarometric);
+    };
+
+    // THMSGV2T1OptRetCapabilityTvSoundBooster
+    struct OptRetCapabilityTvSoundBooster
+    {
+        // CODEGEN EnumRange Command::OPT_RET_CAPABILITY
+        Command command{Command::OPT_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange OptInquiredType::TV_SOUND_BOOSTER
+        OptInquiredType type{OptInquiredType::TV_SOUND_BOOSTER}; // 0x1
+        MDRPodArray<OptExclusiveFunctionType> exclusiveFunctions; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(OptRetCapabilityTvSoundBooster);
+    };
+
+    // THMSGV2T1OptRetParam
+    struct OptRetParam
+    {
+        // CODEGEN EnumRange Command::OPT_RET_PARAM
+        Command command{Command::OPT_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OptInquiredType type{OptInquiredType::NC_OPTIMIZER_PERSONAL_BAROMETRIC}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptRetParam);
+    };
+
+    // THMSGV2T1OptRetParamNcBarometric
+    struct OptRetParamNcBarometric
+    {
+        // CODEGEN EnumRange Command::OPT_RET_PARAM
+        Command command{Command::OPT_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange OptInquiredType::NC_OPTIMIZER_BAROMETRIC
+        OptInquiredType type{OptInquiredType::NC_OPTIMIZER_BAROMETRIC}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BarometricPressure barometricValue{BarometricPressure::UNMEASURED}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptRetParamNcBarometric);
+    };
+
+    // THMSGV2T1OptRetParamNcPersonal
+    struct OptRetParamNcPersonal
+    {
+        // CODEGEN EnumRange Command::OPT_RET_PARAM
+        Command command{Command::OPT_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange OptInquiredType::NC_OPTIMIZER_PERSONAL
+        OptInquiredType type{OptInquiredType::NC_OPTIMIZER_PERSONAL}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PersonalValue personalValue{PersonalValue::UNMEASURED}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptRetParamNcPersonal);
+    };
+
+    // THMSGV2T1OptRetParamNcPersonalBarometric
+    struct OptRetParamNcPersonalBarometric
+    {
+        // CODEGEN EnumRange Command::OPT_RET_PARAM
+        Command command{Command::OPT_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange OptInquiredType::NC_OPTIMIZER_PERSONAL_BAROMETRIC
+        OptInquiredType type{OptInquiredType::NC_OPTIMIZER_PERSONAL_BAROMETRIC}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PersonalValue personalValue{PersonalValue::UNMEASURED}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BarometricPressure barometricValue{BarometricPressure::UNMEASURED}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptRetParamNcPersonalBarometric);
+    };
+
+    // THMSGV2T1OptRetParamSoundFieldOptimization
+    struct OptRetParamSoundFieldOptimization
+    {
+        // CODEGEN EnumRange Command::OPT_RET_PARAM
+        Command command{Command::OPT_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange OptInquiredType::SOUND_FIELD_OPTIMIZATION
+        OptInquiredType type{OptInquiredType::SOUND_FIELD_OPTIMIZATION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptRetParamSoundFieldOptimization);
+    };
+
+    // THMSGV2T1OptRetParamTvSoundBooster
+    struct OptRetParamTvSoundBooster
+    {
+        // CODEGEN EnumRange Command::OPT_RET_PARAM
+        Command command{Command::OPT_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange OptInquiredType::TV_SOUND_BOOSTER
+        OptInquiredType type{OptInquiredType::TV_SOUND_BOOSTER}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AdjustSynchronizationValue adjustSynchronizationValue{AdjustSynchronizationValue::MSEC_0}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptRetParamTvSoundBooster);
+    };
+
+    // THMSGV2T1OptRetStatus
+    struct OptRetStatus
+    {
+        // CODEGEN EnumRange Command::OPT_RET_STATUS
+        Command command{Command::OPT_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OptInquiredType type{OptInquiredType::NC_OPTIMIZER_PERSONAL_BAROMETRIC}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OptimizerStatus optimizerStatus{OptimizerStatus::IDLE}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptRetStatus);
+    };
+
+    // THMSGV2T1OptRetStatusBase
+    struct OptRetStatusBase
+    {
+        // CODEGEN EnumRange Command::OPT_RET_STATUS
+        Command command{Command::OPT_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OptInquiredType type{OptInquiredType::NC_OPTIMIZER_PERSONAL_BAROMETRIC}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptRetStatusBase);
+    };
+
+    // THMSGV2T1OptRetStatusSoundFieldOptimization
+    struct OptRetStatusSoundFieldOptimization
+    {
+        // CODEGEN EnumRange Command::OPT_RET_STATUS
+        Command command{Command::OPT_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange OptInquiredType::SOUND_FIELD_OPTIMIZATION
+        OptInquiredType type{OptInquiredType::SOUND_FIELD_OPTIMIZATION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN EnumRange OptExclusiveFunctionType::SOUND_FIELD_OPTIMIZATION
+        OptExclusiveFunctionType desctiption{OptExclusiveFunctionType::SOUND_FIELD_OPTIMIZATION}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptRetStatusSoundFieldOptimization);
+    };
+
+    // THMSGV2T1OptRetStatusTvSoundBooster
+    struct OptRetStatusTvSoundBooster
+    {
+        // CODEGEN EnumRange Command::OPT_RET_STATUS
+        Command command{Command::OPT_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange OptInquiredType::TV_SOUND_BOOSTER
+        OptInquiredType type{OptInquiredType::TV_SOUND_BOOSTER}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AdjustSynchronizationStatus adjustSynchronizationStatus{AdjustSynchronizationStatus::ENABLE}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptRetStatusTvSoundBooster);
+    };
+
+    // THMSGV2T1OptSetParam
+    struct OptSetParam
+    {
+        // CODEGEN EnumRange Command::OPT_SET_PARAM
+        Command command{Command::OPT_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OptInquiredType type{OptInquiredType::NC_OPTIMIZER_PERSONAL_BAROMETRIC}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptSetParam);
+    };
+
+    // THMSGV2T1OptSetParamSettingOnOff
+    struct OptSetParamSettingOnOff
+    {
+        // CODEGEN EnumRange Command::OPT_SET_PARAM
+        Command command{Command::OPT_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OptInquiredType type{OptInquiredType::NC_OPTIMIZER_PERSONAL_BAROMETRIC}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptSetParamSettingOnOff);
+    };
+
+    // THMSGV2T1OptSetParamTvSoundBooster
+    struct OptSetParamTvSoundBooster
+    {
+        // CODEGEN EnumRange Command::OPT_SET_PARAM
+        Command command{Command::OPT_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange OptInquiredType::TV_SOUND_BOOSTER
+        OptInquiredType type{OptInquiredType::TV_SOUND_BOOSTER}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AdjustSynchronizationValue adjustSynchronizationValue{AdjustSynchronizationValue::MSEC_0}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptSetParamTvSoundBooster);
+    };
+
+    // THMSGV2T1OptSetStatus
+    struct OptSetStatus
+    {
+        // CODEGEN EnumRange Command::OPT_SET_STATUS
+        Command command{Command::OPT_SET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OptInquiredType type{OptInquiredType::NC_OPTIMIZER_PERSONAL_BAROMETRIC}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OptimizerControl optimizerControl{OptimizerControl::CANCEL}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(OptSetStatus);
+    };
+
+    // THMSGV2T1Payload
+    struct Payload
+    {
+        Command command2{Command::CONNECT_GET_PROTOCOL_INFO}; // 0x0
+
+        MDR_DEFINE_EXTERN_READ_WRITE(Payload);
+    };
+
+    // THMSGV2T1PlaybackName
+    struct PlaybackName
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlaybackNameStatus playbackNameStatus{PlaybackNameStatus::UNSETTLED}; // 0x0
+        MDRPrefixedString name; // 0x1
+
+        MDR_DEFINE_EXTERN_READ_WRITE(PlaybackName);
+    };
+
+    // THMSGV2T1PowerGetCapability
+    struct PowerGetCapability
+    {
+        // CODEGEN EnumRange Command::POWER_GET_CAPABILITY
+        Command command{Command::POWER_GET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PowerInquiredType type{PowerInquiredType::BATTERY}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerGetCapability);
+    };
+
+    // THMSGV2T1PowerGetParam
+    struct PowerGetParam
+    {
+        // CODEGEN EnumRange Command::POWER_GET_PARAM
+        Command command{Command::POWER_GET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PowerInquiredType type{PowerInquiredType::BATTERY}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerGetParam);
+    };
+
+    // THMSGV2T1PowerGetStatus
+    struct PowerGetStatus
+    {
+        // CODEGEN EnumRange Command::POWER_GET_STATUS
+        Command command{Command::POWER_GET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PowerInquiredType type{PowerInquiredType::BATTERY}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerGetStatus);
+    };
+
+    // THMSGV2T1PowerNotifyParam
+    struct PowerNotifyParam
+    {
+        // CODEGEN EnumRange Command::POWER_NTFY_PARAM
+        Command command{Command::POWER_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PowerInquiredType type{PowerInquiredType::BATTERY}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerNotifyParam);
+    };
+
+    // THMSGV2T1PowerNotifyParamAutoPowerOff
+    struct PowerNotifyParamAutoPowerOff
+    {
+        // CODEGEN EnumRange Command::POWER_NTFY_PARAM
+        Command command{Command::POWER_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::AUTO_POWER_OFF
+        PowerInquiredType type{PowerInquiredType::AUTO_POWER_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AutoPowerOffElements currentPowerOffElements{AutoPowerOffElements::POWER_OFF_IN_5_MIN}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AutoPowerOffElements lastSelectPowerOffElements{AutoPowerOffElements::POWER_OFF_IN_5_MIN}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerNotifyParamAutoPowerOff);
+    };
+
+    // THMSGV2T1PowerNotifyParamAutoPowerOffWithWearingDetection
+    struct PowerNotifyParamAutoPowerOffWithWearingDetection
+    {
+        // CODEGEN EnumRange Command::POWER_NTFY_PARAM
+        Command command{Command::POWER_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::AUTO_POWER_OFF_WEARING_DETECTION
+        PowerInquiredType type{PowerInquiredType::AUTO_POWER_OFF_WEARING_DETECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AutoPowerOffWearingDetectionElements currentPowerOffElements{AutoPowerOffWearingDetectionElements::POWER_OFF_IN_5_MIN}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AutoPowerOffWearingDetectionElements lastSelectPowerOffElements{AutoPowerOffWearingDetectionElements::POWER_OFF_IN_5_MIN}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerNotifyParamAutoPowerOffWithWearingDetection);
+    };
+
+    // THMSGV2T1PowerNotifyParamBatterySafeMode
+    struct PowerNotifyParamBatterySafeMode
+    {
+        // CODEGEN EnumRange Command::POWER_NTFY_PARAM
+        Command command{Command::POWER_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::BATTERY_SAFE_MODE
+        PowerInquiredType type{PowerInquiredType::BATTERY_SAFE_MODE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue effectStatus{OnOffSettingValue::ON}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerNotifyParamBatterySafeMode);
+    };
+
+    // THMSGV2T1PowerNotifyParamSettingOnOff
+    struct PowerNotifyParamSettingOnOff
+    {
+        // CODEGEN EnumRange Command::POWER_NTFY_PARAM
+        Command command{Command::POWER_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::POWER_OFF
+        PowerInquiredType type{PowerInquiredType::POWER_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerNotifyParamSettingOnOff);
+    };
+
+    // THMSGV2T1PowerNotifyStatus
+    struct PowerNotifyStatus
+    {
+        // CODEGEN EnumRange Command::POWER_NTFY_STATUS
+        Command command{Command::POWER_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PowerInquiredType type{PowerInquiredType::BATTERY}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerNotifyStatus);
+    };
+
+    // THMSGV2T1PowerNotifyStatusAutoPowerOff
+    struct PowerNotifyStatusAutoPowerOff
+    {
+        // CODEGEN EnumRange Command::POWER_NTFY_STATUS
+        Command command{Command::POWER_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::AUTO_POWER_OFF
+        PowerInquiredType type{PowerInquiredType::AUTO_POWER_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable enableDisable{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerNotifyStatusAutoPowerOff);
+    };
+
+    // THMSGV2T1PowerNotifyStatusAutoPowerOffWithWearingDetection
+    struct PowerNotifyStatusAutoPowerOffWithWearingDetection
+    {
+        // CODEGEN EnumRange Command::POWER_NTFY_STATUS
+        Command command{Command::POWER_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::AUTO_POWER_OFF_WEARING_DETECTION
+        PowerInquiredType type{PowerInquiredType::AUTO_POWER_OFF_WEARING_DETECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable enableDisable{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerNotifyStatusAutoPowerOffWithWearingDetection);
+    };
+
+    // THMSGV2T1PowerNotifyStatusBattery
+    struct PowerNotifyStatusBattery
+    {
+        // CODEGEN EnumRange Command::POWER_NTFY_STATUS
+        Command command{Command::POWER_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::BATTERY
+        PowerInquiredType type{PowerInquiredType::BATTERY}; // 0x1
+        // CODEGEN Range 0 100
+        UInt8 batteryLevel{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus chargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerNotifyStatusBattery);
+    };
+
+    // THMSGV2T1PowerNotifyStatusBatteryBase
+    struct PowerNotifyStatusBatteryBase
+    {
+        // CODEGEN EnumRange Command::POWER_NTFY_STATUS
+        Command command{Command::POWER_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::BATTERY
+        PowerInquiredType type{PowerInquiredType::BATTERY}; // 0x1
+        // CODEGEN Range 0 100
+        UInt8 batteryLevel{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus chargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerNotifyStatusBatteryBase);
+    };
+
+    // THMSGV2T1PowerNotifyStatusBatteryThreshold
+    struct PowerNotifyStatusBatteryThreshold
+    {
+        // CODEGEN EnumRange Command::POWER_NTFY_STATUS
+        Command command{Command::POWER_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::BATTERY_WITH_THRESHOLD
+        PowerInquiredType type{PowerInquiredType::BATTERY_WITH_THRESHOLD}; // 0x1
+        UInt8 value1{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus batteryChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
+        // CODEGEN Range 0 100
+        UInt8 batteryThreshold{}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerNotifyStatusBatteryThreshold);
+    };
+
+    // THMSGV2T1PowerNotifyStatusBatteryThresholdBase
+    struct PowerNotifyStatusBatteryThresholdBase
+    {
+        // CODEGEN EnumRange Command::POWER_NTFY_STATUS
+        Command command{Command::POWER_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::BATTERY_WITH_THRESHOLD
+        PowerInquiredType type{PowerInquiredType::BATTERY_WITH_THRESHOLD}; // 0x1
+        // CODEGEN Range 0 100
+        UInt8 batteryLevel{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus chargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
+        // CODEGEN Range 0 100
+        UInt8 batteryThreshold{}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerNotifyStatusBatteryThresholdBase);
+    };
+
+    // THMSGV2T1PowerNotifyStatusCommon
+    struct PowerNotifyStatusCommon
+    {
+        // CODEGEN EnumRange Command::POWER_NTFY_STATUS
+        Command command{Command::POWER_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::POWER_OFF
+        PowerInquiredType type{PowerInquiredType::POWER_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable enableDisable{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerNotifyStatusCommon);
+    };
+
+    // THMSGV2T1PowerNotifyStatusCradleBattery
+    struct PowerNotifyStatusCradleBattery
+    {
+        // CODEGEN EnumRange Command::POWER_NTFY_STATUS
+        Command command{Command::POWER_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::CRADLE_BATTERY
+        PowerInquiredType type{PowerInquiredType::CRADLE_BATTERY}; // 0x1
+        // CODEGEN Range 0 100
+        UInt8 batteryLevel{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus chargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerNotifyStatusCradleBattery);
+    };
+
+    // THMSGV2T1PowerNotifyStatusCradleBatteryThreshold
+    struct PowerNotifyStatusCradleBatteryThreshold
+    {
+        // CODEGEN EnumRange Command::POWER_NTFY_STATUS
+        Command command{Command::POWER_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::CRADLE_BATTERY_WITH_THRESHOLD
+        PowerInquiredType type{PowerInquiredType::CRADLE_BATTERY_WITH_THRESHOLD}; // 0x1
+        UInt8 value1{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus batteryChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
+        // CODEGEN Range 0 100
+        UInt8 batteryThreshold{}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerNotifyStatusCradleBatteryThreshold);
+    };
+
+    // THMSGV2T1PowerNotifyStatusLeftRightBattery
+    struct PowerNotifyStatusLeftRightBattery
+    {
+        // CODEGEN EnumRange Command::POWER_NTFY_STATUS
+        Command command{Command::POWER_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::LEFT_RIGHT_BATTERY
+        PowerInquiredType type{PowerInquiredType::LEFT_RIGHT_BATTERY}; // 0x1
+        // CODEGEN Range 0 100
+        UInt8 leftBatteryLevel{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus leftChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
+        // CODEGEN Range 0 100
+        UInt8 rightBatteryLevel{}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus rightChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerNotifyStatusLeftRightBattery);
+    };
+
+    // THMSGV2T1PowerNotifyStatusLeftRightBatteryBase
+    struct PowerNotifyStatusLeftRightBatteryBase
+    {
+        // CODEGEN EnumRange Command::POWER_NTFY_STATUS
+        Command command{Command::POWER_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::LEFT_RIGHT_BATTERY
+        PowerInquiredType type{PowerInquiredType::LEFT_RIGHT_BATTERY}; // 0x1
+        // CODEGEN Range 0 100
+        UInt8 leftBatteryLevel{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus leftChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
+        // CODEGEN Range 0 100
+        UInt8 rightBatteryLevel{}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus rightChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerNotifyStatusLeftRightBatteryBase);
+    };
+
+    // THMSGV2T1PowerNotifyStatusLeftRightBatteryThreshold
+    struct PowerNotifyStatusLeftRightBatteryThreshold
+    {
+        // CODEGEN EnumRange Command::POWER_NTFY_STATUS
+        Command command{Command::POWER_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::LR_BATTERY_WITH_THRESHOLD
+        PowerInquiredType type{PowerInquiredType::LR_BATTERY_WITH_THRESHOLD}; // 0x1
+        // CODEGEN Range 0 100
+        UInt8 leftBatteryLevel{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus leftChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
+        // CODEGEN Range 0 100
+        UInt8 rightBatteryLevel{}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus rightChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x5
+        // CODEGEN Range 0 100
+        UInt8 leftBatteryThreshold{}; // 0x6
+        // CODEGEN Range 0 100
+        UInt8 rightBatteryThreshold{}; // 0x7
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerNotifyStatusLeftRightBatteryThreshold);
+    };
+
+    // THMSGV2T1PowerNotifyStatusLinkControl
+    struct PowerNotifyStatusLinkControl
+    {
+        // CODEGEN EnumRange Command::POWER_NTFY_STATUS
+        Command command{Command::POWER_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::LINK_CONTROL
+        PowerInquiredType type{PowerInquiredType::LINK_CONTROL}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable enableDisable{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerNotifyStatusLinkControl);
+    };
+
+    // THMSGV2T1PowerNotifyStatusPowerSavingModeOnOff
+    struct PowerNotifyStatusPowerSavingModeOnOff
+    {
+        // CODEGEN EnumRange Command::POWER_NTFY_STATUS
+        Command command{Command::POWER_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::POWER_OFF
+        PowerInquiredType type{PowerInquiredType::POWER_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable enableDisable{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerNotifyStatusPowerSavingModeOnOff);
+    };
+
+    // THMSGV2T1PowerRetCapability
+    struct PowerRetCapability
+    {
+        // CODEGEN EnumRange Command::POWER_RET_CAPABILITY
+        Command command{Command::POWER_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PowerInquiredType inquiredType{PowerInquiredType::BATTERY}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerRetCapability);
+    };
+
+    // THMSGV2T1PowerRetCapabilityAutoPowerOff
+    struct PowerRetCapabilityAutoPowerOff
+    {
+        // CODEGEN EnumRange Command::POWER_RET_CAPABILITY
+        Command command{Command::POWER_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::AUTO_POWER_OFF
+        PowerInquiredType inquiredType{PowerInquiredType::AUTO_POWER_OFF}; // 0x1
+        MDRPodArray<AutoPowerOffElements> candidateElements; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(PowerRetCapabilityAutoPowerOff);
+    };
+
+    // THMSGV2T1PowerRetCapabilityAutoPowerOffWithWearingDetection
+    struct PowerRetCapabilityAutoPowerOffWithWearingDetection
+    {
+        // CODEGEN EnumRange Command::POWER_RET_CAPABILITY
+        Command command{Command::POWER_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::AUTO_POWER_OFF_WEARING_DETECTION
+        PowerInquiredType inquiredType{PowerInquiredType::AUTO_POWER_OFF_WEARING_DETECTION}; // 0x1
+        MDRPodArray<AutoPowerOffWearingDetectionElements> candidateElements; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(PowerRetCapabilityAutoPowerOffWithWearingDetection);
+    };
+
+    // THMSGV2T1PowerRetCapabilityBatterySafeMode
+    struct PowerRetCapabilityBatterySafeMode
+    {
+        // CODEGEN EnumRange Command::POWER_RET_CAPABILITY
+        Command command{Command::POWER_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PowerInquiredType inquiredType{PowerInquiredType::BATTERY}; // 0x1
+        // CODEGEN Range 0 100
+        UInt8 batteryLevelThreshHold{}; // 0x2
+        MDRPodArray<FunctionType> supportedFunctionsOnTable1; // 0x3
+        MDRPodArray<mdr::v2::t2::FunctionType> supportedFunctionsOnTable2;
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(PowerRetCapabilityBatterySafeMode);
+    };
+
+    // THMSGV2T1PowerRetCapabilityStamina
+    struct PowerRetCapabilityStamina
+    {
+        // CODEGEN EnumRange Command::POWER_RET_CAPABILITY
+        Command command{Command::POWER_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::STAMINA
+        PowerInquiredType inquiredType{PowerInquiredType::STAMINA}; // 0x1
+        MDRPodArray<PowerExclusiveFunctionType> exclusiveFunctions; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(PowerRetCapabilityStamina);
+    };
+
+    // THMSGV2T1PowerRetParam
+    struct PowerRetParam
+    {
+        // CODEGEN EnumRange Command::POWER_RET_PARAM
+        Command command{Command::POWER_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PowerInquiredType type{PowerInquiredType::BATTERY}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerRetParam);
+    };
+
+    // THMSGV2T1PowerRetParamAutoPowerOff
+    struct PowerRetParamAutoPowerOff
+    {
+        // CODEGEN EnumRange Command::POWER_RET_PARAM
+        Command command{Command::POWER_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::AUTO_POWER_OFF
+        PowerInquiredType type{PowerInquiredType::AUTO_POWER_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AutoPowerOffElements currentPowerOffElements{AutoPowerOffElements::POWER_OFF_IN_5_MIN}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AutoPowerOffElements lastSelectPowerOffElements{AutoPowerOffElements::POWER_OFF_IN_5_MIN}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerRetParamAutoPowerOff);
+    };
+
+    // THMSGV2T1PowerRetParamAutoPowerOffWithWearingDetection
+    struct PowerRetParamAutoPowerOffWithWearingDetection
+    {
+        // CODEGEN EnumRange Command::POWER_RET_PARAM
+        Command command{Command::POWER_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::AUTO_POWER_OFF_WEARING_DETECTION
+        PowerInquiredType type{PowerInquiredType::AUTO_POWER_OFF_WEARING_DETECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AutoPowerOffWearingDetectionElements currentPowerOffElements{AutoPowerOffWearingDetectionElements::POWER_OFF_IN_5_MIN}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AutoPowerOffWearingDetectionElements lastSelectPowerOffElements{AutoPowerOffWearingDetectionElements::POWER_OFF_IN_5_MIN}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerRetParamAutoPowerOffWithWearingDetection);
+    };
+
+    // THMSGV2T1PowerRetParamBatterySafeMode
+    struct PowerRetParamBatterySafeMode
+    {
+        // CODEGEN EnumRange Command::POWER_RET_PARAM
+        Command command{Command::POWER_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::BATTERY_SAFE_MODE
+        PowerInquiredType type{PowerInquiredType::BATTERY_SAFE_MODE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue effectStatus{OnOffSettingValue::ON}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerRetParamBatterySafeMode);
+    };
+
+    // THMSGV2T1PowerRetParamSettingOnOff
+    struct PowerRetParamSettingOnOff
+    {
+        // CODEGEN EnumRange Command::POWER_RET_PARAM
+        Command command{Command::POWER_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::POWER_OFF
+        PowerInquiredType type{PowerInquiredType::POWER_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerRetParamSettingOnOff);
+    };
+
+    // THMSGV2T1PowerRetStatus
+    struct PowerRetStatus
+    {
+        // CODEGEN EnumRange Command::POWER_RET_STATUS
+        Command command{Command::POWER_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PowerInquiredType type{PowerInquiredType::BATTERY}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerRetStatus);
+    };
+
+    // THMSGV2T1PowerRetStatusAutoPowerOff
+    struct PowerRetStatusAutoPowerOff
+    {
+        // CODEGEN EnumRange Command::POWER_RET_STATUS
+        Command command{Command::POWER_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::AUTO_POWER_OFF
+        PowerInquiredType type{PowerInquiredType::AUTO_POWER_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable enableDisable{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerRetStatusAutoPowerOff);
+    };
+
+    // THMSGV2T1PowerRetStatusAutoPowerOffWithWearingDetection
+    struct PowerRetStatusAutoPowerOffWithWearingDetection
+    {
+        // CODEGEN EnumRange Command::POWER_RET_STATUS
+        Command command{Command::POWER_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::AUTO_POWER_OFF_WEARING_DETECTION
+        PowerInquiredType type{PowerInquiredType::AUTO_POWER_OFF_WEARING_DETECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable enableDisable{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerRetStatusAutoPowerOffWithWearingDetection);
+    };
+
+    // THMSGV2T1PowerRetStatusBattery
+    struct PowerRetStatusBattery
+    {
+        // CODEGEN EnumRange Command::POWER_RET_STATUS
+        Command command{Command::POWER_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::BATTERY
+        PowerInquiredType type{PowerInquiredType::BATTERY}; // 0x1
+        // CODEGEN Range 0 100
+        UInt8 batteryLevel{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus chargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerRetStatusBattery);
+    };
+
+    // THMSGV2T1PowerRetStatusBatteryBase
+    struct PowerRetStatusBatteryBase
+    {
+        // CODEGEN EnumRange Command::POWER_RET_STATUS
+        Command command{Command::POWER_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::BATTERY
+        PowerInquiredType type{PowerInquiredType::BATTERY}; // 0x1
+        // CODEGEN Range 0 100
+        UInt8 batteryLevel{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus chargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerRetStatusBatteryBase);
+    };
+
+    // THMSGV2T1PowerRetStatusBatteryThreshold
+    struct PowerRetStatusBatteryThreshold
+    {
+        // CODEGEN EnumRange Command::POWER_RET_STATUS
+        Command command{Command::POWER_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::BATTERY_WITH_THRESHOLD
+        PowerInquiredType type{PowerInquiredType::BATTERY_WITH_THRESHOLD}; // 0x1
+        UInt8 value1{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus batteryChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
+        // CODEGEN Range 0 100
+        UInt8 batteryThreshold{}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerRetStatusBatteryThreshold);
+    };
+
+    // THMSGV2T1PowerRetStatusBatteryThresholdBase
+    struct PowerRetStatusBatteryThresholdBase
+    {
+        // CODEGEN EnumRange Command::POWER_RET_STATUS
+        Command command{Command::POWER_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::BATTERY_WITH_THRESHOLD
+        PowerInquiredType type{PowerInquiredType::BATTERY_WITH_THRESHOLD}; // 0x1
+        // CODEGEN Range 0 100
+        UInt8 batteryLevel{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus chargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
+        // CODEGEN Range 0 100
+        UInt8 batteryThreshold{}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerRetStatusBatteryThresholdBase);
+    };
+
+    // THMSGV2T1PowerRetStatusCommon
+    struct PowerRetStatusCommon
+    {
+        // CODEGEN EnumRange Command::POWER_RET_STATUS
+        Command command{Command::POWER_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::POWER_OFF
+        PowerInquiredType type{PowerInquiredType::POWER_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable enableDisable{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerRetStatusCommon);
+    };
+
+    // THMSGV2T1PowerRetStatusCradleBattery
+    struct PowerRetStatusCradleBattery
+    {
+        // CODEGEN EnumRange Command::POWER_RET_STATUS
+        Command command{Command::POWER_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::CRADLE_BATTERY
+        PowerInquiredType type{PowerInquiredType::CRADLE_BATTERY}; // 0x1
+        // CODEGEN Range 0 100
+        UInt8 batteryLevel{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus chargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerRetStatusCradleBattery);
+    };
+
+    // THMSGV2T1PowerRetStatusCradleBatteryThreshold
+    struct PowerRetStatusCradleBatteryThreshold
+    {
+        // CODEGEN EnumRange Command::POWER_RET_STATUS
+        Command command{Command::POWER_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::CRADLE_BATTERY_WITH_THRESHOLD
+        PowerInquiredType type{PowerInquiredType::CRADLE_BATTERY_WITH_THRESHOLD}; // 0x1
+        UInt8 value1{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus batteryChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
+        // CODEGEN Range 0 100
+        UInt8 batteryThreshold{}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerRetStatusCradleBatteryThreshold);
+    };
+
+    // THMSGV2T1PowerRetStatusLeftRightBattery
+    struct PowerRetStatusLeftRightBattery
+    {
+        // CODEGEN EnumRange Command::POWER_RET_STATUS
+        Command command{Command::POWER_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::LEFT_RIGHT_BATTERY
+        PowerInquiredType type{PowerInquiredType::LEFT_RIGHT_BATTERY}; // 0x1
+        // CODEGEN Range 0 100
+        UInt8 leftBatteryLevel{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus leftChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
+        // CODEGEN Range 0 100
+        UInt8 rightBatteryLevel{}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus rightChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerRetStatusLeftRightBattery);
+    };
+
+    // THMSGV2T1PowerRetStatusLeftRightBatteryBase
+    struct PowerRetStatusLeftRightBatteryBase
+    {
+        // CODEGEN EnumRange Command::POWER_RET_STATUS
+        Command command{Command::POWER_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::LEFT_RIGHT_BATTERY
+        PowerInquiredType type{PowerInquiredType::LEFT_RIGHT_BATTERY}; // 0x1
+        // CODEGEN Range 0 100
+        UInt8 leftBatteryLevel{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus leftChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
+        // CODEGEN Range 0 100
+        UInt8 rightBatteryLevel{}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus rightChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerRetStatusLeftRightBatteryBase);
+    };
+
+    // THMSGV2T1PowerRetStatusLeftRightBatteryThreshold
+    struct PowerRetStatusLeftRightBatteryThreshold
+    {
+        // CODEGEN EnumRange Command::POWER_RET_STATUS
+        Command command{Command::POWER_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::LR_BATTERY_WITH_THRESHOLD
+        PowerInquiredType type{PowerInquiredType::LR_BATTERY_WITH_THRESHOLD}; // 0x1
+        // CODEGEN Range 0 100
+        UInt8 leftBatteryLevel{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus leftChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
+        // CODEGEN Range 0 100
+        UInt8 rightBatteryLevel{}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryChargingStatus rightChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x5
+        // CODEGEN Range 0 100
+        UInt8 leftBatteryThreshold{}; // 0x6
+        // CODEGEN Range 0 100
+        UInt8 rightBatteryThreshold{}; // 0x7
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerRetStatusLeftRightBatteryThreshold);
+    };
+
+    // THMSGV2T1PowerRetStatusPowerSavingModeOnOff
+    struct PowerRetStatusPowerSavingModeOnOff
+    {
+        // CODEGEN EnumRange Command::POWER_RET_STATUS
+        Command command{Command::POWER_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::POWER_OFF
+        PowerInquiredType type{PowerInquiredType::POWER_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable enableDisable{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerRetStatusPowerSavingModeOnOff);
+    };
+
+    // THMSGV2T1PowerSetParam
+    struct PowerSetParam
+    {
+        // CODEGEN EnumRange Command::POWER_SET_PARAM
+        Command command{Command::POWER_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PowerInquiredType type{PowerInquiredType::BATTERY}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerSetParam);
+    };
+
+    // THMSGV2T1PowerSetParamAutoPowerOff
+    struct PowerSetParamAutoPowerOff
+    {
+        // CODEGEN EnumRange Command::POWER_SET_PARAM
+        Command command{Command::POWER_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::AUTO_POWER_OFF
+        PowerInquiredType type{PowerInquiredType::AUTO_POWER_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AutoPowerOffElements currentPowerOffElements{AutoPowerOffElements::POWER_OFF_IN_5_MIN}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AutoPowerOffElements lastSelectPowerOffElements{AutoPowerOffElements::POWER_OFF_IN_5_MIN}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerSetParamAutoPowerOff);
+    };
+
+    // THMSGV2T1PowerSetParamAutoPowerOffWithWearingDetection
+    struct PowerSetParamAutoPowerOffWithWearingDetection
+    {
+        // CODEGEN EnumRange Command::POWER_SET_PARAM
+        Command command{Command::POWER_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::AUTO_POWER_OFF_WEARING_DETECTION
+        PowerInquiredType type{PowerInquiredType::AUTO_POWER_OFF_WEARING_DETECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AutoPowerOffWearingDetectionElements currentPowerOffElements{AutoPowerOffWearingDetectionElements::POWER_OFF_IN_5_MIN}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        AutoPowerOffWearingDetectionElements lastSelectPowerOffElements{AutoPowerOffWearingDetectionElements::POWER_OFF_IN_5_MIN}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerSetParamAutoPowerOffWithWearingDetection);
+    };
+
+    // THMSGV2T1PowerSetParamBatterySafeMode
+    struct PowerSetParamBatterySafeMode
+    {
+        // CODEGEN EnumRange Command::POWER_SET_PARAM
+        Command command{Command::POWER_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::BATTERY_SAFE_MODE
+        PowerInquiredType type{PowerInquiredType::BATTERY_SAFE_MODE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatterySafeModeEffectStatusControl effectStatusControl{BatterySafeModeEffectStatusControl::NOT_TO_CHANGE}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerSetParamBatterySafeMode);
+    };
+
+    // THMSGV2T1PowerSetParamSettingOnOff
+    struct PowerSetParamSettingOnOff
+    {
+        // CODEGEN EnumRange Command::POWER_SET_PARAM
+        Command command{Command::POWER_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::POWER_OFF
+        PowerInquiredType type{PowerInquiredType::POWER_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffSettingValue{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerSetParamSettingOnOff);
+    };
+
+    // THMSGV2T1PowerSetStatus
+    struct PowerSetStatus
+    {
+        // CODEGEN EnumRange Command::POWER_SET_STATUS
+        Command command{Command::POWER_SET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PowerInquiredType type{PowerInquiredType::BATTERY}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerSetStatus);
+    };
+
+    // THMSGV2T1PowerSetStatusLinkControl
+    struct PowerSetStatusLinkControl
+    {
+        // CODEGEN EnumRange Command::POWER_SET_STATUS
+        Command command{Command::POWER_SET_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::LINK_CONTROL
+        PowerInquiredType type{PowerInquiredType::LINK_CONTROL}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable powerOffSettingValue{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerSetStatusLinkControl);
+    };
+
+    // THMSGV2T1PowerSetStatusPowerOff
+    struct PowerSetStatusPowerOff
+    {
+        // CODEGEN EnumRange Command::POWER_SET_STATUS
+        Command command{Command::POWER_SET_STATUS}; // 0x0
+        // CODEGEN EnumRange PowerInquiredType::POWER_OFF
+        PowerInquiredType type{PowerInquiredType::POWER_OFF}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PowerOffSettingValue powerOffSettingValue{PowerOffSettingValue::USER_POWER_OFF}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(PowerSetStatusPowerOff);
+    };
+
+    // THMSGV2T1QuickAccessFunctionInfo
+    struct QuickAccessFunctionInfo
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        Action action{Action::SINGLE_TAP}; // 0x0
+        UInt8 defaultFunction{}; // 0x1
+        MDRPodArray<UInt8> functionList; // 0x2
+
+        MDR_DEFINE_EXTERN_READ_WRITE(QuickAccessFunctionInfo);
+    };
+
+    // THMSGV2T1QuickAccessStatus
+    struct QuickAccessStatus
+    {
+        UInt8 quickAccessFunction{}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x1
+
+        MDR_DEFINE_EXTERN_READ_WRITE(QuickAccessStatus);
+    };
+
+    // THMSGV2T1RetPlayCapability
+    struct RetPlayCapability
+    {
+        // CODEGEN EnumRange Command::PLAY_RET_CAPABILITY
+        Command command{Command::PLAY_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(RetPlayCapability);
+    };
+
+    // THMSGV2T1RetPlayCapabilityPlayMode
+    struct RetPlayCapabilityPlayMode
+    {
+        // CODEGEN EnumRange Command::PLAY_RET_CAPABILITY
+        Command command{Command::PLAY_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange PlayInquiredType::PLAY_MODE
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAY_MODE}; // 0x1
+        MDRPodArray<PlayMode> playModes; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(RetPlayCapabilityPlayMode);
+    };
+
+    // THMSGV2T1RetPlayCapabilityPlaybackControlWithCallVolumeAdjustment
+    struct RetPlayCapabilityPlaybackControlWithCallVolumeAdjustment
+    {
+        // CODEGEN EnumRange Command::PLAY_RET_CAPABILITY
+        Command command{Command::PLAY_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+        // CODEGEN Range 1 255
+        UInt8 volumeStepForMusic{}; // 0x2
+        // CODEGEN Range 1 255
+        UInt8 volumeStepForCall{}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(RetPlayCapabilityPlaybackControlWithCallVolumeAdjustment);
+    };
+
+    // THMSGV2T1RetPlayCapabilityPlaybackControlWithFunctionChange
+    struct RetPlayCapabilityPlaybackControlWithFunctionChange
+    {
+        // CODEGEN EnumRange Command::PLAY_RET_CAPABILITY
+        Command command{Command::PLAY_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+        // CODEGEN Range 1 255
+        UInt8 volumeStep{}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(RetPlayCapabilityPlaybackControlWithFunctionChange);
+    };
+
+    // THMSGV2T1RetPlayParam
+    struct RetPlayParam
+    {
+        // CODEGEN EnumRange Command::PLAY_RET_PARAM
+        Command command{Command::PLAY_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(RetPlayParam);
+    };
+
+    // THMSGV2T1RetPlayParamPlayMode
+    struct RetPlayParamPlayMode
+    {
+        // CODEGEN EnumRange Command::PLAY_RET_PARAM
+        Command command{Command::PLAY_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange PlayInquiredType::PLAY_MODE
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAY_MODE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayMode playMode{PlayMode::PLAY_MODE_OFF}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(RetPlayParamPlayMode);
+    };
+
+    // THMSGV2T1RetPlayParamPlaybackControllerVolume
+    struct RetPlayParamPlaybackControllerVolume
+    {
+        // CODEGEN EnumRange Command::PLAY_RET_PARAM
+        Command command{Command::PLAY_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+        // CODEGEN Range 0 255
+        UInt8 volumeValue{}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(RetPlayParamPlaybackControllerVolume);
+    };
+
+    // THMSGV2T1RetPlayParamPlaybackControllerVolumeWithMute
+    struct RetPlayParamPlaybackControllerVolumeWithMute
+    {
+        // CODEGEN EnumRange Command::PLAY_RET_PARAM
+        Command command{Command::PLAY_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+        // CODEGEN Range 0 255
+        UInt8 volumeValue{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue muteSetting{OnOffSettingValue::ON}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(RetPlayParamPlaybackControllerVolumeWithMute);
+    };
+
+    // THMSGV2T1RetPlayStatus
+    struct RetPlayStatus
+    {
+        // CODEGEN EnumRange Command::PLAY_RET_STATUS
+        Command command{Command::PLAY_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(RetPlayStatus);
+    };
+
+    // THMSGV2T1RetPlayStatusCommon
+    struct RetPlayStatusCommon
+    {
+        // CODEGEN EnumRange Command::PLAY_RET_STATUS
+        Command command{Command::PLAY_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(RetPlayStatusCommon);
+    };
+
+    // THMSGV2T1RetPlayStatusPlaybackControlWithCallVolumeAdjustmentAndFunctionChange
+    struct RetPlayStatusPlaybackControlWithCallVolumeAdjustmentAndFunctionChange
+    {
+        // CODEGEN EnumRange Command::PLAY_RET_STATUS
+        Command command{Command::PLAY_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlaybackStatus playbackStatus{PlaybackStatus::UNSETTLED}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        MusicCallStatus musicCallStatus{MusicCallStatus::MUSIC}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable playbackControlStatus{EnableDisable::ENABLE}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(RetPlayStatusPlaybackControlWithCallVolumeAdjustmentAndFunctionChange);
+    };
+
+    // THMSGV2T1RetPlayStatusPlaybackControlWithFunctionChange
+    struct RetPlayStatusPlaybackControlWithFunctionChange
+    {
+        // CODEGEN EnumRange Command::PLAY_RET_STATUS
+        Command command{Command::PLAY_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlaybackStatus playbackStatus{PlaybackStatus::UNSETTLED}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable playbackControlStatus{EnableDisable::ENABLE}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(RetPlayStatusPlaybackControlWithFunctionChange);
+    };
+
+    // THMSGV2T1RetPlayStatusPlaybackController
+    struct RetPlayStatusPlaybackController
+    {
+        // CODEGEN EnumRange Command::PLAY_RET_STATUS
+        Command command{Command::PLAY_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlaybackStatus playbackStatus{PlaybackStatus::UNSETTLED}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        MusicCallStatus musicCallStatus{MusicCallStatus::MUSIC}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(RetPlayStatusPlaybackController);
+    };
+
+    // THMSGV2T1SARAutoPlayGetCapability
+    struct SARAutoPlayGetCapability
+    {
+        // CODEGEN EnumRange Command::SAR_AUTO_PLAY_GET_CAPABILITY
+        Command command{Command::SAR_AUTO_PLAY_GET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlayInquiredType inqType{SARAutoPlayInquiredType::SAR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SARAutoPlayGetCapability);
+    };
+
+    // THMSGV2T1SARAutoPlayGetParam
+    struct SARAutoPlayGetParam
+    {
+        // CODEGEN EnumRange Command::SAR_AUTO_PLAY_GET_PARAM
+        Command command{Command::SAR_AUTO_PLAY_GET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlayInquiredType inqType{SARAutoPlayInquiredType::SAR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SARAutoPlayGetParam);
+    };
+
+    // THMSGV2T1SARAutoPlayGetStatus
+    struct SARAutoPlayGetStatus
+    {
+        // CODEGEN EnumRange Command::SAR_AUTO_PLAY_GET_STATUS
+        Command command{Command::SAR_AUTO_PLAY_GET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlayInquiredType inqType{SARAutoPlayInquiredType::SAR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SARAutoPlayGetStatus);
+    };
+
+    // THMSGV2T1SARAutoPlayNotifyParam
+    struct SARAutoPlayNotifyParam
+    {
+        // CODEGEN EnumRange Command::SAR_AUTO_PLAY_NTFY_PARAM
+        Command command{Command::SAR_AUTO_PLAY_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlayInquiredType inqType{SARAutoPlayInquiredType::SAR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SARAutoPlayNotifyParam);
+    };
+
+    // THMSGV2T1SARAutoPlayNotifyParamGattConnectable
+    struct SARAutoPlayNotifyParamGattConnectable
+    {
+        // CODEGEN EnumRange Command::SAR_AUTO_PLAY_NTFY_PARAM
+        Command command{Command::SAR_AUTO_PLAY_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlayInquiredType inqType{SARAutoPlayInquiredType::SAR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue settingType{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SARAutoPlayNotifyParamGattConnectable);
+    };
+
+    // THMSGV2T1SARAutoPlayNotifyParamSAROptimization
+    struct SARAutoPlayNotifyParamSAROptimization
+    {
+        // CODEGEN EnumRange Command::SAR_AUTO_PLAY_NTFY_PARAM
+        Command command{Command::SAR_AUTO_PLAY_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlayInquiredType inqType{SARAutoPlayInquiredType::SAR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlaySensorCalibrationState sensorCalibrationState{SARAutoPlaySensorCalibrationState::ACCEL_MEASURING_START}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SARAutoPlayNotifyParamSAROptimization);
+    };
+
+    // THMSGV2T1SARAutoPlayNotifyStatus
+    struct SARAutoPlayNotifyStatus
+    {
+        // CODEGEN EnumRange Command::SAR_AUTO_PLAY_NTFY_STATUS
+        Command command{Command::SAR_AUTO_PLAY_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlayInquiredType inqType{SARAutoPlayInquiredType::SAR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SARAutoPlayNotifyStatus);
+    };
+
+    // THMSGV2T1SARAutoPlayNotifyStatusGattConnectable
+    struct SARAutoPlayNotifyStatusGattConnectable
+    {
+        // CODEGEN EnumRange Command::SAR_AUTO_PLAY_NTFY_STATUS
+        Command command{Command::SAR_AUTO_PLAY_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlayInquiredType inqType{SARAutoPlayInquiredType::SAR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SARAutoPlayNotifyStatusGattConnectable);
+    };
+
+    // THMSGV2T1SARAutoPlayNotifyStatusSAROptimization
+    struct SARAutoPlayNotifyStatusSAROptimization
+    {
+        // CODEGEN EnumRange Command::SAR_AUTO_PLAY_NTFY_STATUS
+        Command command{Command::SAR_AUTO_PLAY_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlayInquiredType inqType{SARAutoPlayInquiredType::SAR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable value2{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlaySensorCalibrationValue sensorCalibrationValue{SARAutoPlaySensorCalibrationValue::UNOPTIMIZED}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SARAutoPlayNotifyStatusSAROptimization);
+    };
+
+    // THMSGV2T1SARAutoPlayRetCapability
+    struct SARAutoPlayRetCapability
+    {
+        // CODEGEN EnumRange Command::SAR_AUTO_PLAY_RET_CAPABILITY
+        Command command{Command::SAR_AUTO_PLAY_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlayInquiredType inqType{SARAutoPlayInquiredType::SAR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SARAutoPlayRetCapability);
+    };
+
+    // THMSGV2T1SARAutoPlayRetCapabilityAutoPlay
+    struct SARAutoPlayRetCapabilityAutoPlay
+    {
+        // CODEGEN EnumRange Command::SAR_AUTO_PLAY_RET_CAPABILITY
+        Command command{Command::SAR_AUTO_PLAY_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlayInquiredType inqType{SARAutoPlayInquiredType::SAR}; // 0x1
+        MDRPodArray<SARAutoPlaySupportedAutoPlayService> supportedAutoPlayServices; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SARAutoPlayRetCapabilityAutoPlay);
+    };
+
+    // THMSGV2T1SARAutoPlayRetCapabilityGattConnectable
+    struct SARAutoPlayRetCapabilityGattConnectable
+    {
+        // CODEGEN EnumRange Command::SAR_AUTO_PLAY_RET_CAPABILITY
+        Command command{Command::SAR_AUTO_PLAY_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlayInquiredType inqType{SARAutoPlayInquiredType::SAR}; // 0x1
+        MDRPodArray<SARAutoPlayExclusiveFunction> exclusiveFunctions; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SARAutoPlayRetCapabilityGattConnectable);
+    };
+
+    // THMSGV2T1SARAutoPlayRetCapabilityIntegratedAutoPlay
+    struct SARAutoPlayRetCapabilityIntegratedAutoPlay
+    {
+        // CODEGEN EnumRange Command::SAR_AUTO_PLAY_RET_CAPABILITY
+        Command command{Command::SAR_AUTO_PLAY_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlayInquiredType inqType{SARAutoPlayInquiredType::SAR}; // 0x1
+        MDRPodArray<UInt8> value; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SARAutoPlayRetCapabilityIntegratedAutoPlay);
+    };
+
+    // THMSGV2T1SARAutoPlayRetCapabilitySAR
+    struct SARAutoPlayRetCapabilitySAR
+    {
+        // CODEGEN EnumRange Command::SAR_AUTO_PLAY_RET_CAPABILITY
+        Command command{Command::SAR_AUTO_PLAY_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlayInquiredType inqType{SARAutoPlayInquiredType::SAR}; // 0x1
+        MDRPodArray<SARAutoPlaySupportedSARService> supportedSARServices; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SARAutoPlayRetCapabilitySAR);
+    };
+
+    // THMSGV2T1SARAutoPlayRetParam
+    struct SARAutoPlayRetParam
+    {
+        // CODEGEN EnumRange Command::SAR_AUTO_PLAY_RET_PARAM
+        Command command{Command::SAR_AUTO_PLAY_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlayInquiredType inqType{SARAutoPlayInquiredType::SAR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SARAutoPlayRetParam);
+    };
+
+    // THMSGV2T1SARAutoPlayRetParamGattConnectable
+    struct SARAutoPlayRetParamGattConnectable
+    {
+        // CODEGEN EnumRange Command::SAR_AUTO_PLAY_RET_PARAM
+        Command command{Command::SAR_AUTO_PLAY_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlayInquiredType inqType{SARAutoPlayInquiredType::SAR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue settingType{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SARAutoPlayRetParamGattConnectable);
+    };
+
+    // THMSGV2T1SARAutoPlayRetStatus
+    struct SARAutoPlayRetStatus
+    {
+        // CODEGEN EnumRange Command::SAR_AUTO_PLAY_RET_STATUS
+        Command command{Command::SAR_AUTO_PLAY_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlayInquiredType inqType{SARAutoPlayInquiredType::SAR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SARAutoPlayRetStatus);
+    };
+
+    // THMSGV2T1SARAutoPlayRetStatusGattConnectable
+    struct SARAutoPlayRetStatusGattConnectable
+    {
+        // CODEGEN EnumRange Command::SAR_AUTO_PLAY_RET_STATUS
+        Command command{Command::SAR_AUTO_PLAY_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlayInquiredType inqType{SARAutoPlayInquiredType::SAR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SARAutoPlayRetStatusGattConnectable);
+    };
+
+    // THMSGV2T1SARAutoPlayRetStatusSAROptimization
+    struct SARAutoPlayRetStatusSAROptimization
+    {
+        // CODEGEN EnumRange Command::SAR_AUTO_PLAY_RET_STATUS
+        Command command{Command::SAR_AUTO_PLAY_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlayInquiredType inqType{SARAutoPlayInquiredType::SAR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable value2{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlaySensorCalibrationValue sensorCalibrationValue{SARAutoPlaySensorCalibrationValue::UNOPTIMIZED}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SARAutoPlayRetStatusSAROptimization);
+    };
+
+    // THMSGV2T1SARAutoPlaySetParam
+    struct SARAutoPlaySetParam
+    {
+        // CODEGEN EnumRange Command::SAR_AUTO_PLAY_SET_PARAM
+        Command command{Command::SAR_AUTO_PLAY_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlayInquiredType inqType{SARAutoPlayInquiredType::SAR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SARAutoPlaySetParam);
+    };
+
+    // THMSGV2T1SARAutoPlaySetParamGattConnectable
+    struct SARAutoPlaySetParamGattConnectable
+    {
+        // CODEGEN EnumRange Command::SAR_AUTO_PLAY_SET_PARAM
+        Command command{Command::SAR_AUTO_PLAY_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlayInquiredType inqType{SARAutoPlayInquiredType::SAR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue settingType{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SARAutoPlaySetParamGattConnectable);
+    };
+
+    // THMSGV2T1SARAutoPlaySetParamSAROptimization
+    struct SARAutoPlaySetParamSAROptimization
+    {
+        // CODEGEN EnumRange Command::SAR_AUTO_PLAY_SET_PARAM
+        Command command{Command::SAR_AUTO_PLAY_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlayInquiredType inqType{SARAutoPlayInquiredType::SAR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SARAutoPlaySensorCalibrationState sensorCalibrationState{SARAutoPlaySensorCalibrationState::ACCEL_MEASURING_START}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SARAutoPlaySetParamSAROptimization);
+    };
+
+    // THMSGV2T1SenseGetCapability
+    struct SenseGetCapability
+    {
+        // CODEGEN EnumRange Command::SENSE_GET_CAPABILITY
+        Command command{Command::SENSE_GET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SenseInquiredType type{SenseInquiredType::ADAPTIVE_CONTROL}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SenseGetCapability);
+    };
+
+    // THMSGV2T1SenseGetCapabilityAdaptiveControl
+    struct SenseGetCapabilityAdaptiveControl
+    {
+        // CODEGEN EnumRange Command::SENSE_GET_CAPABILITY
+        Command command{Command::SENSE_GET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SenseInquiredType type{SenseInquiredType::ADAPTIVE_CONTROL}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SenseGetCapabilityAdaptiveControl);
+    };
+
+    // THMSGV2T1SenseGetExtInfo
+    struct SenseGetExtInfo
+    {
+        // CODEGEN EnumRange Command::SENSE_GET_EXT_INFO
+        Command command{Command::SENSE_GET_EXT_INFO}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SenseInquiredType type{SenseInquiredType::ADAPTIVE_CONTROL}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SenseGetExtInfo);
+    };
+
+    // THMSGV2T1SenseGetExtInfoAdaptiveControl
+    struct SenseGetExtInfoAdaptiveControl
+    {
+        // CODEGEN EnumRange Command::SENSE_GET_EXT_INFO
+        Command command{Command::SENSE_GET_EXT_INFO}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SenseInquiredType type{SenseInquiredType::ADAPTIVE_CONTROL}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SenseApplicableFunction applicableFunction{SenseApplicableFunction::NC_ON_OFF_AND_ASM_ON_OFF}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SenseGetExtInfoAdaptiveControl);
+    };
+
+    // THMSGV2T1SenseNotifyParam
+    struct SenseNotifyParam
+    {
+        // CODEGEN EnumRange Command::SENSE_NTFY_PARAM
+        Command command{Command::SENSE_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SenseInquiredType type{SenseInquiredType::ADAPTIVE_CONTROL}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SenseNotifyParam);
+    };
+
+    // THMSGV2T1SenseNotifyParamAdaptiveControl
+    struct SenseNotifyParamAdaptiveControl
+    {
+        // CODEGEN EnumRange Command::SENSE_NTFY_PARAM
+        Command command{Command::SENSE_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange SenseInquiredType::ADAPTIVE_CONTROL_WITH_PARAMETER_NOTIFICATION
+        SenseInquiredType type{SenseInquiredType::ADAPTIVE_CONTROL_WITH_PARAMETER_NOTIFICATION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        RequestResult requestResult{RequestResult::ACCEPTED}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SenseNotifyParamAdaptiveControl);
+    };
+
+    // THMSGV2T1SenseNotifyStatus
+    struct SenseNotifyStatus
+    {
+        // CODEGEN EnumRange Command::SENSE_NTFY_STATUS
+        Command command{Command::SENSE_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SenseInquiredType type{SenseInquiredType::ADAPTIVE_CONTROL}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SenseNotifyStatus);
+    };
+
+    // THMSGV2T1SenseNotifyStatusAdaptiveControl
+    struct SenseNotifyStatusAdaptiveControl
+    {
+        // CODEGEN EnumRange Command::SENSE_NTFY_STATUS
+        Command command{Command::SENSE_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SenseInquiredType type{SenseInquiredType::ADAPTIVE_CONTROL}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SenseSettingControl settingControl{SenseSettingControl::START_SETTING}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SenseNotifyStatusAdaptiveControl);
+    };
+
+    // THMSGV2T1SenseRetCapability
+    struct SenseRetCapability
+    {
+        // CODEGEN EnumRange Command::SENSE_RET_CAPABILITY
+        Command command{Command::SENSE_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SenseInquiredType type{SenseInquiredType::ADAPTIVE_CONTROL}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SenseRetCapability);
+    };
+
+    // THMSGV2T1SenseRetCapabilityAdaptiveControl
+    struct SenseRetCapabilityAdaptiveControl
+    {
+        // CODEGEN EnumRange Command::SENSE_RET_CAPABILITY
+        Command command{Command::SENSE_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SenseInquiredType type{SenseInquiredType::ADAPTIVE_CONTROL}; // 0x1
+        MDRPodArray<SenseApplicableFunction> applicableFunctions; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SenseRetCapabilityAdaptiveControl);
+    };
+
+    // THMSGV2T1SenseRetExtInfo
+    struct SenseRetExtInfo
+    {
+        // CODEGEN EnumRange Command::SENSE_RET_EXT_INFO
+        Command command{Command::SENSE_RET_EXT_INFO}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SenseInquiredType type{SenseInquiredType::ADAPTIVE_CONTROL}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SenseRetExtInfo);
+    };
+
+    // THMSGV2T1SenseRetExtInfoAdaptiveControl
+    struct SenseRetExtInfoAdaptiveControl
+    {
+        // CODEGEN EnumRange Command::SENSE_RET_EXT_INFO
+        Command command{Command::SENSE_RET_EXT_INFO}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SenseInquiredType type{SenseInquiredType::ADAPTIVE_CONTROL}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SenseApplicableFunction senseApplicableFunction{SenseApplicableFunction::NC_ON_OFF_AND_ASM_ON_OFF}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SenseRetExtInfoAdaptiveControl);
+    };
+
+    // THMSGV2T1SenseRetExtInfoAdaptiveControlEqPreset
+    struct SenseRetExtInfoAdaptiveControlEqPreset
+    {
+        // CODEGEN EnumRange Command::SENSE_RET_EXT_INFO
+        Command command{Command::SENSE_RET_EXT_INFO}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SenseInquiredType senseInquiredType{SenseInquiredType::ADAPTIVE_CONTROL}; // 0x1
+        // CODEGEN EnumRange SenseApplicableFunction::EQ_PRESET_ID
+        SenseApplicableFunction senseApplicableFunction{SenseApplicableFunction::EQ_PRESET_ID}; // 0x2
+        // CODEGEN EnumRange EqPresetId::GAMING_EQ
+        EqPresetId eqPresetId{EqPresetId::GAMING_EQ}; // 0x3
+        MDRPodArray<UInt8> value3; // 0x4
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SenseRetExtInfoAdaptiveControlEqPreset);
+    };
+
+    // THMSGV2T1SenseSetParam
+    struct SenseSetParam
+    {
+        // CODEGEN EnumRange Command::SENSE_SET_PARAM
+        Command command{Command::SENSE_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SenseInquiredType type{SenseInquiredType::ADAPTIVE_CONTROL}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SenseSetParam);
+    };
+
+    // THMSGV2T1SenseSetStatus
+    struct SenseSetStatus
+    {
+        // CODEGEN EnumRange Command::SENSE_SET_STATUS
+        Command command{Command::SENSE_SET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SenseInquiredType type{SenseInquiredType::ADAPTIVE_CONTROL}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SenseSetStatus);
+    };
+
+    // THMSGV2T1SenseSetStatusAdaptiveControl
+    struct SenseSetStatusAdaptiveControl
+    {
+        // CODEGEN EnumRange Command::SENSE_SET_STATUS
+        Command command{Command::SENSE_SET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SenseInquiredType type{SenseInquiredType::ADAPTIVE_CONTROL}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SenseSettingControl settingControl{SenseSettingControl::START_SETTING}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SenseSetStatusAdaptiveControl);
+    };
+
+    // THMSGV2T1SetLogStatus
+    struct SetLogStatus
+    {
+        // CODEGEN EnumRange Command::LOG_SET_STATUS
+        Command command{Command::LOG_SET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LogInquiredType type{LogInquiredType::ACTION_LOG_NOTIFIER}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SetLogStatus);
+    };
+
+    // THMSGV2T1SetLogStatusActionLog
+    struct SetLogStatusActionLog
+    {
+        // CODEGEN EnumRange Command::LOG_SET_STATUS
+        Command command{Command::LOG_SET_STATUS}; // 0x0
+        // CODEGEN EnumRange LogInquiredType::ACTION_LOG_NOTIFIER
+        LogInquiredType type{LogInquiredType::ACTION_LOG_NOTIFIER}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable enableDisable{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SetLogStatusActionLog);
+    };
+
+    // THMSGV2T1SetLogStatusTimeSeriesOperationLog
+    struct SetLogStatusTimeSeriesOperationLog
+    {
+        // CODEGEN EnumRange Command::LOG_SET_STATUS
+        Command command{Command::LOG_SET_STATUS}; // 0x0
+        // CODEGEN EnumRange LogInquiredType::TIME_SERIES_OPERATIONLOG_NOTIFIER
+        LogInquiredType type{LogInquiredType::TIME_SERIES_OPERATIONLOG_NOTIFIER}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable enableDisable{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SetLogStatusTimeSeriesOperationLog);
+    };
+
+    // THMSGV2T1SetPlayParam
+    struct SetPlayParam
+    {
+        // CODEGEN EnumRange Command::PLAY_SET_PARAM
+        Command command{Command::PLAY_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType type{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SetPlayParam);
+    };
+
+    // THMSGV2T1SetPlayParamPlayMode
+    struct SetPlayParamPlayMode
+    {
+        // CODEGEN EnumRange Command::PLAY_SET_PARAM
+        Command command{Command::PLAY_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange PlayInquiredType::PLAY_MODE
+        PlayInquiredType type{PlayInquiredType::PLAY_MODE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayMode playMode{PlayMode::PLAY_MODE_OFF}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SetPlayParamPlayMode);
+    };
+
+    // THMSGV2T1SetPlayParamPlaybackControllerVolume
+    struct SetPlayParamPlaybackControllerVolume
+    {
+        // CODEGEN EnumRange Command::PLAY_SET_PARAM
+        Command command{Command::PLAY_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType type{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+        // CODEGEN Range 0 255
+        UInt8 volumeValue{}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SetPlayParamPlaybackControllerVolume);
+    };
+
+    // THMSGV2T1SetPlayStatus
+    struct SetPlayStatus
+    {
+        // CODEGEN EnumRange Command::PLAY_SET_STATUS
+        Command command{Command::PLAY_SET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType type{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SetPlayStatus);
+    };
+
+    // THMSGV2T1SetPlayStatusPlaybackController
+    struct SetPlayStatusPlaybackController
+    {
+        // CODEGEN EnumRange Command::PLAY_SET_STATUS
+        Command command{Command::PLAY_SET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType type{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN EnumRange PlaybackControl::PAUSE PlaybackControl::TRACK_UP PlaybackControl::TRACK_DOWN PlaybackControl::PLAY
+        PlaybackControl control{PlaybackControl::PLAY}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SetPlayStatusPlaybackController);
+    };
+
+    // THMSGV2T1SpecificInformationType
+    struct SpecificInformationType
+    {
+        UInt8 code{}; // 0x0
+
+        MDR_DEFINE_EXTERN_READ_WRITE(SpecificInformationType);
+    };
+
+    // THMSGV2T1StringData
+    struct StringData
+    {
+        MDRPrefixedString string; // 0x0
+
+        MDR_DEFINE_EXTERN_READ_WRITE(StringData);
+    };
+
+    // THMSGV2T1SystemGetCapability
+    struct SystemGetCapability
+    {
+        // CODEGEN EnumRange Command::SYSTEM_GET_CAPABILITY
+        Command command{Command::SYSTEM_GET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemGetCapability);
+    };
+
+    // THMSGV2T1SystemGetExtParam
+    struct SystemGetExtParam
+    {
+        // CODEGEN EnumRange Command::SYSTEM_GET_EXT_PARAM
+        Command command{Command::SYSTEM_GET_EXT_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemGetExtParam);
+    };
+
+    // THMSGV2T1SystemGetParam
+    struct SystemGetParam
+    {
+        // CODEGEN EnumRange Command::SYSTEM_GET_PARAM
+        Command command{Command::SYSTEM_GET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemGetParam);
+    };
+
+    // THMSGV2T1SystemGetStatus
+    struct SystemGetStatus
+    {
+        // CODEGEN EnumRange Command::SYSTEM_GET_STATUS
+        Command command{Command::SYSTEM_GET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemGetStatus);
+    };
+
+    // THMSGV2T1SystemNotifyExtParam
+    struct SystemNotifyExtParam
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_EXT_PARAM
+        Command command{Command::SYSTEM_NTFY_EXT_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyExtParam);
+    };
+
+    // THMSGV2T1SystemNotifyExtParamCallSettings
+    struct SystemNotifyExtParamCallSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_EXT_PARAM
+        Command command{Command::SYSTEM_NTFY_EXT_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::CALL_SETTINGS
+        SystemInquiredType type{SystemInquiredType::CALL_SETTINGS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        CallSettingsTestSoundControlAck testSoundControlAck{CallSettingsTestSoundControlAck::ACK}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyExtParamCallSettings);
+    };
+
+    // THMSGV2T1SystemNotifyExtParamSmartTalkingModeType1
+    struct SystemNotifyExtParamSmartTalkingModeType1
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_EXT_PARAM
+        Command command{Command::SYSTEM_NTFY_EXT_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::SMART_TALKING_MODE_TYPE1
+        SystemInquiredType type{SystemInquiredType::SMART_TALKING_MODE_TYPE1}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        DetectSensitivity detectSensitivity{DetectSensitivity::AUTO}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue voiceFocus{OnOffSettingValue::ON}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ModeOutTime modeOffTime{ModeOutTime::FAST}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyExtParamSmartTalkingModeType1);
+    };
+
+    // THMSGV2T1SystemNotifyExtParamSmartTalkingModeType2
+    struct SystemNotifyExtParamSmartTalkingModeType2
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_EXT_PARAM
+        Command command{Command::SYSTEM_NTFY_EXT_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::SMART_TALKING_MODE_TYPE2
+        SystemInquiredType type{SystemInquiredType::SMART_TALKING_MODE_TYPE2}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        DetectSensitivity detectSensitivity{DetectSensitivity::AUTO}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ModeOutTime modeOffTime{ModeOutTime::FAST}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyExtParamSmartTalkingModeType2);
+    };
+
+    // THMSGV2T1SystemNotifyExtParamWearingStatusDetector
+    struct SystemNotifyExtParamWearingStatusDetector
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_EXT_PARAM
+        Command command{Command::SYSTEM_NTFY_EXT_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::WEARING_STATUS_DETECTOR
+        SystemInquiredType type{SystemInquiredType::WEARING_STATUS_DETECTOR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceFittingDetectionResult fittingResultLeft{EarpieceFittingDetectionResult::GOOD}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceFittingDetectionResult fittingResultRight{EarpieceFittingDetectionResult::GOOD}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceSeries bestEarpieceSeriesLeft{EarpieceSeries::OTHER}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceSeries bestEarpieceSeriesRight{EarpieceSeries::OTHER}; // 0x5
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceSize bestEarpieceSizeLeft{EarpieceSize::SS}; // 0x6
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceSize bestEarpieceSizeRight{EarpieceSize::SS}; // 0x7
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyExtParamWearingStatusDetector);
+    };
+
+    // THMSGV2T1SystemNotifyParam
+    struct SystemNotifyParam
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_PARAM
+        Command command{Command::SYSTEM_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyParam);
+    };
+
+    // THMSGV2T1SystemNotifyParamAssignableSettings
+    struct SystemNotifyParamAssignableSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_PARAM
+        Command command{Command::SYSTEM_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::ASSIGNABLE_SETTINGS
+        SystemInquiredType type{SystemInquiredType::ASSIGNABLE_SETTINGS}; // 0x1
+        MDRPodArray<Preset> presetList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemNotifyParamAssignableSettings);
+    };
+
+    // THMSGV2T1SystemNotifyParamAssignableSettingsWithLimit
+    struct SystemNotifyParamAssignableSettingsWithLimit
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_PARAM
+        Command command{Command::SYSTEM_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::ASSIGNABLE_SETTINGS_WITH_LIMITATION
+        SystemInquiredType type{SystemInquiredType::ASSIGNABLE_SETTINGS_WITH_LIMITATION}; // 0x1
+        MDRPodArray<Preset> presetList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemNotifyParamAssignableSettingsWithLimit);
+    };
+
+    // THMSGV2T1SystemNotifyParamCallSettings
+    struct SystemNotifyParamCallSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_PARAM
+        Command command{Command::SYSTEM_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::CALL_SETTINGS
+        SystemInquiredType type{SystemInquiredType::CALL_SETTINGS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue selfVoiceOnOff{OnOffSettingValue::ON}; // 0x2
+        UInt8 selfVoiceVolume{}; // 0x3
+        UInt8 callVoiceVolume{}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyParamCallSettings);
+    };
+
+    // THMSGV2T1SystemNotifyParamCommon
+    struct SystemNotifyParamCommon
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_PARAM
+        Command command{Command::SYSTEM_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue settingValue{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyParamCommon);
+    };
+
+    // THMSGV2T1SystemNotifyParamEarpieceSelection
+    struct SystemNotifyParamEarpieceSelection
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_PARAM
+        Command command{Command::SYSTEM_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::EARPIECE_SELECTION
+        SystemInquiredType type{SystemInquiredType::EARPIECE_SELECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceSeries series{EarpieceSeries::OTHER}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyParamEarpieceSelection);
+    };
+
+    // THMSGV2T1SystemNotifyParamFaceTapTestMode
+    struct SystemNotifyParamFaceTapTestMode
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_PARAM
+        Command command{Command::SYSTEM_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::FACE_TAP_TEST_MODE
+        SystemInquiredType type{SystemInquiredType::FACE_TAP_TEST_MODE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        FaceTapKey key{FaceTapKey::LEFT_SIDE_KEY}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        FaceTapAction action{FaceTapAction::DOUBLE_TAP}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyParamFaceTapTestMode);
+    };
+
+    // THMSGV2T1SystemNotifyParamHeadGestureTraining
+    struct SystemNotifyParamHeadGestureTraining
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_PARAM
+        Command command{Command::SYSTEM_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::HEAD_GESTURE_TRAINING
+        SystemInquiredType type{SystemInquiredType::HEAD_GESTURE_TRAINING}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        HeadGestureAction headGestureAction{HeadGestureAction::NOD}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyParamHeadGestureTraining);
+    };
+
+    // THMSGV2T1SystemNotifyParamQuickAccess
+    struct SystemNotifyParamQuickAccess
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_PARAM
+        Command command{Command::SYSTEM_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::QUICK_ACCESS
+        SystemInquiredType type{SystemInquiredType::QUICK_ACCESS}; // 0x1
+        MDRPodArray<UInt8> functionList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemNotifyParamQuickAccess);
+    };
+
+    // THMSGV2T1SystemNotifyParamResetSettings
+    struct SystemNotifyParamResetSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_PARAM
+        Command command{Command::SYSTEM_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::RESET_SETTINGS
+        SystemInquiredType type{SystemInquiredType::RESET_SETTINGS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ResetResult resetResult{ResetResult::SUCCESS}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyParamResetSettings);
+    };
+
+    // THMSGV2T1SystemNotifyParamSmartTalking
+    struct SystemNotifyParamSmartTalking
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_PARAM
+        Command command{Command::SYSTEM_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffValue{OnOffSettingValue::ON}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue previewModeOnOffValue{OnOffSettingValue::ON}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyParamSmartTalking);
+    };
+
+    // THMSGV2T1SystemNotifyParamVoiceAssistantSettings
+    struct SystemNotifyParamVoiceAssistantSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_PARAM
+        Command command{Command::SYSTEM_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::VOICE_ASSISTANT_SETTINGS
+        SystemInquiredType type{SystemInquiredType::VOICE_ASSISTANT_SETTINGS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        VoiceAssistant voiceAssistant{VoiceAssistant::VOICE_RECOGNITION}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyParamVoiceAssistantSettings);
+    };
+
+    // THMSGV2T1SystemNotifyParamWearingStatusDetector
+    struct SystemNotifyParamWearingStatusDetector
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_PARAM
+        Command command{Command::SYSTEM_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::WEARING_STATUS_DETECTOR
+        SystemInquiredType type{SystemInquiredType::WEARING_STATUS_DETECTOR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceFittingDetectionOperationStatus operationStatus{EarpieceFittingDetectionOperationStatus::DETECTION_IS_NOT_STARTED}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceFittingDetectionOperationErrorCode errorCode{EarpieceFittingDetectionOperationErrorCode::NO_ERROR}; // 0x3
+        UInt8 numOfSelectedEarpieces{}; // 0x4
+        UInt8 indexOfCurrentDetection{}; // 0x5
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceSeries currentDetectingSeries{EarpieceSeries::OTHER}; // 0x6
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceSize currentDetectingSize{EarpieceSize::SS}; // 0x7
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyParamWearingStatusDetector);
+    };
+
+    // THMSGV2T1SystemNotifyStatus
+    struct SystemNotifyStatus
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_STATUS
+        Command command{Command::SYSTEM_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyStatus);
+    };
+
+    // THMSGV2T1SystemNotifyStatusAssignableSettings
+    struct SystemNotifyStatusAssignableSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_STATUS
+        Command command{Command::SYSTEM_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::ASSIGNABLE_SETTINGS
+        SystemInquiredType type{SystemInquiredType::ASSIGNABLE_SETTINGS}; // 0x1
+        MDRPodArray<EnableDisable> statusOfKeys; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemNotifyStatusAssignableSettings);
+    };
+
+    // THMSGV2T1SystemNotifyStatusAssignableSettingsWithLimit
+    struct SystemNotifyStatusAssignableSettingsWithLimit
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_STATUS
+        Command command{Command::SYSTEM_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::ASSIGNABLE_SETTINGS_WITH_LIMITATION
+        SystemInquiredType type{SystemInquiredType::ASSIGNABLE_SETTINGS_WITH_LIMITATION}; // 0x1
+        MDRPodArray<EnableDisable> statusOfKeys; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemNotifyStatusAssignableSettingsWithLimit);
+    };
+
+    // THMSGV2T1SystemNotifyStatusCallSettings
+    struct SystemNotifyStatusCallSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_STATUS
+        Command command{Command::SYSTEM_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::CALL_SETTINGS
+        SystemInquiredType type{SystemInquiredType::CALL_SETTINGS}; // 0x1
+        UInt8 value1{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        CallSettingsSettingModeStatus settingModeStatus{CallSettingsSettingModeStatus::MODE_OUT}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        CallSettingsTestSoundStatus testSoundStatus{CallSettingsTestSoundStatus::TEST_SOUND_ENABLED}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        CallSettingsCallingStatus callingStatus{CallSettingsCallingStatus::IN_CALLING}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyStatusCallSettings);
+    };
+
+    // THMSGV2T1SystemNotifyStatusCommon
+    struct SystemNotifyStatusCommon
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_STATUS
+        Command command{Command::SYSTEM_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::WEARING_STATUS_DETECTOR
+        SystemInquiredType type{SystemInquiredType::WEARING_STATUS_DETECTOR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyStatusCommon);
+    };
+
+    // THMSGV2T1SystemNotifyStatusFaceTapTestMode
+    struct SystemNotifyStatusFaceTapTestMode
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_STATUS
+        Command command{Command::SYSTEM_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::FACE_TAP_TEST_MODE
+        SystemInquiredType type{SystemInquiredType::FACE_TAP_TEST_MODE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        FaceTapTestModeStatus status{FaceTapTestModeStatus::IN_TEST_MODE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyStatusFaceTapTestMode);
+    };
+
+    // THMSGV2T1SystemNotifyStatusHeadGestureTraining
+    struct SystemNotifyStatusHeadGestureTraining
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_STATUS
+        Command command{Command::SYSTEM_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::HEAD_GESTURE_TRAINING
+        SystemInquiredType type{SystemInquiredType::HEAD_GESTURE_TRAINING}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        HeadGestureTrainingModeStatus trainingModeStatus{HeadGestureTrainingModeStatus::IN_TEST_MODE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable trainingModeEnable{EnableDisable::ENABLE}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyStatusHeadGestureTraining);
+    };
+
+    // THMSGV2T1SystemNotifyStatusSmartTalking
+    struct SystemNotifyStatusSmartTalking
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_STATUS
+        Command command{Command::SYSTEM_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SmartTalkingModeEffectStatus effectStatus{SmartTalkingModeEffectStatus::NOT_ACTIVE}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyStatusSmartTalking);
+    };
+
+    // THMSGV2T1SystemNotifyStatusVoiceAssistantWakeWord
+    struct SystemNotifyStatusVoiceAssistantWakeWord
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_STATUS
+        Command command{Command::SYSTEM_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::VOICE_ASSISTANT_WAKE_WORD
+        SystemInquiredType type{SystemInquiredType::VOICE_ASSISTANT_WAKE_WORD}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        VoiceAssistantWakeWordStatus status{VoiceAssistantWakeWordStatus::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyStatusVoiceAssistantWakeWord);
+    };
+
+    // THMSGV2T1SystemNotifyStatusWearingStatusDetector
+    struct SystemNotifyStatusWearingStatusDetector
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_STATUS
+        Command command{Command::SYSTEM_NTFY_STATUS}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::WEARING_STATUS_DETECTOR
+        SystemInquiredType type{SystemInquiredType::WEARING_STATUS_DETECTOR}; // 0x1
+        UInt8 value1{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceFittingDetectionModeStatus detectionModeStatus{EarpieceFittingDetectionModeStatus::MODE_OUT}; // 0x3
+        UInt8 numOfSelectedEarpieces{}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceFittingDetectionModeResultCode resultCode{EarpieceFittingDetectionModeResultCode::NO_ERROR}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemNotifyStatusWearingStatusDetector);
+    };
+
+    // THMSGV2T1SystemRetCapability
+    struct SystemRetCapability
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_CAPABILITY
+        Command command{Command::SYSTEM_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemRetCapability);
+    };
+
+    // THMSGV2T1SystemRetCapabilityCallSettings
+    struct SystemRetCapabilityCallSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_CAPABILITY
+        Command command{Command::SYSTEM_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::CALL_SETTINGS
+        SystemInquiredType type{SystemInquiredType::CALL_SETTINGS}; // 0x1
+        // CODEGEN Range 2 255
+        UInt8 maxSelfVoiceVolume{}; // 0x2
+        // CODEGEN Range 2 255
+        UInt8 maxCallVoiceVolume{}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemRetCapabilityCallSettings);
+    };
+
+    // THMSGV2T1SystemRetCapabilityEarpieceSelection
+    struct SystemRetCapabilityEarpieceSelection
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_CAPABILITY
+        Command command{Command::SYSTEM_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::EARPIECE_SELECTION
+        SystemInquiredType type{SystemInquiredType::EARPIECE_SELECTION}; // 0x1
+        MDRPodArray<EarpieceSeries> earpieceSeriesList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemRetCapabilityEarpieceSelection);
+    };
+
+    // THMSGV2T1SystemRetCapabilitySmartTalking
+    struct SystemRetCapabilitySmartTalking
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_CAPABILITY
+        Command command{Command::SYSTEM_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SmartTalkingModePreviewType previewType{SmartTalkingModePreviewType::NOT_SUPPORT}; // 0x2
+        // CODEGEN Range 1 255
+        UInt8 modeOutTimeFast{}; // 0x3
+        // CODEGEN Range 1 255
+        UInt8 modeOutTimeMid{}; // 0x4
+        // CODEGEN Range 1 255
+        UInt8 modeOutTimeSlow{}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemRetCapabilitySmartTalking);
+    };
+
+    // THMSGV2T1SystemRetCapabilityVoiceAssistantSettings
+    struct SystemRetCapabilityVoiceAssistantSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_CAPABILITY
+        Command command{Command::SYSTEM_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::VOICE_ASSISTANT_SETTINGS
+        SystemInquiredType type{SystemInquiredType::VOICE_ASSISTANT_SETTINGS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        VoiceAssistantKeyType voiceAssistantKeyType{VoiceAssistantKeyType::FIXED_BUTTON}; // 0x2
+        MDRPodArray<VoiceAssistant> voiceAssistantList; // 0x3
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemRetCapabilityVoiceAssistantSettings);
+    };
+
+    // THMSGV2T1SystemRetExtParam
+    struct SystemRetExtParam
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_EXT_PARAM
+        Command command{Command::SYSTEM_RET_EXT_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemRetExtParam);
+    };
+
+    // THMSGV2T1SystemRetExtParamSmartTalkingModeType1
+    struct SystemRetExtParamSmartTalkingModeType1
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_EXT_PARAM
+        Command command{Command::SYSTEM_RET_EXT_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::SMART_TALKING_MODE_TYPE1
+        SystemInquiredType type{SystemInquiredType::SMART_TALKING_MODE_TYPE1}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        DetectSensitivity detectSensitivity{DetectSensitivity::AUTO}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue voiceFocus{OnOffSettingValue::ON}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ModeOutTime modeOffTime{ModeOutTime::FAST}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemRetExtParamSmartTalkingModeType1);
+    };
+
+    // THMSGV2T1SystemRetExtParamSmartTalkingModeType2
+    struct SystemRetExtParamSmartTalkingModeType2
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_EXT_PARAM
+        Command command{Command::SYSTEM_RET_EXT_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::SMART_TALKING_MODE_TYPE2
+        SystemInquiredType type{SystemInquiredType::SMART_TALKING_MODE_TYPE2}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        DetectSensitivity detectSensitivity{DetectSensitivity::AUTO}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ModeOutTime modeOffTime{ModeOutTime::FAST}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemRetExtParamSmartTalkingModeType2);
+    };
+
+    // THMSGV2T1SystemRetExtParamWearingStatusDetector
+    struct SystemRetExtParamWearingStatusDetector
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_EXT_PARAM
+        Command command{Command::SYSTEM_RET_EXT_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::WEARING_STATUS_DETECTOR
+        SystemInquiredType type{SystemInquiredType::WEARING_STATUS_DETECTOR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceFittingDetectionResult fittingResultLeft{EarpieceFittingDetectionResult::GOOD}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceFittingDetectionResult fittingResultRight{EarpieceFittingDetectionResult::GOOD}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceSeries bestEarpieceSeriesLeft{EarpieceSeries::OTHER}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceSeries bestEarpieceSeriesRight{EarpieceSeries::OTHER}; // 0x5
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceSize bestEarpieceSizeLeft{EarpieceSize::SS}; // 0x6
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceSize bestEarpieceSizeRight{EarpieceSize::SS}; // 0x7
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemRetExtParamWearingStatusDetector);
+    };
+
+    // THMSGV2T1SystemRetParam
+    struct SystemRetParam
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_PARAM
+        Command command{Command::SYSTEM_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemRetParam);
+    };
+
+    // THMSGV2T1SystemRetParamAssignableSettings
+    struct SystemRetParamAssignableSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_PARAM
+        Command command{Command::SYSTEM_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::ASSIGNABLE_SETTINGS
+        SystemInquiredType type{SystemInquiredType::ASSIGNABLE_SETTINGS}; // 0x1
+        MDRPodArray<Preset> presetList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemRetParamAssignableSettings);
+    };
+
+    // THMSGV2T1SystemRetParamAssignableSettingsWithLimit
+    struct SystemRetParamAssignableSettingsWithLimit
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_PARAM
+        Command command{Command::SYSTEM_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::ASSIGNABLE_SETTINGS_WITH_LIMITATION
+        SystemInquiredType type{SystemInquiredType::ASSIGNABLE_SETTINGS_WITH_LIMITATION}; // 0x1
+        MDRPodArray<Preset> presetList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemRetParamAssignableSettingsWithLimit);
+    };
+
+    // THMSGV2T1SystemRetParamCallSettings
+    struct SystemRetParamCallSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_PARAM
+        Command command{Command::SYSTEM_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::CALL_SETTINGS
+        SystemInquiredType type{SystemInquiredType::CALL_SETTINGS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue selfVoiceOnOff{OnOffSettingValue::ON}; // 0x2
+        UInt8 selfVoiceVolume{}; // 0x3
+        UInt8 callVoiceVolume{}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemRetParamCallSettings);
+    };
+
+    // THMSGV2T1SystemRetParamCommon
+    struct SystemRetParamCommon
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_PARAM
+        Command command{Command::SYSTEM_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue settingType{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemRetParamCommon);
+    };
+
+    // THMSGV2T1SystemRetParamEarpieceSelection
+    struct SystemRetParamEarpieceSelection
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_PARAM
+        Command command{Command::SYSTEM_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::EARPIECE_SELECTION
+        SystemInquiredType type{SystemInquiredType::EARPIECE_SELECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceSeries series{EarpieceSeries::OTHER}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemRetParamEarpieceSelection);
+    };
+
+    // THMSGV2T1SystemRetParamQuickAccess
+    struct SystemRetParamQuickAccess
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_PARAM
+        Command command{Command::SYSTEM_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::QUICK_ACCESS
+        SystemInquiredType type{SystemInquiredType::QUICK_ACCESS}; // 0x1
+        MDRPodArray<UInt8> functionList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemRetParamQuickAccess);
+    };
+
+    // THMSGV2T1SystemRetParamSmartTalking
+    struct SystemRetParamSmartTalking
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_PARAM
+        Command command{Command::SYSTEM_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffValue{OnOffSettingValue::ON}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue previewModeOnOffValue{OnOffSettingValue::ON}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemRetParamSmartTalking);
+    };
+
+    // THMSGV2T1SystemRetParamVoiceAssistantSettings
+    struct SystemRetParamVoiceAssistantSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_PARAM
+        Command command{Command::SYSTEM_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::VOICE_ASSISTANT_SETTINGS
+        SystemInquiredType type{SystemInquiredType::VOICE_ASSISTANT_SETTINGS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        VoiceAssistant voiceAssistant{VoiceAssistant::VOICE_RECOGNITION}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemRetParamVoiceAssistantSettings);
+    };
+
+    // THMSGV2T1SystemRetParamWearingStatusDetector
+    struct SystemRetParamWearingStatusDetector
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_PARAM
+        Command command{Command::SYSTEM_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::WEARING_STATUS_DETECTOR
+        SystemInquiredType type{SystemInquiredType::WEARING_STATUS_DETECTOR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceFittingDetectionOperationStatus operationStatus{EarpieceFittingDetectionOperationStatus::DETECTION_IS_NOT_STARTED}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceFittingDetectionOperationErrorCode errorCode{EarpieceFittingDetectionOperationErrorCode::NO_ERROR}; // 0x3
+        UInt8 numOfSelectedEarpieces{}; // 0x4
+        UInt8 indexOfCurrentDetection{}; // 0x5
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceSeries currentDetectingSeries{EarpieceSeries::OTHER}; // 0x6
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceSize currentDetectingSize{EarpieceSize::SS}; // 0x7
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemRetParamWearingStatusDetector);
+    };
+
+    // THMSGV2T1SystemRetStatus
+    struct SystemRetStatus
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_STATUS
+        Command command{Command::SYSTEM_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemRetStatus);
+    };
+
+    // THMSGV2T1SystemRetStatusAssignableSettings
+    struct SystemRetStatusAssignableSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_STATUS
+        Command command{Command::SYSTEM_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::ASSIGNABLE_SETTINGS
+        SystemInquiredType type{SystemInquiredType::ASSIGNABLE_SETTINGS}; // 0x1
+        MDRPodArray<EnableDisable> statusOfKeys; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemRetStatusAssignableSettings);
+    };
+
+    // THMSGV2T1SystemRetStatusAssignableSettingsWithLimit
+    struct SystemRetStatusAssignableSettingsWithLimit
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_STATUS
+        Command command{Command::SYSTEM_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::ASSIGNABLE_SETTINGS_WITH_LIMITATION
+        SystemInquiredType type{SystemInquiredType::ASSIGNABLE_SETTINGS_WITH_LIMITATION}; // 0x1
+        MDRPodArray<EnableDisable> statusOfKeys; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemRetStatusAssignableSettingsWithLimit);
+    };
+
+    // THMSGV2T1SystemRetStatusCallSettings
+    struct SystemRetStatusCallSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_STATUS
+        Command command{Command::SYSTEM_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::CALL_SETTINGS
+        SystemInquiredType type{SystemInquiredType::CALL_SETTINGS}; // 0x1
+        UInt8 value1{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        CallSettingsSettingModeStatus settingModeStatus{CallSettingsSettingModeStatus::MODE_OUT}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        CallSettingsTestSoundStatus testSoundStatus{CallSettingsTestSoundStatus::TEST_SOUND_ENABLED}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        CallSettingsCallingStatus callingStatus{CallSettingsCallingStatus::IN_CALLING}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemRetStatusCallSettings);
+    };
+
+    // THMSGV2T1SystemRetStatusCommonStatus
+    struct SystemRetStatusCommonStatus
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_STATUS
+        Command command{Command::SYSTEM_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::WEARING_STATUS_DETECTOR
+        SystemInquiredType type{SystemInquiredType::WEARING_STATUS_DETECTOR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemRetStatusCommonStatus);
+    };
+
+    // THMSGV2T1SystemRetStatusFaceTapTestMode
+    struct SystemRetStatusFaceTapTestMode
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_STATUS
+        Command command{Command::SYSTEM_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::FACE_TAP_TEST_MODE
+        SystemInquiredType type{SystemInquiredType::FACE_TAP_TEST_MODE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        FaceTapTestModeStatus status{FaceTapTestModeStatus::IN_TEST_MODE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemRetStatusFaceTapTestMode);
+    };
+
+    // THMSGV2T1SystemRetStatusSmartTalking
+    struct SystemRetStatusSmartTalking
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_STATUS
+        Command command{Command::SYSTEM_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SmartTalkingModeEffectStatus effectStatus{SmartTalkingModeEffectStatus::NOT_ACTIVE}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemRetStatusSmartTalking);
+    };
+
+    // THMSGV2T1SystemRetStatusVoiceAssistantWakeWord
+    struct SystemRetStatusVoiceAssistantWakeWord
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_STATUS
+        Command command{Command::SYSTEM_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::VOICE_ASSISTANT_WAKE_WORD
+        SystemInquiredType type{SystemInquiredType::VOICE_ASSISTANT_WAKE_WORD}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        VoiceAssistantWakeWordStatus status{VoiceAssistantWakeWordStatus::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemRetStatusVoiceAssistantWakeWord);
+    };
+
+    // THMSGV2T1SystemRetStatusWearingStatusDetector
+    struct SystemRetStatusWearingStatusDetector
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_STATUS
+        Command command{Command::SYSTEM_RET_STATUS}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::WEARING_STATUS_DETECTOR
+        SystemInquiredType type{SystemInquiredType::WEARING_STATUS_DETECTOR}; // 0x1
+        UInt8 value1{}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceFittingDetectionModeStatus detectionModeStatus{EarpieceFittingDetectionModeStatus::MODE_OUT}; // 0x3
+        UInt8 numOfSelectedEarpieces{}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceFittingDetectionModeResultCode resultCode{EarpieceFittingDetectionModeResultCode::NO_ERROR}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemRetStatusWearingStatusDetector);
+    };
+
+    // THMSGV2T1SystemSetExtParam
+    struct SystemSetExtParam
+    {
+        // CODEGEN EnumRange Command::SYSTEM_SET_EXT_PARAM
+        Command command{Command::SYSTEM_SET_EXT_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemSetExtParam);
+    };
+
+    // THMSGV2T1SystemSetExtParamCallSettings
+    struct SystemSetExtParamCallSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_SET_EXT_PARAM
+        Command command{Command::SYSTEM_SET_EXT_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::CALL_SETTINGS
+        SystemInquiredType type{SystemInquiredType::CALL_SETTINGS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        CallSettingsTestSoundControl testSoundControl{CallSettingsTestSoundControl::START}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemSetExtParamCallSettings);
+    };
+
+    // THMSGV2T1SystemSetExtParamSmartTalkingModeType1
+    struct SystemSetExtParamSmartTalkingModeType1
+    {
+        // CODEGEN EnumRange Command::SYSTEM_SET_EXT_PARAM
+        Command command{Command::SYSTEM_SET_EXT_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::SMART_TALKING_MODE_TYPE1
+        SystemInquiredType type{SystemInquiredType::SMART_TALKING_MODE_TYPE1}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        DetectSensitivity detectSensitivity{DetectSensitivity::AUTO}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue voiceFocus{OnOffSettingValue::ON}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ModeOutTime modeOffTime{ModeOutTime::FAST}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemSetExtParamSmartTalkingModeType1);
+    };
+
+    // THMSGV2T1SystemSetExtParamSmartTalkingModeType2
+    struct SystemSetExtParamSmartTalkingModeType2
+    {
+        // CODEGEN EnumRange Command::SYSTEM_SET_EXT_PARAM
+        Command command{Command::SYSTEM_SET_EXT_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::SMART_TALKING_MODE_TYPE2
+        SystemInquiredType type{SystemInquiredType::SMART_TALKING_MODE_TYPE2}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        DetectSensitivity detectSensitivity{DetectSensitivity::AUTO}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ModeOutTime modeOffTime{ModeOutTime::FAST}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemSetExtParamSmartTalkingModeType2);
+    };
+
+    // THMSGV2T1SystemSetParam
+    struct SystemSetParam
+    {
+        // CODEGEN EnumRange Command::SYSTEM_SET_PARAM
+        Command command{Command::SYSTEM_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemSetParam);
+    };
+
+    // THMSGV2T1SystemSetParamAssignableSettings
+    struct SystemSetParamAssignableSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_SET_PARAM
+        Command command{Command::SYSTEM_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::ASSIGNABLE_SETTINGS
+        SystemInquiredType type{SystemInquiredType::ASSIGNABLE_SETTINGS}; // 0x1
+        MDRPodArray<Preset> presetList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemSetParamAssignableSettings);
+    };
+
+    // THMSGV2T1SystemSetParamAssignableSettingsWithLimit
+    struct SystemSetParamAssignableSettingsWithLimit
+    {
+        // CODEGEN EnumRange Command::SYSTEM_SET_PARAM
+        Command command{Command::SYSTEM_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::ASSIGNABLE_SETTINGS_WITH_LIMITATION
+        SystemInquiredType type{SystemInquiredType::ASSIGNABLE_SETTINGS_WITH_LIMITATION}; // 0x1
+        MDRPodArray<Preset> presetList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemSetParamAssignableSettingsWithLimit);
+    };
+
+    // THMSGV2T1SystemSetParamCallSettings
+    struct SystemSetParamCallSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_SET_PARAM
+        Command command{Command::SYSTEM_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::CALL_SETTINGS
+        SystemInquiredType type{SystemInquiredType::CALL_SETTINGS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue selfVoiceOnOff{OnOffSettingValue::ON}; // 0x2
+        UInt8 selfVoiceVolume{}; // 0x3
+        UInt8 callVoiceVolume{}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemSetParamCallSettings);
+    };
+
+    // THMSGV2T1SystemSetParamCommon
+    struct SystemSetParamCommon
+    {
+        // CODEGEN EnumRange Command::SYSTEM_SET_PARAM
+        Command command{Command::SYSTEM_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue settingValue{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemSetParamCommon);
+    };
+
+    // THMSGV2T1SystemSetParamEarpieceSelection
+    struct SystemSetParamEarpieceSelection
+    {
+        // CODEGEN EnumRange Command::SYSTEM_SET_PARAM
+        Command command{Command::SYSTEM_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::EARPIECE_SELECTION
+        SystemInquiredType type{SystemInquiredType::EARPIECE_SELECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceSeries series{EarpieceSeries::OTHER}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemSetParamEarpieceSelection);
+    };
+
+    // THMSGV2T1SystemSetParamQuickAccess
+    struct SystemSetParamQuickAccess
+    {
+        // CODEGEN EnumRange Command::SYSTEM_SET_PARAM
+        Command command{Command::SYSTEM_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::QUICK_ACCESS
+        SystemInquiredType type{SystemInquiredType::QUICK_ACCESS}; // 0x1
+        MDRPodArray<UInt8> functionList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemSetParamQuickAccess);
+    };
+
+    // THMSGV2T1SystemSetParamResetSettings
+    struct SystemSetParamResetSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_SET_PARAM
+        Command command{Command::SYSTEM_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::RESET_SETTINGS
+        SystemInquiredType type{SystemInquiredType::RESET_SETTINGS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        ResetType resetType{ResetType::SETTINGS_ONLY}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemSetParamResetSettings);
+    };
+
+    // THMSGV2T1SystemSetParamSmartTalking
+    struct SystemSetParamSmartTalking
+    {
+        // CODEGEN EnumRange Command::SYSTEM_SET_PARAM
+        Command command{Command::SYSTEM_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue onOffValue{OnOffSettingValue::ON}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue previewModeOnOffValue{OnOffSettingValue::ON}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemSetParamSmartTalking);
+    };
+
+    // THMSGV2T1SystemSetParamVoiceAssistantSettings
+    struct SystemSetParamVoiceAssistantSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_SET_PARAM
+        Command command{Command::SYSTEM_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::VOICE_ASSISTANT_SETTINGS
+        SystemInquiredType type{SystemInquiredType::VOICE_ASSISTANT_SETTINGS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        VoiceAssistant voiceAssistant{VoiceAssistant::VOICE_RECOGNITION}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemSetParamVoiceAssistantSettings);
+    };
+
+    // THMSGV2T1SystemSetParamWearingStatusDetector
+    struct SystemSetParamWearingStatusDetector
+    {
+        // CODEGEN EnumRange Command::SYSTEM_SET_PARAM
+        Command command{Command::SYSTEM_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::WEARING_STATUS_DETECTOR
+        SystemInquiredType type{SystemInquiredType::WEARING_STATUS_DETECTOR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceFittingDetectionOperation operation{EarpieceFittingDetectionOperation::DETECTION_START}; // 0x2
+        // CODEGEN Range 0 255
+        UInt8 indexOfCurrentDetection{}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceSeries currentDetectionSeries{EarpieceSeries::OTHER}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceSize currentDetectionSize{EarpieceSize::SS}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemSetParamWearingStatusDetector);
+    };
+
+    // THMSGV2T1SystemSetStatus
+    struct SystemSetStatus
+    {
+        // CODEGEN EnumRange Command::SYSTEM_SET_STATUS
+        Command command{Command::SYSTEM_SET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SystemInquiredType type{SystemInquiredType::VIBRATOR}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemSetStatus);
+    };
+
+    // THMSGV2T1SystemSetStatusCallSettings
+    struct SystemSetStatusCallSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_SET_STATUS
+        Command command{Command::SYSTEM_SET_STATUS}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::CALL_SETTINGS
+        SystemInquiredType type{SystemInquiredType::CALL_SETTINGS}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        CallSettingsModeOperation modeOperation{CallSettingsModeOperation::MODE_START}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemSetStatusCallSettings);
+    };
+
+    // THMSGV2T1SystemSetStatusFaceTapTestMode
+    struct SystemSetStatusFaceTapTestMode
+    {
+        // CODEGEN EnumRange Command::SYSTEM_SET_STATUS
+        Command command{Command::SYSTEM_SET_STATUS}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::FACE_TAP_TEST_MODE
+        SystemInquiredType type{SystemInquiredType::FACE_TAP_TEST_MODE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        FaceTapTestModeOperation modeOperation{FaceTapTestModeOperation::TEST_MODE_START}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemSetStatusFaceTapTestMode);
+    };
+
+    // THMSGV2T1SystemSetStatusHeadGestureTraining
+    struct SystemSetStatusHeadGestureTraining
+    {
+        // CODEGEN EnumRange Command::SYSTEM_SET_STATUS
+        Command command{Command::SYSTEM_SET_STATUS}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::HEAD_GESTURE_TRAINING
+        SystemInquiredType type{SystemInquiredType::HEAD_GESTURE_TRAINING}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        TrainingModeOperation trainingModeOperation{TrainingModeOperation::TRAINING_MODE_START}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemSetStatusHeadGestureTraining);
+    };
+
+    // THMSGV2T1SystemSetStatusWearingStatusDetector
+    struct SystemSetStatusWearingStatusDetector
+    {
+        // CODEGEN EnumRange Command::SYSTEM_SET_STATUS
+        Command command{Command::SYSTEM_SET_STATUS}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::WEARING_STATUS_DETECTOR
+        SystemInquiredType type{SystemInquiredType::WEARING_STATUS_DETECTOR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EarpieceFittingDetectionModeStatus detectionModeStatus{EarpieceFittingDetectionModeStatus::MODE_OUT}; // 0x2
+        // CODEGEN Range 0 255
+        UInt8 numOfSelectedEarpieces{}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(SystemSetStatusWearingStatusDetector);
+    };
+
+    // THMSGV2T1UltBtnSoundEffectAssign
+    struct UltBtnSoundEffectAssign
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SoundEffectType type{SoundEffectType::SOUND_EFFECT_OFF}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        CommonStatus status{CommonStatus::ENABLE}; // 0x1
+
+        MDR_DEFINE_EXTERN_READ_WRITE(UltBtnSoundEffectAssign);
+    };
+
+    // THMSGV2T1UpdtGetCapability
+    struct UpdtGetCapability
+    {
+        // CODEGEN EnumRange Command::UPDT_GET_CAPABILITY
+        Command command{Command::UPDT_GET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(UpdtGetCapability);
+    };
+
+    // THMSGV2T1UpdtGetParam
+    struct UpdtGetParam
+    {
+        // CODEGEN EnumRange Command::UPDT_GET_PARAM
+        Command command{Command::UPDT_GET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(UpdtGetParam);
+    };
+
+    // THMSGV2T1UpdtGetStatus
+    struct UpdtGetStatus
+    {
+        // CODEGEN EnumRange Command::UPDT_GET_STATUS
+        Command command{Command::UPDT_GET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(UpdtGetStatus);
+    };
+
+    // THMSGV2T1UpdtNtfyMessage
+    struct UpdtNtfyMessage
+    {
+        // CODEGEN EnumRange Command::UPDT_NTFY_MESSAGE
+        Command command{Command::UPDT_NTFY_MESSAGE}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        MessageType messageType{MessageType::NO_USE}; // 0x1
+        MDRPrefixedString fwVersion; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(UpdtNtfyMessage);
+    };
+
+    // THMSGV2T1UpdtNtfyParam
+    struct UpdtNtfyParam
+    {
+        // CODEGEN EnumRange Command::UPDT_NTFY_PARAM
+        Command command{Command::UPDT_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(UpdtNtfyParam);
+    };
+
+    // THMSGV2T1UpdtNtfyParamMtkAutoUpdate
+    struct UpdtNtfyParamMtkAutoUpdate
+    {
+        // CODEGEN EnumRange Command::UPDT_NTFY_PARAM
+        Command command{Command::UPDT_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue autoUpdate{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(UpdtNtfyParamMtkAutoUpdate);
+    };
+
+    // THMSGV2T1UpdtNtfyParamTandem
+    struct UpdtNtfyParamTandem
+    {
+        // CODEGEN EnumRange Command::UPDT_NTFY_PARAM
+        Command command{Command::UPDT_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        TandemFotaCommand tandemFotaCommand{TandemFotaCommand::ENTER_FW_UPDATE_MODE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        TandemFotaResult tandemFotaResult{TandemFotaResult::OK}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(UpdtNtfyParamTandem);
+    };
+
+    // THMSGV2T1UpdtNtfyParamTandemExecuteFwUpdate
+    struct UpdtNtfyParamTandemExecuteFwUpdate
+    {
+        // CODEGEN EnumRange Command::UPDT_NTFY_PARAM
+        Command command{Command::UPDT_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        TandemFotaResult result{TandemFotaResult::OK}; // 0x2
+        Int16BE requiredTime{}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(UpdtNtfyParamTandemExecuteFwUpdate);
+    };
+
+    // THMSGV2T1UpdtNtfyParamTandemStartTransfer
+    struct UpdtNtfyParamTandemStartTransfer
+    {
+        // CODEGEN EnumRange Command::UPDT_NTFY_PARAM
+        Command command{Command::UPDT_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+        // CODEGEN EnumRange TandemFotaResult::ERROR_FIRMWARE_TRANSFER_INCOMPLETED
+        TandemFotaResult result{TandemFotaResult::ERROR_FIRMWARE_TRANSFER_INCOMPLETED}; // 0x2
+        Int32BE maxPacketSize{}; // 0x3
+        Int32BE offset{}; // 0x7
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(UpdtNtfyParamTandemStartTransfer);
+    };
+
+    // THMSGV2T1UpdtNtfyStatus
+    struct UpdtNtfyStatus
+    {
+        // CODEGEN EnumRange Command::UPDT_NTFY_STATUS
+        Command command{Command::UPDT_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(UpdtNtfyStatus);
+    };
+
+    // THMSGV2T1UpdtNtfyStatusAbstract
+    struct UpdtNtfyStatusAbstract
+    {
+        // CODEGEN EnumRange Command::UPDT_NTFY_STATUS
+        Command command{Command::UPDT_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(UpdtNtfyStatusAbstract);
+    };
+
+    // THMSGV2T1UpdtNtfyStatusTandem
+    struct UpdtNtfyStatusTandem
+    {
+        // CODEGEN EnumRange Command::UPDT_NTFY_STATUS
+        Command command{Command::UPDT_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        TandemFotaStatus tandemFotaStatus{TandemFotaStatus::INVALID}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(UpdtNtfyStatusTandem);
+    };
+
+    // THMSGV2T1UpdtRetCapability
+    struct UpdtRetCapability
+    {
+        // CODEGEN EnumRange Command::UPDT_RET_CAPABILITY
+        Command command{Command::UPDT_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(UpdtRetCapability);
+    };
+
+    // THMSGV2T1UpdtRetCapabilityMtk
+    struct UpdtRetCapabilityMtk
+    {
+        // CODEGEN EnumRange Command::UPDT_RET_CAPABILITY
+        Command command{Command::UPDT_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable resumableValue{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable trueWirelessValue{EnableDisable::ENABLE}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable supportBgTransferValue{EnableDisable::ENABLE}; // 0x4
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(UpdtRetCapabilityMtk);
+    };
+
+    // THMSGV2T1UpdtRetCapabilityMtkWithAcCheck
+    struct UpdtRetCapabilityMtkWithAcCheck
+    {
+        // CODEGEN EnumRange Command::UPDT_RET_CAPABILITY
+        Command command{Command::UPDT_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable resumableValue{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable trueWirelessValue{EnableDisable::ENABLE}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable supportBgTransferValue{EnableDisable::ENABLE}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable requiredAcConnectionCheckValue{EnableDisable::ENABLE}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(UpdtRetCapabilityMtkWithAcCheck);
+    };
+
+    // THMSGV2T1UpdtRetCapabilityTandem
+    struct UpdtRetCapabilityTandem
+    {
+        // CODEGEN EnumRange Command::UPDT_RET_CAPABILITY
+        Command command{Command::UPDT_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable resumableValue{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        Topology topology{Topology::SINGLE_SPEAKER}; // 0x3
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable supportBgTransferValue{EnableDisable::ENABLE}; // 0x4
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable requiredAcConnectionCheckValue{EnableDisable::ENABLE}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(UpdtRetCapabilityTandem);
+    };
+
+    // THMSGV2T1UpdtRetParam
+    struct UpdtRetParam
+    {
+        // CODEGEN EnumRange Command::UPDT_RET_PARAM
+        Command command{Command::UPDT_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+        MDRPrefixedString categoryId; // 0x2
+        MDRPrefixedString serviceId;
+        MDRPrefixedString nationCode;
+        MDRPrefixedString language;
+        MDRPrefixedString serialNumber;
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(UpdtRetParam);
+    };
+
+    // THMSGV2T1UpdtRetParamMtk
+    struct UpdtRetParamMtk
+    {
+        // CODEGEN EnumRange Command::UPDT_RET_PARAM
+        Command command{Command::UPDT_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+        MDRPrefixedString categoryId; // 0x2
+        MDRPrefixedString serviceId;
+        MDRPrefixedString nationCode;
+        MDRPrefixedString language;
+        MDRPrefixedString serialNumber;
+        UInt8 batteryPowerThreshold{};
+        UInt8 batteryPowerThresholdInterrupt{};
+        MDRPrefixedString value9;
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(UpdtRetParamMtk);
+    };
+
+    // THMSGV2T1UpdtRetParamMtkAutoUpdate
+    struct UpdtRetParamMtkAutoUpdate
+    {
+        // CODEGEN EnumRange Command::UPDT_RET_PARAM
+        Command command{Command::UPDT_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+        MDRPrefixedString categoryId; // 0x2
+        MDRPrefixedString serviceId;
+        MDRPrefixedString nationCode;
+        MDRPrefixedString language;
+        MDRPrefixedString serialNumber;
+        UInt8 batteryPowerThreshold{};
+        UInt8 batteryPowerThresholdInterrupt{};
+        MDRPrefixedString value9;
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue autoUpdate{OnOffSettingValue::ON};
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(UpdtRetParamMtkAutoUpdate);
+    };
+
+    // THMSGV2T1UpdtRetStatus
+    struct UpdtRetStatus
+    {
+        // CODEGEN EnumRange Command::UPDT_RET_STATUS
+        Command command{Command::UPDT_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(UpdtRetStatus);
+    };
+
+    // THMSGV2T1UpdtRetStatusAbstract
+    struct UpdtRetStatusAbstract
+    {
+        // CODEGEN EnumRange Command::UPDT_RET_STATUS
+        Command command{Command::UPDT_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(UpdtRetStatusAbstract);
+    };
+
+    // THMSGV2T1UpdtRetStatusTandem
+    struct UpdtRetStatusTandem
+    {
+        // CODEGEN EnumRange Command::UPDT_RET_STATUS
+        Command command{Command::UPDT_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        TandemFotaStatus tandemFotaStatus{TandemFotaStatus::INVALID}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(UpdtRetStatusTandem);
+    };
+
+    // THMSGV2T1UpdtSetParam
+    struct UpdtSetParam
+    {
+        // CODEGEN EnumRange Command::UPDT_SET_PARAM
+        Command command{Command::UPDT_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(UpdtSetParam);
+    };
+
+    // THMSGV2T1UpdtSetParamMtkAutoUpdate
+    struct UpdtSetParamMtkAutoUpdate
+    {
+        // CODEGEN EnumRange Command::UPDT_SET_PARAM
+        Command command{Command::UPDT_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue autoUpdate{OnOffSettingValue::ON}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(UpdtSetParamMtkAutoUpdate);
+    };
+
+    // THMSGV2T1UpdtSetParamTandem
+    struct UpdtSetParamTandem
+    {
+        // CODEGEN EnumRange Command::UPDT_SET_PARAM
+        Command command{Command::UPDT_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        TandemFotaCommand tandemFotaCommand{TandemFotaCommand::ENTER_FW_UPDATE_MODE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(UpdtSetParamTandem);
+    };
+
+    // THMSGV2T1UpdtSetParamTandemExecuteFwUpdate
+    struct UpdtSetParamTandemExecuteFwUpdate
+    {
+        // CODEGEN EnumRange Command::UPDT_SET_PARAM
+        Command command{Command::UPDT_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+        MDRPrefixedString fwVersion; // 0x2
+        MDRArray<MDRPrefixedString> fileNames;
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(UpdtSetParamTandemExecuteFwUpdate);
+    };
+
+    // THMSGV2T1UpdtSetParamTandemStartTransfer
+    struct UpdtSetParamTandemStartTransfer
+    {
+        // CODEGEN EnumRange Command::UPDT_SET_PARAM
+        Command command{Command::UPDT_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+        MDRPrefixedString fwVersion; // 0x2
+        // CODEGEN Range 0 31
+        UInt8 fileIndex{};
+        MDRArray<MDRPrefixedString> fileNames;
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        MacType macType{MacType::NONE};
+        MDRPodArray<UInt8> mac;
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(UpdtSetParamTandemStartTransfer);
+    };
+
+    // THMSGV2T1UpdtSetStatus
+    struct UpdtSetStatus
+    {
+        // CODEGEN EnumRange Command::UPDT_SET_STATUS
+        Command command{Command::UPDT_SET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UpdtInquiredType inquiredType{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable status{EnableDisable::ENABLE}; // 0x2
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(UpdtSetStatus);
+    };
+
+    // THMSGV2T1UpdtTransferData
+    struct UpdtTransferData
+    {
+        // CODEGEN EnumRange Command::UPDT_TRANSFER_DATA
+        Command command{Command::UPDT_TRANSFER_DATA}; // 0x0
+        // CODEGEN EnumRange UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION
+        UpdtInquiredType type{UpdtInquiredType::FW_UPDATE_MTK_TRANSFER_WO_DISCONNECTION}; // 0x1
+        Int32BE offset{}; // 0x2
+        MDRPodArray<UInt8> data; // 0x6
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(UpdtTransferData);
+    };
+
+    // THMSGV2T1ApplicableFunctionResult
+    struct ApplicableFunctionResult
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        RequestResult requestResult{RequestResult::ACCEPTED}; // 0x0
+        ApplicableFunction applicableFunction{}; // 0x1
+        MDRPodArray<UInt8> bytes;
+
+        MDR_DEFINE_EXTERN_READ_WRITE(ApplicableFunctionResult);
+    };
+
+    // THMSGV2T1AssignableSettingsPreset
+    struct AssignableSettingsPreset
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        Preset preset{Preset::AMBIENT_SOUND_CONTROL}; // 0x0
+        MDRPodArray<AssignableSettingsAction> settingsActions; // 0x1
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AssignableSettingsPreset);
+    };
+
+    // THMSGV2T1AssignableSettingsPresetCapability
+    struct AssignableSettingsPresetCapability
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        Preset preset{Preset::AMBIENT_SOUND_CONTROL}; // 0x0
+        MDRPodArray<AssignableSettingsAction> settingsActions; // 0x1
+        MDRArray<AssignableSettingsCustomizableAction> settingsCustomizableActions;
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AssignableSettingsPresetCapability);
+    };
+
+    // THMSGV2T1EqEbbNtfyParamCustomEq
+    struct EqEbbNtfyParamCustomEq
+    {
+        // CODEGEN EnumRange Command::EQEBB_NTFY_PARAM
+        Command command{Command::EQEBB_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+        BandStep parameter{}; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbNtfyParamCustomEq);
+    };
+
+    // THMSGV2T1EqEbbNtfyParamCustomizableSoundEffectCustom
+    struct EqEbbNtfyParamCustomizableSoundEffectCustom
+    {
+        // CODEGEN EnumRange Command::EQEBB_NTFY_PARAM
+        Command command{Command::EQEBB_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::CUSTOMIZABLE_SOUND_EFFECT_CUSTOM
+        EqEbbInquiredType type{EqEbbInquiredType::CUSTOMIZABLE_SOUND_EFFECT_CUSTOM}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SoundEffectType soundEffectValue{SoundEffectType::SOUND_EFFECT_OFF}; // 0x2
+        BandStep bandStep{}; // 0x3
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbNtfyParamCustomizableSoundEffectCustom);
+    };
+
+    // THMSGV2T1EqEbbNtfyParamCustomizableSoundEffectExternalUpdate
+    struct EqEbbNtfyParamCustomizableSoundEffectExternalUpdate
+    {
+        // CODEGEN EnumRange Command::EQEBB_NTFY_PARAM
+        Command command{Command::EQEBB_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::CUSTOMIZABLE_SOUND_EFFECT_EXTERNAL_UPDATE
+        EqEbbInquiredType type{EqEbbInquiredType::CUSTOMIZABLE_SOUND_EFFECT_EXTERNAL_UPDATE}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SoundEffectType soundEffectValue{SoundEffectType::SOUND_EFFECT_OFF}; // 0x2
+        MDRPodArray<ExclusiveFunctionId> exclusiveFunctionIdList; // 0x3
+        BandStep bandStep{};
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbNtfyParamCustomizableSoundEffectExternalUpdate);
+    };
+
+    // THMSGV2T1EqEbbNtfyParamCustomizableSoundEffectReset
+    struct EqEbbNtfyParamCustomizableSoundEffectReset
+    {
+        // CODEGEN EnumRange Command::EQEBB_NTFY_PARAM
+        Command command{Command::EQEBB_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::CUSTOMIZABLE_SOUND_EFFECT_RESET
+        EqEbbInquiredType type{EqEbbInquiredType::CUSTOMIZABLE_SOUND_EFFECT_RESET}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SoundEffectType soundEffectValue{SoundEffectType::SOUND_EFFECT_OFF}; // 0x2
+        BandStep bandStep{}; // 0x3
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbNtfyParamCustomizableSoundEffectReset);
+    };
+
+    // THMSGV2T1EqEbbNtfyParamEq
+    struct EqEbbNtfyParamEq
+    {
+        // CODEGEN EnumRange Command::EQEBB_NTFY_PARAM
+        Command command{Command::EQEBB_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+        EqParam parameter{}; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbNtfyParamEq);
+    };
+
+    // THMSGV2T1EqEbbNtfyParamEqAndUltMode
+    struct EqEbbNtfyParamEqAndUltMode
+    {
+        // CODEGEN EnumRange Command::EQEBB_NTFY_PARAM
+        Command command{Command::EQEBB_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+        EqParamUltMode parameter{}; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbNtfyParamEqAndUltMode);
+    };
+
+    // THMSGV2T1EqEbbRetCapabilityEq
+    struct EqEbbRetCapabilityEq
+    {
+        // CODEGEN EnumRange Command::EQEBB_RET_CAPABILITY
+        Command command{Command::EQEBB_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+        // CODEGEN Range 0 127
+        UInt8 band{}; // 0x2
+        // CODEGEN Range 0 127
+        UInt8 step{}; // 0x3
+        MDRArray<EqPreset> eqPresets; // 0x4
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbRetCapabilityEq);
+    };
+
+    // THMSGV2T1EqEbbRetCapabilityEqAndUltMode
+    struct EqEbbRetCapabilityEqAndUltMode
+    {
+        // CODEGEN EnumRange Command::EQEBB_RET_CAPABILITY
+        Command command{Command::EQEBB_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+        // CODEGEN Range 0 127
+        UInt8 band{}; // 0x2
+        // CODEGEN Range 0 127
+        UInt8 step{}; // 0x3
+        UInt8 ult2AdditionalStep{}; // 0x4
+        MDRArray<EqPreset> eqPresets; // 0x5
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbRetCapabilityEqAndUltMode);
+    };
+
+    // THMSGV2T1EqEbbRetExtendedInfoEq
+    struct EqEbbRetExtendedInfoEq
+    {
+        // CODEGEN EnumRange Command::EQEBB_RET_EXTENDED_INFO
+        Command command{Command::EQEBB_RET_EXTENDED_INFO}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+        MDRPodArray<EqBandInformation> bandInfos; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbRetExtendedInfoEq);
+    };
+
+    // THMSGV2T1EqEbbRetParamCustomEq
+    struct EqEbbRetParamCustomEq
+    {
+        // CODEGEN EnumRange Command::EQEBB_RET_PARAM
+        Command command{Command::EQEBB_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+        BandStep parameter{}; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbRetParamCustomEq);
+    };
+
+    // THMSGV2T1EqEbbRetParamCustomizableSoundEffectSelect
+    struct EqEbbRetParamCustomizableSoundEffectSelect
+    {
+        // CODEGEN EnumRange Command::EQEBB_RET_PARAM
+        Command command{Command::EQEBB_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::CUSTOMIZABLE_SOUND_EFFECT_SELECT
+        EqEbbInquiredType type{EqEbbInquiredType::CUSTOMIZABLE_SOUND_EFFECT_SELECT}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SoundEffectType soundEffectValue{SoundEffectType::SOUND_EFFECT_OFF}; // 0x2
+        MDRPodArray<ExclusiveFunctionId> exclusiveFunctionIdList; // 0x3
+        MDRArray<BandStep> bandStepsList;
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbRetParamCustomizableSoundEffectSelect);
+    };
+
+    // THMSGV2T1EqEbbRetParamEq
+    struct EqEbbRetParamEq
+    {
+        // CODEGEN EnumRange Command::EQEBB_RET_PARAM
+        Command command{Command::EQEBB_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+        EqParam parameter{}; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbRetParamEq);
+    };
+
+    // THMSGV2T1EqEbbRetParamEqAndUltMode
+    struct EqEbbRetParamEqAndUltMode
+    {
+        // CODEGEN EnumRange Command::EQEBB_RET_PARAM
+        Command command{Command::EQEBB_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+        EqParamUltMode parameter{}; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbRetParamEqAndUltMode);
+    };
+
+    // THMSGV2T1EqEbbSetParamCustomEq
+    struct EqEbbSetParamCustomEq
+    {
+        // CODEGEN EnumRange Command::EQEBB_SET_PARAM
+        Command command{Command::EQEBB_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::CUSTOM_EQ
+        EqEbbInquiredType type{EqEbbInquiredType::CUSTOM_EQ}; // 0x1
+        BandStep parameter{}; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbSetParamCustomEq);
+    };
+
+    // THMSGV2T1EqEbbSetParamCustomizableSoundEffectCustom
+    struct EqEbbSetParamCustomizableSoundEffectCustom
+    {
+        // CODEGEN EnumRange Command::EQEBB_SET_PARAM
+        Command command{Command::EQEBB_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::CUSTOMIZABLE_SOUND_EFFECT_CUSTOM
+        EqEbbInquiredType type{EqEbbInquiredType::CUSTOMIZABLE_SOUND_EFFECT_CUSTOM}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EnableDisable ntfyRequired{EnableDisable::ENABLE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SoundEffectType soundEffectValue{SoundEffectType::SOUND_EFFECT_OFF}; // 0x3
+        BandStep bandStep{}; // 0x4
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbSetParamCustomizableSoundEffectCustom);
+    };
+
+    // THMSGV2T1EqEbbSetParamEq
+    struct EqEbbSetParamEq
+    {
+        // CODEGEN EnumRange Command::EQEBB_SET_PARAM
+        Command command{Command::EQEBB_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+        EqParam parameter{}; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbSetParamEq);
+    };
+
+    // THMSGV2T1EqEbbSetParamEqAndUltMode
+    struct EqEbbSetParamEqAndUltMode
+    {
+        // CODEGEN EnumRange Command::EQEBB_SET_PARAM
+        Command command{Command::EQEBB_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        EqEbbInquiredType type{EqEbbInquiredType::PRESET_EQ}; // 0x1
+        EqParamUltMode parameter{}; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbSetParamEqAndUltMode);
+    };
+
+    // THMSGV2T1GsRetCapabilityList
+    struct GsRetCapabilityList
+    {
+        // CODEGEN EnumRange Command::GENERAL_SETTING_RET_CAPABILITY
+        Command command{Command::GENERAL_SETTING_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsInquiredType type{GsInquiredType::GENERAL_SETTING1}; // 0x1
+        // CODEGEN EnumRange GsSettingType::LIST_TYPE
+        GsSettingType settingType{GsSettingType::LIST_TYPE}; // 0x2
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        GsStringFormat gsStringFormat{GsStringFormat::RAW_NAME}; // 0x3
+        MDRPrefixedString value3; // 0x4
+        MDRPrefixedString value4;
+        MDRArray<GsSettingInfo> elements;
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(GsRetCapabilityList);
+    };
+
+    // THMSGV2T1LEANotifyStatusQuickAccessCantBeUsedWithLEAConnection
+    struct LEANotifyStatusQuickAccessCantBeUsedWithLEAConnection
+    {
+        // CODEGEN EnumRange Command::LEA_NTFY_STATUS
+        Command command{Command::LEA_NTFY_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UnavailableReason unavailableReason{UnavailableReason::UNAVAILABLE_BY_LE_AUDIO_PRIOR}; // 0x2
+        MDRPodArray<QuickAccessStatus> quickAccessStatus; // 0x3
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(LEANotifyStatusQuickAccessCantBeUsedWithLEAConnection);
+    };
+
+    // THMSGV2T1LEARetStatusQuickAccessCantBeUsedWithLEAConnection
+    struct LEARetStatusQuickAccessCantBeUsedWithLEAConnection
+    {
+        // CODEGEN EnumRange Command::LEA_RET_STATUS
+        Command command{Command::LEA_RET_STATUS}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LEAInquiredType inquiredType{LEAInquiredType::TWS_SUPPORTS_A2DP_LEA_UNI_LEA_BROAD_WITH_CTKD}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        UnavailableReason unavailableReason{UnavailableReason::UNAVAILABLE_BY_LE_AUDIO_PRIOR}; // 0x2
+        MDRPodArray<QuickAccessStatus> quickAccessStatus; // 0x3
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(LEARetStatusQuickAccessCantBeUsedWithLEAConnection);
+    };
+
+    // THMSGV2T1NcAsmRetCapabilityAsmSeamless
+    struct NcAsmRetCapabilityAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_CAPABILITY
+        Command command{Command::NCASM_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+        MDRPodArray<AmbientSoundModeLevelSet> ambientSoundModeLevelSetList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(NcAsmRetCapabilityAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmRetCapabilityModeNcDualModeSwitchAsmSeamless
+    struct NcAsmRetCapabilityModeNcDualModeSwitchAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_CAPABILITY
+        Command command{Command::NCASM_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS
+        NcAsmInquiredType type{NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS}; // 0x1
+        MDRPodArray<AmbientSoundModeLevelSet> ambientSoundModeLevelSetList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(NcAsmRetCapabilityModeNcDualModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmRetCapabilityModeNcDualModeSwitchAsmSeamlessNa
+    struct NcAsmRetCapabilityModeNcDualModeSwitchAsmSeamlessNa
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_CAPABILITY
+        Command command{Command::NCASM_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS_NA
+        NcAsmInquiredType type{NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS_NA}; // 0x1
+        MDRPodArray<AmbientSoundModeLevelSet> ambientSoundModeLevelSetList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(NcAsmRetCapabilityModeNcDualModeSwitchAsmSeamlessNa);
+    };
+
+    // THMSGV2T1NcAsmRetCapabilityModeNcDualSingleModeSwitchAsmSeamless
+    struct NcAsmRetCapabilityModeNcDualSingleModeSwitchAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_CAPABILITY
+        Command command{Command::NCASM_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::MODE_NC_ASM_DUAL_SINGLE_NC_MODE_SWITCH_AND_ASM_SEAMLESS
+        NcAsmInquiredType type{NcAsmInquiredType::MODE_NC_ASM_DUAL_SINGLE_NC_MODE_SWITCH_AND_ASM_SEAMLESS}; // 0x1
+        MDRPodArray<AmbientSoundModeLevelSet> ambientSoundModeLevelSetList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(NcAsmRetCapabilityModeNcDualSingleModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmRetCapabilityModeNcModeSwitchAsmSeamless
+    struct NcAsmRetCapabilityModeNcModeSwitchAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_CAPABILITY
+        Command command{Command::NCASM_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+        MDRPodArray<AmbientSoundModeLevelSet> ambientSoundModeLevelSetList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(NcAsmRetCapabilityModeNcModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmRetCapabilityNcModeSwitchAsmSeamless
+    struct NcAsmRetCapabilityNcModeSwitchAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_CAPABILITY
+        Command command{Command::NCASM_RET_CAPABILITY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF}; // 0x1
+        MDRPodArray<AmbientSoundModeLevelSet> ambientSoundModeLevelSetList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(NcAsmRetCapabilityNcModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmRetCapabilityNcNcssAsmModeNcDualModeSwitchAsmSeamless
+    struct NcAsmRetCapabilityNcNcssAsmModeNcDualModeSwitchAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_CAPABILITY
+        Command command{Command::NCASM_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS
+        NcAsmInquiredType type{NcAsmInquiredType::MODE_NC_ASM_DUAL_NC_MODE_SWITCH_AND_ASM_SEAMLESS}; // 0x1
+        MDRPodArray<AmbientSoundModeLevelSet> ambientSoundModeLevelSetList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(NcAsmRetCapabilityNcNcssAsmModeNcDualModeSwitchAsmSeamless);
+    };
+
+    // THMSGV2T1NcAsmRetCapabilityNcOnOffAsmSeamless
+    struct NcAsmRetCapabilityNcOnOffAsmSeamless
+    {
+        // CODEGEN EnumRange Command::NCASM_RET_CAPABILITY
+        Command command{Command::NCASM_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange NcAsmInquiredType::NC_ON_OFF_AND_ASM_SEAMLESS
+        NcAsmInquiredType type{NcAsmInquiredType::NC_ON_OFF_AND_ASM_SEAMLESS}; // 0x1
+        MDRPodArray<AmbientSoundModeLevelSet> ambientSoundModeLevelSetList; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(NcAsmRetCapabilityNcOnOffAsmSeamless);
+    };
+
+    // THMSGV2T1NotifyLogParamTimeSeriesOperationLog
+    struct NotifyLogParamTimeSeriesOperationLog
+    {
+        // CODEGEN EnumRange Command::LOG_NTFY_PARAM
+        Command command{Command::LOG_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LogInquiredType logInquiredType{LogInquiredType::ACTION_LOG_NOTIFIER}; // 0x1
+        MDRPrefixedString operationKey; // 0x2
+        MDRPrefixedString operationValue;
+        MDRArray<OperationSubInfo> subInfos;
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(NotifyLogParamTimeSeriesOperationLog);
+    };
+
+    // THMSGV2T1NotifyPlayParamPlaybackControllerName
+    struct NotifyPlayParamPlaybackControllerName
+    {
+        // CODEGEN EnumRange Command::PLAY_NTFY_PARAM
+        Command command{Command::PLAY_NTFY_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+        MDRFixedArray<PlaybackName, 4> playbackNames; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(NotifyPlayParamPlaybackControllerName);
+    };
+
+    // THMSGV2T1QuickAccessKeyInfo
+    struct QuickAccessKeyInfo
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        QuickAccessKey key{QuickAccessKey::L_R_KEY}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        Type keyType{Type::TOUCH_SENSOR}; // 0x1
+        MDRArray<QuickAccessFunctionInfo> functionInfoList; // 0x2
+
+        MDR_DEFINE_EXTERN_READ_WRITE(QuickAccessKeyInfo);
+    };
+
+    // THMSGV2T1RetPlayParamPlaybackControllerName
+    struct RetPlayParamPlaybackControllerName
+    {
+        // CODEGEN EnumRange Command::PLAY_RET_PARAM
+        Command command{Command::PLAY_RET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        PlayInquiredType playInquiredType{PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT}; // 0x1
+        MDRFixedArray<PlaybackName, 4> playbackNames; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(RetPlayParamPlaybackControllerName);
+    };
+
+    // THMSGV2T1SenseSetParamAdaptiveControl
+    struct SenseSetParamAdaptiveControl
+    {
+        // CODEGEN EnumRange Command::SENSE_SET_PARAM
+        Command command{Command::SENSE_SET_PARAM}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        SenseInquiredType type{SenseInquiredType::ADAPTIVE_CONTROL}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        OnOffSettingValue needsApplyingEffect{OnOffSettingValue::ON}; // 0x2
+        MDRArray<ApplicableFunction> applyTargetFunctions; // 0x3
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SenseSetParamAdaptiveControl);
+    };
+
+    // THMSGV2T1SystemRetCapabilityWearingStatusDetector
+    struct SystemRetCapabilityWearingStatusDetector
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_CAPABILITY
+        Command command{Command::SYSTEM_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::WEARING_STATUS_DETECTOR
+        SystemInquiredType type{SystemInquiredType::WEARING_STATUS_DETECTOR}; // 0x1
+        // CODEGEN Range 1 255
+        UInt8 detectionTime{}; // 0x2
+        MDRArray<EarpieceInfo> earpieceInfoList; // 0x3
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemRetCapabilityWearingStatusDetector);
+    };
+
+    // THMSGV2T1UltBtnSoundEffectAssignList
+    struct UltBtnSoundEffectAssignList
+    {
+        MDRPodArray<UltBtnSoundEffectAssign> ultBtnSoundEffectAssignList; // 0x0
+
+        MDR_DEFINE_EXTERN_READ_WRITE(UltBtnSoundEffectAssignList);
+    };
+
+    // THMSGV2T1AssignableSettingsKey
+    struct AssignableSettingsKey
+    {
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        Key key{Key::LEFT_SIDE}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        Type type{Type::TOUCH_SENSOR}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        Preset defaultPreset{Preset::AMBIENT_SOUND_CONTROL}; // 0x2
+        MDRArray<AssignableSettingsPresetCapability> assignableSettingsPreset; // 0x3
+
+        MDR_DEFINE_EXTERN_READ_WRITE(AssignableSettingsKey);
+    };
+
+    // THMSGV2T1EqEbbNtfyParamUltBtnSoundEffectAssign
+    struct EqEbbNtfyParamUltBtnSoundEffectAssign
+    {
+        // CODEGEN EnumRange Command::EQEBB_NTFY_PARAM
+        Command command{Command::EQEBB_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::ULT_BTN_SOUND_EFFECT_ASSIGN
+        EqEbbInquiredType type{EqEbbInquiredType::ULT_BTN_SOUND_EFFECT_ASSIGN}; // 0x1
+        UltBtnSoundEffectAssignList ultBtnSoundEffectAssignList{}; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbNtfyParamUltBtnSoundEffectAssign);
+    };
+
+    // THMSGV2T1EqEbbRetParamUltBtnSoundEffectAssign
+    struct EqEbbRetParamUltBtnSoundEffectAssign
+    {
+        // CODEGEN EnumRange Command::EQEBB_RET_PARAM
+        Command command{Command::EQEBB_RET_PARAM}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::ULT_BTN_SOUND_EFFECT_ASSIGN
+        EqEbbInquiredType type{EqEbbInquiredType::ULT_BTN_SOUND_EFFECT_ASSIGN}; // 0x1
+        UltBtnSoundEffectAssignList ultBtnSoundEffectAssignList{}; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbRetParamUltBtnSoundEffectAssign);
+    };
+
+    // THMSGV2T1EqEbbSetParamUltBtnSoundEffectAssign
+    struct EqEbbSetParamUltBtnSoundEffectAssign
+    {
+        // CODEGEN EnumRange Command::EQEBB_SET_PARAM
+        Command command{Command::EQEBB_SET_PARAM}; // 0x0
+        // CODEGEN EnumRange EqEbbInquiredType::ULT_BTN_SOUND_EFFECT_ASSIGN
+        EqEbbInquiredType type{EqEbbInquiredType::ULT_BTN_SOUND_EFFECT_ASSIGN}; // 0x1
+        UltBtnSoundEffectAssignList ultBtnSoundEffectAssignList{}; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(EqEbbSetParamUltBtnSoundEffectAssign);
+    };
+
+    // THMSGV2T1SenseNotifyParamAdaptiveControlWithParameterNotification
+    struct SenseNotifyParamAdaptiveControlWithParameterNotification
+    {
+        // CODEGEN EnumRange Command::SENSE_NTFY_PARAM
+        Command command{Command::SENSE_NTFY_PARAM}; // 0x0
+        // CODEGEN EnumRange SenseInquiredType::ADAPTIVE_CONTROL_WITH_PARAMETER_NOTIFICATION
+        SenseInquiredType type{SenseInquiredType::ADAPTIVE_CONTROL_WITH_PARAMETER_NOTIFICATION}; // 0x1
+        MDRArray<ApplicableFunctionResult> applyTargetFunctionsWithRequestResult; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SenseNotifyParamAdaptiveControlWithParameterNotification);
+    };
+
+    // THMSGV2T1SystemNotifyExtParamAssignableSettings
+    struct SystemNotifyExtParamAssignableSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_EXT_PARAM
+        Command command{Command::SYSTEM_NTFY_EXT_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::ASSIGNABLE_SETTINGS
+        SystemInquiredType type{SystemInquiredType::ASSIGNABLE_SETTINGS}; // 0x1
+        MDRArray<AssignableSettingsPreset> presets; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemNotifyExtParamAssignableSettings);
+    };
+
+    // THMSGV2T1SystemNotifyExtParamAssignableSettingsWithLimit
+    struct SystemNotifyExtParamAssignableSettingsWithLimit
+    {
+        // CODEGEN EnumRange Command::SYSTEM_NTFY_EXT_PARAM
+        Command command{Command::SYSTEM_NTFY_EXT_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::ASSIGNABLE_SETTINGS_WITH_LIMITATION
+        SystemInquiredType type{SystemInquiredType::ASSIGNABLE_SETTINGS_WITH_LIMITATION}; // 0x1
+        MDRArray<AssignableSettingsPreset> presets; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemNotifyExtParamAssignableSettingsWithLimit);
+    };
+
+    // THMSGV2T1SystemRetCapabilityQuickAccess
+    struct SystemRetCapabilityQuickAccess
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_CAPABILITY
+        Command command{Command::SYSTEM_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::QUICK_ACCESS
+        SystemInquiredType type{SystemInquiredType::QUICK_ACCESS}; // 0x1
+        QuickAccessKeyInfo quickAccessKeyInfo{}; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemRetCapabilityQuickAccess);
+    };
+
+    // THMSGV2T1SystemRetExtParamAssignableSettings
+    struct SystemRetExtParamAssignableSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_EXT_PARAM
+        Command command{Command::SYSTEM_RET_EXT_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::ASSIGNABLE_SETTINGS
+        SystemInquiredType type{SystemInquiredType::ASSIGNABLE_SETTINGS}; // 0x1
+        MDRArray<AssignableSettingsPreset> presets; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemRetExtParamAssignableSettings);
+    };
+
+    // THMSGV2T1SystemRetExtParamAssignableSettingsWithLimit
+    struct SystemRetExtParamAssignableSettingsWithLimit
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_EXT_PARAM
+        Command command{Command::SYSTEM_RET_EXT_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::ASSIGNABLE_SETTINGS_WITH_LIMITATION
+        SystemInquiredType type{SystemInquiredType::ASSIGNABLE_SETTINGS_WITH_LIMITATION}; // 0x1
+        MDRArray<AssignableSettingsPreset> presets; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemRetExtParamAssignableSettingsWithLimit);
+    };
+
+    // THMSGV2T1SystemSetExtParamAssignableSettings
+    struct SystemSetExtParamAssignableSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_SET_EXT_PARAM
+        Command command{Command::SYSTEM_SET_EXT_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::ASSIGNABLE_SETTINGS
+        SystemInquiredType type{SystemInquiredType::ASSIGNABLE_SETTINGS}; // 0x1
+        MDRArray<AssignableSettingsPreset> presets; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemSetExtParamAssignableSettings);
+    };
+
+    // THMSGV2T1SystemSetExtParamAssignableSettingsWithLimit
+    struct SystemSetExtParamAssignableSettingsWithLimit
+    {
+        // CODEGEN EnumRange Command::SYSTEM_SET_EXT_PARAM
+        Command command{Command::SYSTEM_SET_EXT_PARAM}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::ASSIGNABLE_SETTINGS_WITH_LIMITATION
+        SystemInquiredType type{SystemInquiredType::ASSIGNABLE_SETTINGS_WITH_LIMITATION}; // 0x1
+        MDRArray<AssignableSettingsPreset> presets; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemSetExtParamAssignableSettingsWithLimit);
+    };
+
+    // THMSGV2T1SystemRetCapabilityAssignableSettings
+    struct SystemRetCapabilityAssignableSettings
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_CAPABILITY
+        Command command{Command::SYSTEM_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::ASSIGNABLE_SETTINGS
+        SystemInquiredType type{SystemInquiredType::ASSIGNABLE_SETTINGS}; // 0x1
+        MDRArray<AssignableSettingsKey> keys; // 0x2
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemRetCapabilityAssignableSettings);
+    };
+
+    // THMSGV2T1SystemRetCapabilityAssignableSettingsWithLimit
+    struct SystemRetCapabilityAssignableSettingsWithLimit
+    {
+        // CODEGEN EnumRange Command::SYSTEM_RET_CAPABILITY
+        Command command{Command::SYSTEM_RET_CAPABILITY}; // 0x0
+        // CODEGEN EnumRange SystemInquiredType::ASSIGNABLE_SETTINGS_WITH_LIMITATION
+        SystemInquiredType type{SystemInquiredType::ASSIGNABLE_SETTINGS_WITH_LIMITATION}; // 0x1
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        LimitationType limitationType{LimitationType::NO_DESCRIPTION}; // 0x2
+        MDRArray<AssignableSettingsKey> keys; // 0x3
+
+        MDR_DEFINE_EXTERN_SERIALIZATION(SystemRetCapabilityAssignableSettingsWithLimit);
+    };
+#pragma endregion Declarations
+} // namespace mdr::v2::t1
+
+#pragma pack(pop)
+
+#include "Generated/ProtocolV2T1Enum.hpp"
+#include "Generated/ProtocolV2T1Traits.hpp"

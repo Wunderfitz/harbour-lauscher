@@ -1,0 +1,18 @@
+# sfdk builds in-tree (it skips %prep), so qmake's output lands next to sources.
+Makefile
+libmdr/Makefile
+app/Makefile
+.build/
+RPMS/
+*.o
+*.a
+app/moc_*
+app/*.cpp
+documentation.list
+.sfdk/
+app/qrc_*
+app/harbour-lauscher
+app/translations/*.qm
+app/translations/harbour-lauscher.ts
+.qmake.stash
+*.pro.user*
