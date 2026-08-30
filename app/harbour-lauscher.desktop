@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+X-Nemo-Application-Type=silica-qt5
+Icon=harbour-lauscher
+Exec=harbour-lauscher
+Name=Lauscher
+Comment=Control Sony headphones
+
+[X-Sailjail]
+Permissions=Bluetooth
+OrganizationName=de.ygriega
+ApplicationName=lauscher
