@@ -196,6 +196,12 @@ app/qml/pages/DevicePage      battery, playback, ambient sound control, listenin
 rpm/harbour-lauscher.spec
 ```
 
+Lauscher's own sources — everything under `app/src` and `app/qml` — carry a
+GPLv3-or-later header, and the spec says `License: GPLv3+`. New files there get
+the same block. `libmdr/upstream/` (MIT) and `libmdr/3rdparty/fmt/` keep the
+licences they came with: never put a GPL header on vendored code, and never edit
+their existing ones.
+
 ## Building
 
 Out of tree, the way Qt Creator and the Sailfish SDK do it: hand `sfdk` a path

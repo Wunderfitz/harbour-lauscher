@@ -2,7 +2,7 @@ Name:       harbour-lauscher
 Summary:    Control Sony headphones from Sailfish OS
 Version:    0.1
 Release:    1
-License:    GPLv3
+License:    GPLv3+
 URL:        https://github.com/Wunderfitz/harbour-lauscher
 Source0:    %{name}-%{version}.tar.bz2
 

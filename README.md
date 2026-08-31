@@ -52,7 +52,8 @@ crosses the boundary.
 
 ## Licence
 
-Lauscher is GPLv3 - see [LICENSE](LICENSE).
+Lauscher is GPLv3 or later - see [LICENSE](LICENSE) for the licence text, and the
+header on each source file for the grant.
 
 The vendored code keeps its own terms: `libmdr/upstream/` is MIT, from
 SonyHeadphonesClient (see [libmdr/upstream/LICENSE](libmdr/upstream/LICENSE)), and
