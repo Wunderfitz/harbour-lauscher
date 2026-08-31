@@ -38,6 +38,74 @@
         <source>%1 %2 %</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>off</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>very quiet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>quiet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>moderate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>loud</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>very loud</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>maximum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ambient background music</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cinema</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Voice boost</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sound leakage reduction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Living room</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cafe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>My room</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Volume: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DeviceListPage</name>

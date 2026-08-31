@@ -25,7 +25,15 @@ DISTFILES += \
     qml/pages/DeviceListPage.qml \
     qml/pages/DevicePage.qml \
     qml/pages/AboutPage.qml \
-    harbour-lauscher.desktop
+    harbour-lauscher.desktop \
+    $$files(images/*.svg)
+
+# sailfishapp.prf deploys qml/ for us but knows nothing about anything else, so
+# the cover's artwork needs its own install. CoverPage.qml reaches it as
+# ../../images, which holds both here and under /usr/share/harbour-lauscher.
+images.files = images
+images.path = /usr/share/$${TARGET}
+INSTALLS += images
 
 SAILFISHAPP_ICONS = 86x86 108x108 128x128 172x172
 

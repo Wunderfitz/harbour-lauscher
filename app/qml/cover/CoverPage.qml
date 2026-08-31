@@ -22,29 +22,218 @@ import Sailfish.Silica 1.0
 import de.ygriega.lauscher 1.0
 
 CoverBackground {
+    id: cover
+
+    readonly property bool ready: mdr.state === Mdr.Ready
+
+    // The distance only means anything while background music is the active mode,
+    // which is also the only time the device accepts a new one.
+    readonly property bool roomApplies: mdr.backgroundRoomAvailable
+                                        && mdr.listeningMode === Mdr.BackgroundMusic
+
+    // One mode is nothing to cycle through, and the picker is pointless before the
+    // capability list has arrived.
+    readonly property bool canPickMode: ready && mdr.listeningModeAvailable
+                                        && mdr.listeningModes.length > 1
+    readonly property bool canPickRoom: canPickMode && roomApplies
+
+    // The headset counts 0..30, which says nothing at a glance. These are even
+    // steps over that range, named rather than numbered.
+    function volumeText(volume) {
+        if (volume <= 0)
+            return qsTr("off")
+        if (volume <= 6)
+            return qsTr("very quiet")
+        if (volume <= 12)
+            return qsTr("quiet")
+        if (volume <= 18)
+            return qsTr("moderate")
+        if (volume <= 24)
+            return qsTr("loud")
+        if (volume <= 29)
+            return qsTr("very loud")
+        return qsTr("maximum")
+    }
+
+    function modeName(mode) {
+        switch (mode) {
+        case Mdr.BackgroundMusic: return qsTr("Ambient background music")
+        case Mdr.Cinema: return qsTr("Cinema")
+        case Mdr.VoiceBoost: return qsTr("Voice boost")
+        case Mdr.SoundLeakageReduction: return qsTr("Sound leakage reduction")
+        default: return qsTr("Standard")
+        }
+    }
+
+    function modeIcon(mode) {
+        switch (mode) {
+        case Mdr.BackgroundMusic: return "../../images/icon-cover-mode-background-music.svg"
+        case Mdr.Cinema: return "../../images/icon-cover-mode-cinema.svg"
+        case Mdr.VoiceBoost: return "../../images/icon-cover-mode-voice-boost.svg"
+        case Mdr.SoundLeakageReduction: return "../../images/icon-cover-mode-leakage.svg"
+        default: return "../../images/icon-cover-mode-standard.svg"
+        }
+    }
+
+    // MDR_ROOM_UNKNOWN has no name and no icon of its own; it falls in with the
+    // nearest distance, the same way DevicePage's picker does.
+    function roomName(room) {
+        switch (room) {
+        case Mdr.RoomMedium: return qsTr("Living room")
+        case Mdr.RoomLarge: return qsTr("Cafe")
+        default: return qsTr("My room")
+        }
+    }
+
+    function roomIcon(room) {
+        switch (room) {
+        case Mdr.RoomMedium: return "../../images/icon-cover-room-medium.svg"
+        case Mdr.RoomLarge: return "../../images/icon-cover-room-large.svg"
+        default: return "../../images/icon-cover-room-small.svg"
+        }
+    }
+
+    // The cover has no room for a menu, so each action steps to the next option and
+    // the icon shows where that landed. Only the modes this device advertises are in
+    // the rotation.
+    function nextMode() {
+        var modes = mdr.listeningModes
+        if (!modes || modes.length === 0)
+            return
+        var next = modes[(modes.indexOf(mdr.listeningMode) + 1) % modes.length]
+        if (next !== mdr.listeningMode)
+            mdr.setListeningMode(next)
+    }
+
+    function nextRoom() {
+        var rooms = [Mdr.RoomSmall, Mdr.RoomMedium, Mdr.RoomLarge]
+        // An unknown distance is not in the list, so this starts at the first one.
+        mdr.setBackgroundRoom(rooms[(rooms.indexOf(mdr.backgroundRoom) + 1) % rooms.length])
+    }
+
+    // Theme.colorScheme is Theme.LightOnDark (0) on a dark ambience, so the pale
+    // artwork belongs to the falsy case.
+    Image {
+        id: backdrop
+        source: "../../images/background-" + (Theme.colorScheme ? "black" : "white") + ".svg"
+        asynchronous: true
+        fillMode: Image.PreserveAspectFit
+        opacity: 0.15
+        width: Math.round(parent.width * 0.9)
+        height: width
+        sourceSize.width: width
+        sourceSize.height: width
+        anchors {
+            right: parent.right
+            rightMargin: Theme.paddingMedium
+            bottom: parent.bottom
+            bottomMargin: Theme.paddingMedium
+        }
+    }
+
     Column {
-        anchors.centerIn: parent
-        width: parent.width - 2 * Theme.paddingLarge
-        spacing: Theme.paddingMedium
+        id: content
+
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
+            margins: Theme.paddingLarge
+        }
+        spacing: Theme.paddingSmall
 
         Label {
             width: parent.width
-            horizontalAlignment: Text.AlignHCenter
+            horizontalAlignment: Text.AlignLeft
+            wrapMode: Text.WordWrap
+            maximumLineCount: 2
             truncationMode: TruncationMode.Fade
-            text: mdr.state === Mdr.Ready && mdr.deviceName.length > 0
-                  ? mdr.deviceName : qsTr("Lauscher")
+            font.pixelSize: Theme.fontSizeSmall
+            color: Theme.highlightColor
+            text: cover.ready && mdr.deviceName.length > 0 ? mdr.deviceName
+                                                           : qsTr("Lauscher")
+        }
+
+        Label {
+            width: parent.width
+            horizontalAlignment: Text.AlignLeft
+            wrapMode: Text.WordWrap
+            maximumLineCount: 3
+            truncationMode: TruncationMode.Fade
+            font.pixelSize: Theme.fontSizeExtraSmall
+            color: Theme.primaryColor
+            visible: !cover.ready && text.length > 0
+            text: mdr.statusMessage
         }
 
         Repeater {
-            model: mdr.batteries
+            model: cover.ready ? mdr.batteries : 0
 
             Label {
-                width: parent.width
-                horizontalAlignment: Text.AlignHCenter
-                font.pixelSize: Theme.fontSizeSmall
-                color: Theme.highlightColor
+                width: content.width
+                horizontalAlignment: Text.AlignLeft
+                truncationMode: TruncationMode.Fade
+                font.pixelSize: Theme.fontSizeExtraSmall
+                color: Theme.primaryColor
                 text: qsTr("%1 %2 %").arg(modelData.name).arg(modelData.level)
             }
+        }
+
+        Label {
+            width: parent.width
+            horizontalAlignment: Text.AlignLeft
+            truncationMode: TruncationMode.Fade
+            font.pixelSize: Theme.fontSizeExtraSmall
+            color: Theme.primaryColor
+            visible: cover.ready && mdr.volumeAvailable
+            text: qsTr("Volume: %1").arg(cover.volumeText(mdr.volume))
+        }
+
+        Label {
+            width: parent.width
+            horizontalAlignment: Text.AlignLeft
+            wrapMode: Text.WordWrap
+            maximumLineCount: 2
+            truncationMode: TruncationMode.Fade
+            font.pixelSize: Theme.fontSizeExtraSmall
+            color: Theme.primaryColor
+            visible: cover.ready && mdr.listeningModeAvailable
+            text: cover.modeName(mdr.listeningMode)
+        }
+
+        Label {
+            width: parent.width
+            horizontalAlignment: Text.AlignLeft
+            truncationMode: TruncationMode.Fade
+            font.pixelSize: Theme.fontSizeExtraSmall
+            color: Theme.primaryColor
+            visible: cover.ready && cover.roomApplies
+            text: qsTr("Distance: %1").arg(cover.roomName(mdr.backgroundRoom))
+        }
+    }
+
+    // Two lists rather than one with a hidden action: lipstick takes the first
+    // enabled list wholesale, so the distance appears only when it applies.
+    CoverActionList {
+        enabled: cover.canPickMode && !cover.canPickRoom
+
+        CoverAction {
+            iconSource: cover.modeIcon(mdr.listeningMode)
+            onTriggered: cover.nextMode()
+        }
+    }
+
+    CoverActionList {
+        enabled: cover.canPickRoom
+
+        CoverAction {
+            iconSource: cover.modeIcon(mdr.listeningMode)
+            onTriggered: cover.nextMode()
+        }
+
+        CoverAction {
+            iconSource: cover.roomIcon(mdr.backgroundRoom)
+            onTriggered: cover.nextRoom()
         }
     }
 }

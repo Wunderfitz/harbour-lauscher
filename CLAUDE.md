@@ -193,6 +193,8 @@ app/src/BluezTransport.*      MDRConnection vtable over BlueZ Profile1
 app/src/MdrController.*       QML facade; owns the poll loop
 app/qml/pages/DeviceListPage  paired-device picker
 app/qml/pages/DevicePage      battery, playback, ambient sound control, listening mode
+app/qml/cover/CoverPage       the cover: status at a glance, mode and distance actions
+app/images/                   cover artwork and cover-action icons (SVG)
 rpm/harbour-lauscher.spec
 ```
 
@@ -272,6 +274,31 @@ That is the accepted trade: the app cannot run without bluetoothd, so the
 dependency gets declared. Do not paper over it with `__requires_exclude`, and do
 not drop the entries to make `check` green — the earlier version of this file
 told the next reader to keep `bluez5` out, and that advice is now withdrawn.
+
+## The cover
+
+`app/images/` holds hand-written SVGs; `app/app.pro` installs the directory
+because `sailfishapp.prf` deploys `qml/` and nothing else. `CoverPage.qml`
+reaches them as `../../images/...`, which resolves both in the source tree and
+under `/usr/share/harbour-lauscher`.
+
+- **The backdrop comes in two colours.** `background-white.svg` is for a dark
+  ambience, `background-black.svg` for a light one, picked with
+  `Theme.colorScheme ? "black" : "white"` — `Theme.LightOnDark` is 0, so the
+  pale artwork is the falsy case. Same trick as harbour-fernschreiber's
+  `BackgroundImage`, including the 0.15 opacity.
+- **The cover-action icons are 48×48**, which is what the device's theme ships
+  in `silica/z1.5/icons-monochrome`. They are white fills and strokes, the style
+  the stock `icon-cover-*` icons use.
+- **Two `CoverActionList`s, not one with a hidden action.** Lipstick takes the
+  first enabled list whole, so the distance action only exists while background
+  music is the active mode. harbour-tasklist switches its cover actions the same
+  way.
+- The actions step to the next option rather than opening anything — a cover
+  cannot show a menu — and the icon says where that landed. The mode rotation
+  only contains what the device advertises, so it matches `DevicePage`'s picker.
+- **Volume is named, not numbered.** The headset's 0..30 scale means nothing at a
+  glance, so `volumeText()` maps it to seven steps from *off* to *maximum*.
 
 ## QML gotchas already paid for
 

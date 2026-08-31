@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (C) 2026 Sebastian J. Wolf and other contributors
+
+    This file is part of Lauscher.
+
+    Lauscher is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Lauscher is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Lauscher. If not, see <http://www.gnu.org/licenses/>.
+-->
+<!-- Cover background: the app icon's headphone, shrunk to leave room for sound waves. -->
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+     width="172" height="172" viewBox="0 0 172 172">
+  <g transform="translate(86,86) scale(0.72) translate(-86,-86)">
+    <path d="M 36.50 87.00 C 36.50 59.66 58.66 37.50 86.00 37.50 C 113.34 37.50 135.50 59.66 135.50 87.00" fill="none" stroke="#000000" stroke-width="12.0" stroke-linecap="round"/>
+    <rect x="21" y="90" width="32" height="45" rx="16" ry="16" fill="#000000"/>
+    <rect x="119" y="90" width="32" height="45" rx="16" ry="16" fill="#000000"/>
+    <circle cx="86" cy="109" r="9" fill="#000000"/>
+  </g>
+  <path d="M 32.96 124.04 C 27.49 119.11 24.36 112.09 24.36 104.72 C 24.36 97.35 27.49 90.33 32.96 85.40" fill="none" stroke="#000000" stroke-width="7" stroke-linecap="round"/>
+  <path d="M 139.04 85.40 C 144.51 90.33 147.64 97.35 147.64 104.72 C 147.64 112.09 144.51 119.11 139.04 124.04" fill="none" stroke="#000000" stroke-width="7" stroke-linecap="round"/>
+  <path d="M 24.93 132.96 C 16.93 125.75 12.36 115.49 12.36 104.72 C 12.36 93.95 16.93 83.69 24.93 76.48" fill="none" stroke="#000000" stroke-width="7" stroke-linecap="round"/>
+  <path d="M 147.07 76.48 C 155.07 83.69 159.64 93.95 159.64 104.72 C 159.64 115.49 155.07 125.75 147.07 132.96" fill="none" stroke="#000000" stroke-width="7" stroke-linecap="round"/>
+</svg>
