@@ -7,9 +7,11 @@ using `libmdr` from
 implementation and BlueZ's `Profile1` D-Bus API as the transport.
 
 Status: **proof of concept**, developed against a **Sony LinkBuds Clip (WF-LC900)**,
-firmware 2.0.3, on Sailfish OS 5.1.0.11. Confirmed on that device: connecting, battery
-and device info, playback control, and all four listening modes. Other Sony models
-should work to the extent they advertise the same functions, but none has been tried.
+firmware 2.0.3. Every feature it offers has been exercised on that headset from a Jolla
+Phone (2026): connecting, battery and device info, playback control, all four listening
+modes and the background-music distance. Built against the Sailfish OS 5.1.0.11 target,
+run on 5.2.0.17. Other Sony models should work to the extent they advertise the same
+functions, but none has been tried.
 
 ## Building
 

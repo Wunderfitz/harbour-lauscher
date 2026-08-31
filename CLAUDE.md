@@ -345,9 +345,19 @@ Earlier, and still true:
   dependencies fail on purpose (see Dependencies).
 - Runs on the emulator under Sailjail.
 
-**Still never run on hardware: the background-music distance picker.** It is the
-one listening-mode control not exercised on the phone, and the only path that can
-reach `setListeningMode()`'s `MDR_ROOM_UNKNOWN` fallback. Try it first next time.
+### Confirmed on hardware, 2026-08-31
+
+Everything in this file is now backed by a run on the phone. `0.1` was deployed
+to the Jolla Phone (2026) on Sailfish OS **5.2.0.17** — note that is a newer OS
+than the 5.1.0.11 target it was built against, which is the supported direction
+and gave no trouble. The app starts and runs smoothly, so the QML all parses:
+worth saying because the licence headers had just been added to every `.qml`
+file and a parse error there is silent (see QML gotchas).
+
+**The background-music distance picker works.** It was the last control never
+exercised on hardware; the distances are audibly different from one another. So
+every listening-mode path has now been driven on the device, including the one
+that can reach `setListeningMode()`'s `MDR_ROOM_UNKNOWN` fallback.
 
 Known gaps:
 - No reconnect-on-wake; leaving `DevicePage` drops the RFCOMM channel on
@@ -363,7 +373,3 @@ Known gaps:
 - V1 (XM4 and older) is compiled in and the UUID fallback exists, but untested.
 - Equalizer, touch controls, multipoint, speak-to-chat, DSEE are all reachable
   through the C ABI already; only the UI is missing.
-- The binary has not been re-deployed to the phone since the split out of the
-  SonyHeadphonesClient tree. It builds from this repository (see Building), so
-  the move is proven at the build level, but the resulting RPM has not been
-  installed and run.
