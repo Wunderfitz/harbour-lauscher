@@ -22,6 +22,7 @@ HEADERS += \
 DISTFILES += \
     qml/harbour-lauscher.qml \
     qml/cover/CoverPage.qml \
+    qml/components/BackgroundImage.qml \
     qml/pages/DeviceListPage.qml \
     qml/pages/DevicePage.qml \
     qml/pages/AboutPage.qml \

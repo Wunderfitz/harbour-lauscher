@@ -282,14 +282,20 @@ because `sailfishapp.prf` deploys `qml/` and nothing else. `CoverPage.qml`
 reaches them as `../../images/...`, which resolves both in the source tree and
 under `/usr/share/harbour-lauscher`.
 
-- **The backdrop comes in two colours.** `background-white.svg` is for a dark
-  ambience, `background-black.svg` for a light one, picked with
-  `Theme.colorScheme ? "black" : "white"` — `Theme.LightOnDark` is 0, so the
-  pale artwork is the falsy case. Same trick as harbour-fernschreiber's
-  `BackgroundImage`, including the 0.15 opacity.
+- **Everything drawn comes in two colours.** `-white` is for a dark ambience,
+  `-black` for a light one, picked with `Theme.colorScheme ? "black" : "white"`
+  — `Theme.LightOnDark` is 0, so the pale artwork is the falsy case.
 - **The cover-action icons are 48×48**, which is what the device's theme ships
-  in `silica/z1.5/icons-monochrome`. They are white fills and strokes, the style
-  the stock `icon-cover-*` icons use.
+  in `silica/z1.5/icons-monochrome`, in the style the stock `icon-cover-*` icons
+  use. **Each one exists in both colours.** Nothing tints a cover action's icon
+  — confirmed on the phone, where a white-only set stayed white on a light
+  ambience — so `-white.svg` and `-black.svg` are picked off `Theme.colorScheme`
+  exactly like the backdrop. Only the fill colour differs between the two; they
+  are otherwise the same file.
+- The backdrop goes through `app/qml/components/BackgroundImage.qml`, a copy of
+  harbour-fernschreiber's component, anchored on the cover the way that app
+  anchors it: a square as wide as the cover is tall, hung off the bottom right,
+  so it overflows the cover and reads large.
 - **Two `CoverActionList`s, not one with a hidden action.** Lipstick takes the
   first enabled list whole, so the distance action only exists while background
   music is the active mode. harbour-tasklist switches its cover actions the same

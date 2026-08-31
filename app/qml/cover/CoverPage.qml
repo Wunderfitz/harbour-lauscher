@@ -20,6 +20,7 @@
 import QtQuick 2.2
 import Sailfish.Silica 1.0
 import de.ygriega.lauscher 1.0
+import "../components"
 
 CoverBackground {
     id: cover
@@ -65,13 +66,17 @@ CoverBackground {
         }
     }
 
+    // Nothing tints a cover action's icon, so each one ships in both colours and
+    // is picked the way the backdrop is.
+    readonly property string inkSuffix: (Theme.colorScheme ? "black" : "white") + ".svg"
+
     function modeIcon(mode) {
         switch (mode) {
-        case Mdr.BackgroundMusic: return "../../images/icon-cover-mode-background-music.svg"
-        case Mdr.Cinema: return "../../images/icon-cover-mode-cinema.svg"
-        case Mdr.VoiceBoost: return "../../images/icon-cover-mode-voice-boost.svg"
-        case Mdr.SoundLeakageReduction: return "../../images/icon-cover-mode-leakage.svg"
-        default: return "../../images/icon-cover-mode-standard.svg"
+        case Mdr.BackgroundMusic: return "../../images/icon-cover-mode-background-music-" + inkSuffix
+        case Mdr.Cinema: return "../../images/icon-cover-mode-cinema-" + inkSuffix
+        case Mdr.VoiceBoost: return "../../images/icon-cover-mode-voice-boost-" + inkSuffix
+        case Mdr.SoundLeakageReduction: return "../../images/icon-cover-mode-leakage-" + inkSuffix
+        default: return "../../images/icon-cover-mode-standard-" + inkSuffix
         }
     }
 
@@ -87,9 +92,9 @@ CoverBackground {
 
     function roomIcon(room) {
         switch (room) {
-        case Mdr.RoomMedium: return "../../images/icon-cover-room-medium.svg"
-        case Mdr.RoomLarge: return "../../images/icon-cover-room-large.svg"
-        default: return "../../images/icon-cover-room-small.svg"
+        case Mdr.RoomMedium: return "../../images/icon-cover-room-medium-" + inkSuffix
+        case Mdr.RoomLarge: return "../../images/icon-cover-room-large-" + inkSuffix
+        default: return "../../images/icon-cover-room-small-" + inkSuffix
         }
     }
 
@@ -111,23 +116,18 @@ CoverBackground {
         mdr.setBackgroundRoom(rooms[(rooms.indexOf(mdr.backgroundRoom) + 1) % rooms.length])
     }
 
-    // Theme.colorScheme is Theme.LightOnDark (0) on a dark ambience, so the pale
-    // artwork belongs to the falsy case.
-    Image {
-        id: backdrop
-        source: "../../images/background-" + (Theme.colorScheme ? "black" : "white") + ".svg"
-        asynchronous: true
-        fillMode: Image.PreserveAspectFit
-        opacity: 0.15
-        width: Math.round(parent.width * 0.9)
+    BackgroundImage {
+        id: backgroundImage
+        width: parent.height - Theme.paddingLarge
         height: width
-        sourceSize.width: width
-        sourceSize.height: width
+        sourceDimension: width
         anchors {
-            right: parent.right
-            rightMargin: Theme.paddingMedium
+            verticalCenter: parent.verticalCenter
+            centerIn: undefined
             bottom: parent.bottom
             bottomMargin: Theme.paddingMedium
+            right: parent.right
+            rightMargin: Theme.paddingMedium
         }
     }
 
