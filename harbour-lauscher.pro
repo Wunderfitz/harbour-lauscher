@@ -11,4 +11,6 @@ SUBDIRS = libmdr app
 
 OTHER_FILES += \
     rpm/harbour-lauscher.spec \
+    README.md \
     CLAUDE.md \
+    libmdr/UPSTREAM.md

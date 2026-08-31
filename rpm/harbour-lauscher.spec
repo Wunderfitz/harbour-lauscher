@@ -6,15 +6,27 @@ License:    MIT
 URL:        https://github.com/mos9527/SonyHeadphonesClient
 Source0:    %{name}-%{version}.tar.bz2
 
+# Everything the app links against (Qt5Core/Gui/Qml/Quick/DBus, libsailfishapp,
+# libstdc++) is picked up by rpmbuild's ELF dependency generator. What follows is
+# what it cannot see: QML imports, the D-Bus service on the other end, and the
+# sandbox profile named in the .desktop file.
 Requires:   sailfishsilica-qt5 >= 0.10.9
-# No Requires on bluez5: harbour does not allow it as a dependency, and BlueZ is
-# part of the base system on every Sailfish device anyway.
+Requires:   qt5-qtdeclarative-import-qtquick2plugin
+# bluetoothd owns org.bluez: it does the SDP lookup, and BluezTransport speaks
+# ProfileManager1/Profile1/Device1 to it. Without it the app has no transport.
+Requires:   bluez5
+# harbour-lauscher.desktop declares Permissions=Bluetooth, which sailjail
+# resolves against /etc/sailjail/permissions/Bluetooth.permission.
+Requires:   sailjail-permissions
 
 BuildRequires:  pkgconfig(sailfishapp) >= 1.0.2
 BuildRequires:  pkgconfig(Qt5Core)
+BuildRequires:  pkgconfig(Qt5Gui)
 BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  pkgconfig(Qt5DBus)
+# CONFIG += sailfishapp_i18n runs lupdate and lrelease during %%install
+BuildRequires:  qt5-qttools-linguist
 BuildRequires:  desktop-file-utils
 
 %description

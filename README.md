@@ -13,14 +13,26 @@ should work to the extent they advertise the same functions, but none has been t
 
 ## Building
 
+Out of tree, the way Qt Creator does it: give `sfdk` the path to the sources and it
+shadow-builds into the current directory.
+
 ```sh
-sfdk -c target=SailfishOS-5.1.0.11-aarch64 -c no-fix-version build
+mkdir -p ../build-harbour-lauscher-aarch64 && cd ../build-harbour-lauscher-aarch64
+sfdk -c target=SailfishOS-5.1.0.11-aarch64 build ../harbour-lauscher
 ```
 
-`-c no-fix-version` keeps the package at the spec's version instead of one derived from
-git tags. `sfdk build` builds in-tree, so generated `Makefile`s and `.o` files land next
-to the sources; delete them when switching targets. See
+The RPMs end up in `RPMS/` inside that build directory. One build directory per target
+means switching targets needs no cleaning, and the source tree stays clean. Opening
+`harbour-lauscher.pro` in Qt Creator gives the same arrangement. See
 [CLAUDE.md](CLAUDE.md) for the details that cost debugging time.
+
+At run time the package needs `bluez5` (bluetoothd is the transport, over D-Bus),
+`sailjail-permissions` (the desktop file asks for the `Bluetooth` permission),
+`sailfishsilica-qt5` and the QtQuick 2 import plugin; the Qt libraries it links are
+resolved automatically. Declaring `bluez5` puts the package outside harbour's allowed
+dependencies, so `sfdk check` fails its Requires suite by design — this is meant to be
+installed by hand, not through the Jolla Store. See
+[CLAUDE.md](CLAUDE.md) for the reasoning.
 
 ## Layout
 

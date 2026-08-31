@@ -142,8 +142,11 @@ anyway) so stock fmt drops in unmodified. `-fno-rtti` is kept, matching upstream
 The upstream Linux backend (`libmdr-bt/src/Linux/` over in SonyHeadphonesClient,
 not vendored here) is **not** reusable: it
 needs libbluetooth's SDP API, and the Sailfish target ships neither
-`bluez5-libs-devel` by default nor QtBluetooth at all (there is no `Qt5Bluetooth.pc`
-— only `KF5BluezQt`, which is not harbour-allowed either).
+`bluez5-libs-devel` by default nor QtBluetooth at all (there is no
+`Qt5Bluetooth.pc` — only `KF5BluezQt`). Harbour compliance was a second argument
+against `KF5BluezQt` and no longer applies, but the Profile1 route needs nothing
+beyond bluetoothd, which is already the dependency, so there is no reason to
+revisit it.
 
 Instead bluetoothd does the SDP lookup for us:
 
@@ -195,30 +198,74 @@ rpm/harbour-lauscher.spec
 
 ## Building
 
-```sh
-sfdk -c target=SailfishOS-5.1.0.11-aarch64 -c no-fix-version build
-```
-
-- `-c no-fix-version` matters: without it sfdk derives the version from git
-  tags. That used to pull SonyHeadphonesClient's tags in (`1.4.4+v1.compat...`
-  instead of the spec's `0.1.0`); this repository has no tags yet, so derive
-  from them only once it does.
-- `sfdk build` builds **in-tree** and skips `%prep`, which is why generated
-  `Makefile`s and `.o` files land next to the sources. **Delete `Makefile`,
-  `libmdr/Makefile`, `app/Makefile` when switching targets** or the stale ones
-  point at the wrong arch's qmake (`lib64` vs `lib`) and the build dies with
-  `Error 127`.
-- A source-tarball build (`sfdk package`, OBS) is no longer structurally blocked
-  now that libmdr is vendored inside the project — but it has never been tried.
-
-Harbour validation passes clean:
+Out of tree, the way Qt Creator and the Sailfish SDK do it: hand `sfdk` a path
+to the sources and it shadow-builds into the current directory.
 
 ```sh
-sfdk -c target=SailfishOS-5.1.0.11-i486 check
+mkdir -p ../build-harbour-lauscher-aarch64
+cd ../build-harbour-lauscher-aarch64
+sfdk -c target=SailfishOS-5.1.0.11-aarch64 build ../harbour-lauscher
 ```
 
-`Requires: bluez5` had to be dropped to get there — harbour does not allow it as
-a dependency, and BlueZ is in the base system regardless. Do not add it back.
+The RPMs land in `RPMS/` **inside the build directory**. Opening
+`harbour-lauscher.pro` in Qt Creator does the same thing — its default build
+directory is a sibling `build-harbour-lauscher-<target>-<config>/`, one per
+target and configuration.
+
+- **Nothing may land in the source tree.** The `.pro` files are written for
+  this: `$$PWD` addresses sources, `$$OUT_PWD` the build tree, and the app finds
+  `libmdr.a` under `$$OUT_PWD/../libmdr`. The one exception is
+  `app/translations/harbour-lauscher.ts`, which `sailfishapp_i18n` regenerates
+  with lupdate at install time; it is gitignored for that reason.
+- One build directory per target means **switching targets needs no cleaning**.
+  The old in-tree recipe (`sfdk build` with no path) did: those `Makefile`s
+  carry the arch's qmake path (`lib64` vs `lib`), and a stale one kills the next
+  build with `Error 127`.
+- `%prep` is skipped either way, and `--prepare` is not available for shadow
+  builds at all. No loss here — `%prep` only unpacks the source tarball.
+- sfdk derives the package version from git tags unless told otherwise. This
+  repository has no tags, so it falls back to the spec's `0.1.0`. Once tags
+  exist they either follow the spec version or builds need
+  `-c no-fix-version`.
+- rpmbuild still builds **in-tree** when it unpacks a source tarball
+  (`sfdk package`, OBS). That path is no longer structurally blocked now that
+  libmdr is vendored inside the project, but it has never been tried;
+  `.gitignore` covers the leftovers it would drop into a checkout.
+
+## Dependencies
+
+`rpm/harbour-lauscher.spec` declares what rpmbuild cannot work out on its own.
+Everything the binary links — Qt5Core/Gui/Qml/Quick/DBus, libsailfishapp,
+libstdc++ — is found by the ELF dependency generator and must **not** be listed
+by hand. What is listed:
+
+| Requires | why it is not auto-detected |
+|---|---|
+| `sailfishsilica-qt5 >= 0.10.9` | `import Sailfish.Silica 1.0`, and `X-Nemo-Application-Type=silica-qt5` |
+| `qt5-qtdeclarative-import-qtquick2plugin` | `import QtQuick 2.2`; Silica pulls it in too, but the app imports it directly |
+| `bluez5` | bluetoothd owns `org.bluez` — the SDP lookup and the whole RFCOMM transport. A D-Bus peer leaves no trace in the ELF header |
+| `sailjail-permissions` | `harbour-lauscher.desktop` says `Permissions=Bluetooth`, resolved against `/etc/sailjail/permissions/Bluetooth.permission` |
+
+`BuildRequires: qt5-qttools-linguist` is there because `CONFIG +=
+sailfishapp_i18n` shells out to lupdate and lrelease during `%install`; without
+it the build only works by accident, on a target that happens to have them.
+
+**This package is deliberately not harbour-compliant.** `sfdk check` runs fine
+and its Dependencies, Sandboxing, RPATH, Architecture and Vendor suites pass,
+but the Requires suite rejects `bluez5`,
+`qt5-qtdeclarative-import-qtquick2plugin` and `sailjail-permissions` as
+dependencies the Jolla Store does not allow, so `check` exits non-zero:
+
+```sh
+mkdir -p ../build-harbour-lauscher-i486 && cd ../build-harbour-lauscher-i486
+sfdk -c target=SailfishOS-5.1.0.11-i486 build ../harbour-lauscher
+sfdk -c target=SailfishOS-5.1.0.11-i486 check   # exits 1 on Requires
+```
+
+That is the accepted trade: the app cannot run without bluetoothd, so the
+dependency gets declared. Do not paper over it with `__requires_exclude`, and do
+not drop the entries to make `check` green — the earlier version of this file
+told the next reader to keep `bluez5` out, and that advice is now withdrawn.
 
 ## QML gotchas already paid for
 
@@ -288,7 +335,8 @@ retired. Against the LinkBuds Clip on the phone, all of this behaves:
 
 Earlier, and still true:
 - Builds clean for `aarch64` and `i486` on Sailfish 5.1.0.11.
-- Passes `sfdk check` (harbour suite) in full.
+- Passes every `sfdk check` suite except harbour's Requires, which the declared
+  dependencies fail on purpose (see Dependencies).
 - Runs on the emulator under Sailjail.
 
 **Still never run on hardware: the background-music distance picker.** It is the
@@ -309,9 +357,7 @@ Known gaps:
 - V1 (XM4 and older) is compiled in and the UUID fallback exists, but untested.
 - Equalizer, touch controls, multipoint, speak-to-chat, DSEE are all reachable
   through the C ABI already; only the UI is missing.
-- `sfdk check` has not been re-run since the listening-mode and playback work;
-  neither added an import or a dependency, so it should still pass.
-- Nothing has been rebuilt since the split out of the SonyHeadphonesClient tree.
-  The protocol sources are byte-identical to what was on the phone, but the
-  include paths in `libmdr/libmdr.pro` and `app/app.pro` changed, so the first
-  `sfdk build` from this repository is the one that proves the move.
+- The binary has not been re-deployed to the phone since the split out of the
+  SonyHeadphonesClient tree. It builds from this repository (see Building), so
+  the move is proven at the build level, but the resulting RPM has not been
+  installed and run.

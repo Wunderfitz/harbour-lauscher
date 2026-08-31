@@ -1,18 +1,31 @@
-# sfdk builds in-tree (it skips %prep), so qmake's output lands next to sources.
+# Builds belong out of tree: Qt Creator shadow-builds by default, and sfdk does
+# too when it is given a path to the sources ("sfdk build <srcdir>"). Apart from
+# the lupdate template further down, nothing listed here should turn up in a
+# checkout at all - the rest is a safety net for the in-tree builds that still
+# happen ("sfdk build" with no path, and rpmbuild unpacking a source tarball
+# into a checkout, the way OBS does).
+
+# Qt Creator's per-user project settings
+*.pro.user*
+
+# a build directory put inside the checkout rather than beside it
+/build*/
+
+# qmake / make
 Makefile
-libmdr/Makefile
-app/Makefile
-.build/
-RPMS/
+.qmake.stash
 *.o
 *.a
 app/moc_*
-app/*.cpp
-documentation.list
-.sfdk/
 app/qrc_*
 app/harbour-lauscher
-app/translations/*.qm
+
+# lupdate rewrites the source-language template on every install; only the
+# translated catalogues are tracked
 app/translations/harbour-lauscher.ts
-.qmake.stash
-*.pro.user*
+app/translations/*.qm
+
+# rpmbuild
+/RPMS/
+/.sfdk/
+/*.list
