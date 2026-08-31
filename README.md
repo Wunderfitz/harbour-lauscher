@@ -52,7 +52,9 @@ crosses the boundary.
 
 ## Licence
 
-`libmdr/upstream/` is MIT, from SonyHeadphonesClient - see
-[libmdr/upstream/LICENSE](libmdr/upstream/LICENSE). `libmdr/3rdparty/fmt/` is fmt's own
-licence. The RPM spec declares the app itself MIT; a licence file for it still needs to
-be added.
+Lauscher is GPLv3 - see [LICENSE](LICENSE).
+
+The vendored code keeps its own terms: `libmdr/upstream/` is MIT, from
+SonyHeadphonesClient (see [libmdr/upstream/LICENSE](libmdr/upstream/LICENSE)), and
+`libmdr/3rdparty/fmt/` is under fmt's licence. Both are permissive and GPL-compatible,
+which is what makes linking them into a GPLv3 binary fine.

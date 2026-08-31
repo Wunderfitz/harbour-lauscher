@@ -24,6 +24,10 @@ Page {
                            + "project; the Bluetooth transport is BlueZ's own Profile1 D-Bus API.")
             }
 
+            SectionHeader { text: qsTr("Lauscher") }
+
+            DetailItem { label: qsTr("Licence"); value: "GPLv3" }
+
             SectionHeader { text: qsTr("Credits") }
 
             DetailItem { label: qsTr("Protocol"); value: "libmdr / SonyHeadphonesClient" }

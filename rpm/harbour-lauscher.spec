@@ -1,9 +1,9 @@
 Name:       harbour-lauscher
 Summary:    Control Sony headphones from Sailfish OS
-Version:    0.1.0
+Version:    0.1
 Release:    1
-License:    MIT
-URL:        https://github.com/mos9527/SonyHeadphonesClient
+License:    GPLv3
+URL:        https://github.com/Wunderfitz/harbour-lauscher
 Source0:    %{name}-%{version}.tar.bz2
 
 # Everything the app links against (Qt5Core/Gui/Qml/Quick/DBus, libsailfishapp,

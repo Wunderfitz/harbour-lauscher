@@ -224,7 +224,7 @@ target and configuration.
 - `%prep` is skipped either way, and `--prepare` is not available for shadow
   builds at all. No loss here — `%prep` only unpacks the source tarball.
 - sfdk derives the package version from git tags unless told otherwise. This
-  repository has no tags, so it falls back to the spec's `0.1.0`. Once tags
+  repository has no tags, so it falls back to the spec's `0.1`. Once tags
   exist they either follow the spec version or builds need
   `-c no-fix-version`.
 - rpmbuild still builds **in-tree** when it unpacks a source tarball

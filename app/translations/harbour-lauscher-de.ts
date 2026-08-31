@@ -23,6 +23,10 @@
         <source>Licence</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Lauscher</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CoverPage</name>
