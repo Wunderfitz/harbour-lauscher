@@ -20,6 +20,7 @@
 #ifndef MDRCONTROLLER_H
 #define MDRCONTROLLER_H
 
+#include <QElapsedTimer>
 #include <QObject>
 #include <QString>
 #include <QVariantList>
@@ -252,6 +253,12 @@ private:
     bool m_backgroundRoomAvailable = false;
     int m_listeningMode = MDR_LISTENING_STANDARD;
     int m_backgroundRoom = MDR_ROOM_UNKNOWN;
+
+    /* The mode asked of the device and not yet seen coming back, or -1. The device
+     * passes through "every mode off" on its way between two listening modes, and
+     * that reading is indistinguishable from Standard - see refreshListening(). */
+    int m_requestedListeningMode = -1;
+    QElapsedTimer m_listeningRequestAge;
 };
 
 #endif // MDRCONTROLLER_H

@@ -41,6 +41,12 @@ const int kServiceUuidCount = int(sizeof(kServiceUuids) / sizeof(kServiceUuids[0
  * phone; libmdr does no work of its own between polls. */
 const int kPollIntervalMs = 30;
 
+/* How long a listening mode the user picked outranks the device reporting Standard.
+ * Switching between two listening modes, the device reports every mode off first and
+ * the new one on 0.2-0.4 s later; this is that window with room to spare, after which
+ * whatever the device says is taken at face value again. */
+const int kListeningSettleMs = 2000;
+
 QString codecName(MDRAudioCodec codec)
 {
     switch (codec) {
@@ -168,6 +174,7 @@ void MdrController::closeDevice()
      * one's mode standing would make the repopulated picker send it back out. */
     m_listeningMode = MDR_LISTENING_STANDARD;
     m_backgroundRoom = MDR_ROOM_UNKNOWN;
+    m_requestedListeningMode = -1;
     emit listeningChanged();
 
     m_volume = 0;
@@ -283,6 +290,13 @@ void MdrController::pumpDevice()
     if (mdrHeadphonesIsReady(m_device) && mdrHeadphonesIsDirty(m_device) &&
         mdrHeadphonesRequestCommit(m_device) != MDR_RESULT_OK)
         fail(tr("Could not apply the change"));
+
+    /* A listening mode the device never came back on has to be given up on here: the
+     * events that would notice have already been suppressed, and a device that is not
+     * going to answer sends nothing more to trigger another read. */
+    if (m_requestedListeningMode >= 0 &&
+        m_listeningRequestAge.elapsed() >= kListeningSettleMs)
+        refreshListening();
 }
 
 /* ------------------------------------------------------------------ getters */
@@ -441,6 +455,23 @@ void MdrController::refreshListening()
     if (!m_device || mdrHeadphonesGetListening(m_device, &listening) != MDR_RESULT_OK)
         return;
 
+    /* The device does not move between two listening modes in one step: it reports
+     * every mode off first and the new one 0.2-0.4 s later, which is visible in the
+     * WF-LC900 listening capture upstream. Nothing marks that reading as transitional
+     * - every mode off is exactly what Standard looks like - so a mode the user asked
+     * for and that has not come back yet outranks it. Any other reading is the device
+     * having its say: a different mode means it did something else, and Standard once
+     * the window is up means the request did not take. */
+    if (m_requestedListeningMode >= 0) {
+        if (int(listening.mode) == m_requestedListeningMode)
+            m_requestedListeningMode = -1;
+        else if (listening.mode == MDR_LISTENING_STANDARD &&
+                 m_listeningRequestAge.elapsed() < kListeningSettleMs)
+            return;
+        else
+            m_requestedListeningMode = -1;
+    }
+
     if (m_listeningMode == int(listening.mode) &&
         m_backgroundRoom == int(listening.background_room))
         return;
@@ -579,7 +610,11 @@ void MdrController::setListeningMode(int mode)
     }
 
     /* Reflect the request immediately; the device confirms it via
-     * MDR_EVENT_LISTENING_MODE_CHANGED once the commit lands. */
+     * MDR_EVENT_LISTENING_MODE_CHANGED once the commit lands, and until then
+     * refreshListening() keeps it from being undone by the device's way of getting
+     * there. */
+    m_requestedListeningMode = mode;
+    m_listeningRequestAge.start();
     m_listeningMode = mode;
     m_backgroundRoom = int(listening.background_room);
     emit listeningChanged();
