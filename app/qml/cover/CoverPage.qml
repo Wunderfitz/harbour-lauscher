@@ -174,7 +174,11 @@ CoverBackground {
                 horizontalAlignment: Text.AlignLeft
                 truncationMode: TruncationMode.Fade
                 font.pixelSize: Theme.fontSizeSmall
-                color: Theme.primaryColor
+                // 0 % is either a bud in the case or an empty one; nothing in the
+                // protocol separates them, so the whole row goes disabled the way
+                // DevicePage's does.
+                enabled: modelData.level > 0
+                color: enabled ? Theme.primaryColor : Theme.secondaryColor
                 text: qsTr("%1: %2 %").arg(modelData.name).arg(modelData.level)
             }
         }

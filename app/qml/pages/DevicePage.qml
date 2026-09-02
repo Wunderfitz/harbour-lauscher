@@ -94,6 +94,13 @@ Page {
                     height: Theme.itemSizeSmall
                     visible: mdr.batteries.length > 0
 
+                    // A bud that is in the case reads 0 %, and so does one that is
+                    // genuinely empty - the protocol carries nothing that tells the two
+                    // apart. Rather than pick a reading, the row goes disabled: still
+                    // there, plainly not a measurement. enabled propagates to both
+                    // labels, so name and level dim together.
+                    enabled: modelData.level > 0
+
                     Label {
                         anchors {
                             left: parent.left
@@ -101,7 +108,8 @@ Page {
                             verticalCenter: parent.verticalCenter
                         }
                         text: modelData.name
-                        color: Theme.highlightColor
+                        color: parent.enabled ? Theme.highlightColor
+                                              : Theme.secondaryHighlightColor
                     }
 
                     Label {
@@ -115,7 +123,8 @@ Page {
                               : modelData.charging
                                 ? qsTr("%1 % · charging").arg(modelData.level)
                                 : qsTr("%1 %").arg(modelData.level)
-                        color: Theme.primaryColor
+                        color: parent.enabled ? Theme.primaryColor
+                                              : Theme.secondaryColor
                     }
                 }
             }
