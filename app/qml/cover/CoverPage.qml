@@ -148,7 +148,7 @@ CoverBackground {
             wrapMode: Text.WordWrap
             maximumLineCount: 2
             truncationMode: TruncationMode.Fade
-            font.pixelSize: Theme.fontSizeSmall
+            font.pixelSize: Theme.fontSizeLarge
             color: Theme.highlightColor
             text: cover.ready && mdr.deviceName.length > 0 ? mdr.deviceName
                                                            : qsTr("Lauscher")
@@ -160,7 +160,7 @@ CoverBackground {
             wrapMode: Text.WordWrap
             maximumLineCount: 3
             truncationMode: TruncationMode.Fade
-            font.pixelSize: Theme.fontSizeExtraSmall
+            font.pixelSize: Theme.fontSizeSmall
             color: Theme.primaryColor
             visible: !cover.ready && text.length > 0
             text: mdr.statusMessage
@@ -173,9 +173,9 @@ CoverBackground {
                 width: content.width
                 horizontalAlignment: Text.AlignLeft
                 truncationMode: TruncationMode.Fade
-                font.pixelSize: Theme.fontSizeExtraSmall
+                font.pixelSize: Theme.fontSizeSmall
                 color: Theme.primaryColor
-                text: qsTr("%1 %2 %").arg(modelData.name).arg(modelData.level)
+                text: qsTr("%1: %2 %").arg(modelData.name).arg(modelData.level)
             }
         }
 
@@ -183,7 +183,7 @@ CoverBackground {
             width: parent.width
             horizontalAlignment: Text.AlignLeft
             truncationMode: TruncationMode.Fade
-            font.pixelSize: Theme.fontSizeExtraSmall
+            font.pixelSize: Theme.fontSizeSmall
             color: Theme.primaryColor
             visible: cover.ready && mdr.volumeAvailable
             text: qsTr("Volume: %1").arg(cover.volumeText(mdr.volume))
@@ -195,7 +195,7 @@ CoverBackground {
             wrapMode: Text.WordWrap
             maximumLineCount: 2
             truncationMode: TruncationMode.Fade
-            font.pixelSize: Theme.fontSizeExtraSmall
+            font.pixelSize: Theme.fontSizeSmall
             color: Theme.primaryColor
             visible: cover.ready && mdr.listeningModeAvailable
             text: cover.modeName(mdr.listeningMode)
@@ -205,7 +205,7 @@ CoverBackground {
             width: parent.width
             horizontalAlignment: Text.AlignLeft
             truncationMode: TruncationMode.Fade
-            font.pixelSize: Theme.fontSizeExtraSmall
+            font.pixelSize: Theme.fontSizeSmall
             color: Theme.primaryColor
             visible: cover.ready && cover.roomApplies
             text: qsTr("Distance: %1").arg(cover.roomName(mdr.backgroundRoom))

@@ -35,10 +35,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>%1 %2 %</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>off</source>
         <translation type="unfinished"></translation>
     </message>
@@ -104,6 +100,10 @@
     </message>
     <message>
         <source>Distance: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1: %2 %</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
