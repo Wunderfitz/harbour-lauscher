@@ -459,16 +459,20 @@ void MdrController::refreshListening()
      * every mode off first and the new one 0.2-0.4 s later, which is visible in the
      * WF-LC900 listening capture upstream. Nothing marks that reading as transitional
      * - every mode off is exactly what Standard looks like - so a mode the user asked
-     * for and that has not come back yet outranks it. Any other reading is the device
-     * having its say: a different mode means it did something else, and Standard once
-     * the window is up means the request did not take. */
+     * for holds against it until the window is up.
+     *
+     * The window is what ends the hold, never a reading that agrees with the request:
+     * libmdr takes a staged value as current the moment the change is sent, so it
+     * reports the requested mode straight away and the device's confirmation cannot be
+     * told from our own echo of the request. A reading of some other mode can end it,
+     * though - that is the device saying it did something we did not ask for. */
     if (m_requestedListeningMode >= 0) {
-        if (int(listening.mode) == m_requestedListeningMode)
+        if (m_listeningRequestAge.elapsed() >= kListeningSettleMs)
             m_requestedListeningMode = -1;
         else if (listening.mode == MDR_LISTENING_STANDARD &&
-                 m_listeningRequestAge.elapsed() < kListeningSettleMs)
+                 m_requestedListeningMode != MDR_LISTENING_STANDARD)
             return;
-        else
+        else if (int(listening.mode) != m_requestedListeningMode)
             m_requestedListeningMode = -1;
     }
 
