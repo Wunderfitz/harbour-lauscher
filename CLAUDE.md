@@ -20,12 +20,20 @@ that means in practice:
   commit, what was added on top, and how to refresh it.
 - The pinned state includes protocol fixes that are **not upstream yet** (the
   transmit sequence number, the pre-handshake frame guard, gating V2 init
-  requests on the advertised function list, the four listening modes). Plain
-  upstream will not drive this device correctly.
+  requests on the advertised function list, the four listening modes, and
+  committing the staged listening flags before the switch is sent rather than
+  after). Plain upstream will not drive this device correctly.
 - Bugs found here that live in the protocol belong in the SonyHeadphonesClient
   checkout (`~/git/SonyHeadphonesClient`), not in `libmdr/upstream/` - fix them
   there, then refresh the copy. Editing the copy directly makes the next refresh
   a merge.
+- That checkout's `tests/` holds **recorded device traffic**, including
+  `WF-LC900-2.0.3-listening`, which is this device's family switching between all
+  of its listening modes. Frames can be replayed through the C ABI offline with
+  the mock transport in `tests/Replay.cpp` - roughly 100 lines to stand up - which
+  answers "what does the app actually see" without a phone in hand. That is how
+  the listening-mode flicker below was pinned down; guessing at it twice first
+  cost more than writing the harness would have.
 
 ---
 
@@ -351,6 +359,16 @@ all three, and all of them arrive unprompted as well as on request.
   next `RequestCommit`; libmdr resets the property to `KEY_OFF` afterwards so tapping
   the same button twice sends it twice.
 
+**A battery reading of 0 % means nothing on its own.** A bud in the case reports
+0 %, and so does one that is genuinely empty: the frame carries a level and a
+charging status per side (`PowerRetStatusLeftRightBattery`) and nothing that
+separates the two. `MDRBattery.present` is not that flag either - libmdr
+hardcodes it to true for every advertised part. Attempts to read it out of the
+charging status and the update threshold did not survive contact with the device,
+so `DevicePage` and `CoverPage` both just disable the row at 0 %: still visible,
+plainly not a measurement. `enabled` propagates down the item tree, which is what
+dims the name and the level together.
+
 The listening-mode picker offers only the modes the device advertises. Each one
 is a separate `MDR_FEATURE_LISTENING_*` bit — `MDR_FEATURE_LISTENING_MODE` only
 says the device groups them into one exclusive setting — so the menu keeps a
@@ -361,6 +379,35 @@ one does not shift the others, whereas a `Repeater`-built menu would, and its
 items would arrive only after `ComboBoxController` had given up looking for
 them. `MdrController.listeningModes` carries the advertised set for the `visible`
 bindings.
+
+**The device does not switch modes in one step, and the app has to cover for
+that.** Asked for a listening mode while another is active, it reports every mode
+off first and the new one 0.2-0.4 s later. Since the modes are exclusive flags,
+every mode off is not a state the protocol marks as transitional - it is exactly
+what Standard looks like, so the picker and the cover followed the device through
+it and flicked back and forth. Switching *to* Standard never showed it: there the
+device has only the one step to make.
+
+`refreshListening()` therefore holds a mode the user asked for against a reading
+of Standard for `kListeningSettleMs` (2 s). Three things about it are load-bearing:
+
+- **Only the window ends the hold**, never a reading that agrees with the request.
+  libmdr takes a staged value as current the moment the change is sent, so it
+  reports the requested mode straight away and the device's confirmation cannot be
+  told from our own echo. Disarming on agreement disarms instantly and the hold
+  does nothing.
+- A reading of some *other* mode does end it - that is the device saying it did
+  something we did not ask for.
+- `tick()` gives up on an unanswered request itself. The suppressed events are the
+  only thing that would have re-read the mode, so without that a request the
+  device never answered would leave the UI on an optimistic value for good.
+
+This is deliberately **not** in libmdr: what the device reports is what libmdr
+should report, and the timeout that makes the suppression safe needs a clock,
+which a poll-driven protocol library has no business owning. The related fix that
+*did* belong there - committing the staged flags before the sends instead of
+after - closes a second, shorter window of the same shape, where our own
+two-frame switch (deactivate, then activate) left no mode set in between.
 
 ### Confirmed on hardware, 2026-08-30
 
@@ -391,6 +438,13 @@ file and a parse error there is silent (see QML gotchas).
 exercised on hardware; the distances are audibly different from one another. So
 every listening-mode path has now been driven on the device, including the one
 that can reach `setListeningMode()`'s `MDR_ROOM_UNKNOWN` fallback.
+
+### Confirmed on hardware, 2026-09-03
+
+The listening-mode switch is clean on the phone: picking any mode while another
+one is active lands on it directly, with no pass through Standard in the picker or
+on the cover. Both halves of that - the libmdr commit ordering and the hold in
+`refreshListening()` - are in.
 
 Known gaps:
 - No reconnect-on-wake; leaving `DevicePage` drops the RFCOMM channel on
