@@ -8,8 +8,8 @@ state this app is known to work against:
 |---|---|
 | Repository | `https://github.com/mos9527/SonyHeadphonesClient` |
 | Base | `ccc1d949e8d4b60c90f600f8077ef0c3285367b6` (branch `v1-compat`) |
-| Plus | the WF-LC900 protocol work, branch `fix/mdr-transmit-sequence-numbers`, tip `f5f29c9666a3a9ee50930400a1c0c08cf2871949` |
-| Taken on | 2026-08-30 |
+| Plus | the WF-LC900 protocol work, branch `fix/mdr-transmit-sequence-numbers`, tip `4f271a06c53a83688d29348f5aeab493dbef0773` |
+| Taken on | 2026-09-02 |
 
 Those extra commits are **not upstream yet**. Four of them are load-bearing for the
 LinkBuds Clip: the transmit sequence number fix, the pre-handshake frame guard, gating
@@ -28,10 +28,14 @@ except for two files added here from that repository's root:
 ```sh
 cd <SonyHeadphonesClient checkout>
 git ls-files libmdr | while read -r f; do
-  install -D "$f" "<this repo>/libmdr/upstream/${f#libmdr/}"
+  install -Dm644 "$f" "<this repo>/libmdr/upstream/${f#libmdr/}"
 done
 diff -r <SonyHeadphonesClient checkout>/libmdr <this repo>/libmdr/upstream   # only the two extras
+git status                                                                  # only real changes
 ```
+
+`-m644` is not decoration: `install` defaults to 755, and without it every copied
+file turns up in `git status` as a mode change with no diff.
 
 Then update the table above, and check `SOURCES` in [libmdr.pro](libmdr.pro): the build
 lists translation units explicitly, so a new `.cpp` upstream has to be added by hand.

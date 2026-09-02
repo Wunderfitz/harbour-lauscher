@@ -614,6 +614,24 @@ namespace mdr
         {
             using namespace t1;
             const bool bgmPending = mBGMModeEnabled.pending() || mBGMModeRoomSize.pending();
+            const bool cinemaPending = mUpmixCinemaEnabled.pending();
+            const bool voiceContentsPending = mVoiceContentsEnabled.pending();
+            const bool soundLeakageReductionPending = mSoundLeakageReductionEnabled.pending();
+
+            /* Take the staged values as current before the first send, not after the
+             * last one. Every SendCommandACK below suspends until the device answers,
+             * and frames that arrive meanwhile are dispatched from the same poll - so a
+             * client reading the listening mode mid-switch would otherwise see the old
+             * mode already off and the new one not yet on. The modes are exclusive and
+             * their flags are separate, so that half-applied state reads as a mode of
+             * its own: Standard. The device's own notifications still overwrite() all of
+             * this once they land, so this only moves an optimistic update earlier. */
+            if (bgmPending)
+                mBGMModeEnabled.commit(), mBGMModeRoomSize.commit();
+            mUpmixCinemaEnabled.commit();
+            mVoiceContentsEnabled.commit();
+            mSoundLeakageReductionEnabled.commit();
+
             for (int activating = 0; activating < 2; ++activating)
             {
                 if (bgmPending && mBGMModeEnabled.submitted == (activating != 0) && SupportsBGMMode())
@@ -627,7 +645,7 @@ namespace mdr
                     res.targetRoomSize = mBGMModeRoomSize.submitted;
                     SendCommandACK(AudioSetParamBGMMode, res);
                 }
-                if (mUpmixCinemaEnabled.pending() && mUpmixCinemaEnabled.submitted == (activating != 0) &&
+                if (cinemaPending && mUpmixCinemaEnabled.submitted == (activating != 0) &&
                     mSupport.contains(FunctionType::UPMIX_CINEMA))
                 {
                     AudioSetParamUpmixCinema res;
@@ -637,7 +655,7 @@ namespace mdr
                         : OnOffSettingValue::OFF;
                     SendCommandACK(AudioSetParamUpmixCinema, res);
                 }
-                if (mVoiceContentsEnabled.pending() && mVoiceContentsEnabled.submitted == (activating != 0) &&
+                if (voiceContentsPending && mVoiceContentsEnabled.submitted == (activating != 0) &&
                     mSupport.contains(FunctionType::VOICE_CONTENTS))
                 {
                     AudioSetParamVoiceContents res;
@@ -646,7 +664,7 @@ namespace mdr
                         : OnOffSettingValue::OFF;
                     SendCommandACK(AudioSetParamVoiceContents, res);
                 }
-                if (mSoundLeakageReductionEnabled.pending() &&
+                if (soundLeakageReductionPending &&
                     mSoundLeakageReductionEnabled.submitted == (activating != 0) &&
                     mSupport.contains(FunctionType::SOUND_LEAKAGE_REDUCTION))
                 {
@@ -657,12 +675,6 @@ namespace mdr
                     SendCommandACK(AudioSetParamSoundLeakageReduction, res);
                 }
             }
-            // Consume the staged values even where the send was skipped, or IsDirty() never clears.
-            if (bgmPending)
-                mBGMModeEnabled.commit(), mBGMModeRoomSize.commit();
-            mUpmixCinemaEnabled.commit();
-            mVoiceContentsEnabled.commit();
-            mSoundLeakageReductionEnabled.commit();
         }
 
         /* EQ */
