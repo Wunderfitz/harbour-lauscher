@@ -35,34 +35,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>off</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>very quiet</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>quiet</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>moderate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>loud</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>very loud</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>maximum</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Ambient background music</source>
         <translation type="unfinished"></translation>
     </message>
@@ -95,15 +67,15 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Volume: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Distance: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>%1: %2 %</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Volume: %1 %</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -41,6 +41,11 @@ const int kServiceUuidCount = int(sizeof(kServiceUuids) / sizeof(kServiceUuids[0
  * phone; libmdr does no work of its own between polls. */
 const int kPollIntervalMs = 30;
 
+/* The headset's own volume scale is 0..30 - mdrHeadphonesSetPlayback rejects
+ * anything above that. The UI shows percent instead, so this is also the divisor
+ * volumeToPercent() works from. */
+const int kMaxVolume = 30;
+
 /* How long a listening mode the user picked outranks the device reporting Standard.
  * Switching between two listening modes, the device reports every mode off first and
  * the new one on 0.2-0.4 s later; this is that window with room to spare, after which
@@ -493,6 +498,18 @@ void MdrController::refreshAll()
     refreshListening();
 }
 
+int MdrController::maximumVolume() const
+{
+    return kMaxVolume;
+}
+
+/* Both the slider and the cover say the volume in percent; the device counts in
+ * 31 steps, so the two scales meet here and nowhere else. */
+int MdrController::volumeToPercent(int volume) const
+{
+    return qRound(qBound(0, volume, kMaxVolume) * 100.0 / kMaxVolume);
+}
+
 /* ------------------------------------------------------------------ setters */
 
 void MdrController::setVolume(int volume)
@@ -504,7 +521,7 @@ void MdrController::setVolume(int volume)
 
     /* The status has to go back out as it came in: libmdr refuses a playback struct
      * that asks for a state change, and this call is only about the volume. */
-    playback.volume = uint8_t(qBound(0, volume, 30));
+    playback.volume = uint8_t(qBound(0, volume, kMaxVolume));
     if (mdrHeadphonesSetPlayback(m_device, &playback) != MDR_RESULT_OK)
         return;
 

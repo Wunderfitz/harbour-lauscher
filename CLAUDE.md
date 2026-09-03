@@ -311,8 +311,9 @@ under `/usr/share/harbour-lauscher`.
 - The actions step to the next option rather than opening anything — a cover
   cannot show a menu — and the icon says where that landed. The mode rotation
   only contains what the device advertises, so it matches `DevicePage`'s picker.
-- **Volume is named, not numbered.** The headset's 0..30 scale means nothing at a
-  glance, so `volumeText()` maps it to seven steps from *off* to *maximum*.
+- **Volume is a percentage here, as it is on `DevicePage`.** The headset's 0..30
+  scale means nothing at a glance, so the cover reads `MdrController.volumePercent`
+  — the same conversion the slider's `valueText` runs through `volumeToPercent()`.
 
 ## QML gotchas already paid for
 
@@ -343,10 +344,15 @@ Everything under Playback rides on one event. Volume, play/pause status and the
 track names all report `MDR_EVENT_PLAYBACK_CHANGED`, so `refreshPlayback()` reads
 all three, and all of them arrive unprompted as well as on request.
 
-- **Volume** is the headset's own 0..30 scale, not a percentage —
-  `mdrHeadphonesSetPlayback` rejects anything above 30. The struct it takes carries
-  the play/pause status too, and libmdr refuses one that asks for a state change, so
-  the setter reads the current struct and puts the status back unaltered.
+- **Volume is 0..30 on the wire and 0..100 % in the UI.**
+  `mdrHeadphonesSetPlayback` rejects anything above 30, so `setVolume()` and the
+  slider both step in the device's own 31 steps — every slider position is one the
+  headset has — and only the readout is converted, by `MdrController::volumeToPercent()`.
+  `DevicePage` and `CoverPage` (via the `volumePercent` property) share it, so the two
+  never disagree; `maximumVolume` keeps the 30 out of the QML. The struct
+  `mdrHeadphonesSetPlayback` takes carries the play/pause status too, and libmdr refuses
+  one that asks for a state change, so the setter reads the current struct and puts the
+  status back unaltered.
 - **Track names come from the phone, not the headset.** They are whatever the source
   device pushed over AVRCP, so all three being empty is normal, not a fault — the
   block hides itself in that case. Watch for this when testing: a silent Now-playing

@@ -196,15 +196,17 @@ Page {
                 visible: mdr.volumeAvailable
                 width: parent.width
                 minimumValue: 0
-                maximumValue: 30
+                maximumValue: mdr.maximumVolume
                 stepSize: 1
                 label: qsTr("Volume")
-                valueText: value.toFixed(0)
 
-                // 0..30 is the headset's own scale, not a percentage. Same reason as
-                // the ComboBox for assigning rather than binding: dragging writes to
-                // value, and the headset reports the volume the phone sets, so the
-                // two would fight over the binding.
+                // The slider steps in the headset's own 0..30, so every position it
+                // can take is one the device has; only the readout is a percentage.
+                valueText: qsTr("%1 %").arg(mdr.volumeToPercent(value))
+
+                // Same reason as the ComboBox for assigning rather than binding:
+                // dragging writes to value, and the headset reports the volume the
+                // phone sets, so the two would fight over the binding.
                 Component.onCompleted: value = mdr.volume
 
                 Connections {

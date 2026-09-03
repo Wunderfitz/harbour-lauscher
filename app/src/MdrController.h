@@ -58,6 +58,8 @@ class MdrController : public QObject
     Q_PROPERTY(bool volumeAvailable READ volumeAvailable NOTIFY featuresChanged)
     Q_PROPERTY(bool playbackControlAvailable READ playbackControlAvailable NOTIFY featuresChanged)
     Q_PROPERTY(int volume READ volume NOTIFY playbackChanged)
+    Q_PROPERTY(int maximumVolume READ maximumVolume CONSTANT)
+    Q_PROPERTY(int volumePercent READ volumePercent NOTIFY playbackChanged)
     Q_PROPERTY(int playbackStatus READ playbackStatus NOTIFY playbackChanged)
     Q_PROPERTY(QString trackTitle READ trackTitle NOTIFY playbackChanged)
     Q_PROPERTY(QString trackAlbum READ trackAlbum NOTIFY playbackChanged)
@@ -139,6 +141,12 @@ public:
     bool volumeAvailable() const { return m_volumeAvailable; }
     bool playbackControlAvailable() const { return m_playbackControlAvailable; }
     int volume() const { return m_volume; }
+    int maximumVolume() const;
+    int volumePercent() const { return volumeToPercent(m_volume); }
+
+    /* The volume the device speaks in is 0..30; everything the user sees is a
+     * percentage of that, so both pages convert through here. */
+    Q_INVOKABLE int volumeToPercent(int volume) const;
     int playbackStatus() const { return m_playbackStatus; }
     QString trackTitle() const { return m_trackTitle; }
     QString trackAlbum() const { return m_trackAlbum; }

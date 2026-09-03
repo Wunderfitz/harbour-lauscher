@@ -38,24 +38,6 @@ CoverBackground {
                                         && mdr.listeningModes.length > 1
     readonly property bool canPickRoom: canPickMode && roomApplies
 
-    // The headset counts 0..30, which says nothing at a glance. These are even
-    // steps over that range, named rather than numbered.
-    function volumeText(volume) {
-        if (volume <= 0)
-            return qsTr("off")
-        if (volume <= 6)
-            return qsTr("very quiet")
-        if (volume <= 12)
-            return qsTr("quiet")
-        if (volume <= 18)
-            return qsTr("moderate")
-        if (volume <= 24)
-            return qsTr("loud")
-        if (volume <= 29)
-            return qsTr("very loud")
-        return qsTr("maximum")
-    }
-
     function modeName(mode) {
         switch (mode) {
         case Mdr.BackgroundMusic: return qsTr("Ambient background music")
@@ -190,7 +172,7 @@ CoverBackground {
             font.pixelSize: Theme.fontSizeSmall
             color: Theme.primaryColor
             visible: cover.ready && mdr.volumeAvailable
-            text: qsTr("Volume: %1").arg(cover.volumeText(mdr.volume))
+            text: qsTr("Volume: %1 %").arg(mdr.volumePercent)
         }
 
         Label {
