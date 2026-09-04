@@ -236,6 +236,8 @@ private:
     void sendPairedDeviceCommand(MDRPairedDeviceCommand command, const QString &address);
     QString sourceSwitchMessage(MDRSourceSwitchControlResult result) const;
 
+    QString codecName(MDRAudioCodec codec) const;
+    QString batteryPartName(MDRBatteryPart part) const;
     QString textOf(MDRText text, uint32_t index = 0) const;
     bool featureAvailable(MDRFeature feature) const;
 

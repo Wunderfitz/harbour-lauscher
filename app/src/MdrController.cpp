@@ -52,30 +52,6 @@ const int kMaxVolume = 30;
  * whatever the device says is taken at face value again. */
 const int kListeningSettleMs = 2000;
 
-QString codecName(MDRAudioCodec codec)
-{
-    switch (codec) {
-    case MDR_AUDIO_CODEC_SBC: return QStringLiteral("SBC");
-    case MDR_AUDIO_CODEC_AAC: return QStringLiteral("AAC");
-    case MDR_AUDIO_CODEC_LDAC: return QStringLiteral("LDAC");
-    case MDR_AUDIO_CODEC_APTX: return QStringLiteral("aptX");
-    case MDR_AUDIO_CODEC_APTX_HD: return QStringLiteral("aptX HD");
-    case MDR_AUDIO_CODEC_LC3: return QStringLiteral("LC3");
-    case MDR_AUDIO_CODEC_OTHER: return QStringLiteral("Other");
-    default: return QString();
-    }
-}
-
-QString batteryPartName(MDRBatteryPart part)
-{
-    switch (part) {
-    case MDR_BATTERY_LEFT: return QStringLiteral("Left");
-    case MDR_BATTERY_RIGHT: return QStringLiteral("Right");
-    case MDR_BATTERY_CASE: return QStringLiteral("Case");
-    default: return QStringLiteral("Battery");
-    }
-}
-
 } // namespace
 
 MdrController::MdrController(QObject *parent)
@@ -574,6 +550,35 @@ void MdrController::refreshAll()
 int MdrController::maximumVolume() const
 {
     return kMaxVolume;
+}
+
+/* Both of these end up on screen, so they are members and not the file-local
+ * helpers they used to be: only inside the class does tr() put them in the
+ * MdrController context where lupdate and the translators can reach them. */
+QString MdrController::codecName(MDRAudioCodec codec) const
+{
+    switch (codec) {
+    /* Codec names are the names of the codecs in every language. */
+    case MDR_AUDIO_CODEC_SBC: return QStringLiteral("SBC");
+    case MDR_AUDIO_CODEC_AAC: return QStringLiteral("AAC");
+    case MDR_AUDIO_CODEC_LDAC: return QStringLiteral("LDAC");
+    case MDR_AUDIO_CODEC_APTX: return QStringLiteral("aptX");
+    case MDR_AUDIO_CODEC_APTX_HD: return QStringLiteral("aptX HD");
+    case MDR_AUDIO_CODEC_LC3: return QStringLiteral("LC3");
+    /* This one is a word, not a name. */
+    case MDR_AUDIO_CODEC_OTHER: return tr("Other");
+    default: return QString();
+    }
+}
+
+QString MdrController::batteryPartName(MDRBatteryPart part) const
+{
+    switch (part) {
+    case MDR_BATTERY_LEFT: return tr("Left");
+    case MDR_BATTERY_RIGHT: return tr("Right");
+    case MDR_BATTERY_CASE: return tr("Case");
+    default: return tr("Battery");
+    }
 }
 
 /* Why the headset would not move playback. A member rather than a file-local
