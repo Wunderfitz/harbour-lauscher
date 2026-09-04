@@ -202,6 +202,7 @@ app/src/MdrController.*       QML facade; owns the poll loop
 app/qml/pages/DeviceListPage  paired-device picker
 app/qml/pages/DevicePage      battery, playback, ambient sound control, listening mode
 app/qml/cover/CoverPage       the cover: status at a glance, mode and distance actions
+app/icons/                    app icon: SVG master and the rendered PNGs
 app/images/                   cover artwork and cover-action icons (SVG)
 rpm/harbour-lauscher.spec
 ```
@@ -314,6 +315,42 @@ under `/usr/share/harbour-lauscher`.
 - **Volume is a percentage here, as it is on `DevicePage`.** The headset's 0..30
   scale means nothing at a glance, so the cover reads `MdrController.volumePercent`
   — the same conversion the slider's `valueText` runs through `volumeToPercent()`.
+
+## The app icon
+
+`app/icons/harbour-lauscher.svg` is the master; `SAILFISHAPP_ICONS` installs
+only the four rendered PNGs beside it, so the SVG ships nowhere and is listed in
+`DISTFILES` just to keep it in sight. It follows Jolla's [Apps icon
+story](https://sailfishos.org/content/uploads/2018/11/48_SAILFISH-APPS-ICON-STORY.pdf):
+
+- **86 units, filled edge to edge.** The guide asks for an 86 px icon with no
+  padding beyond a 0.3-unit gap on each side, for a continuous anti-aliased
+  outline. The viewBox is that canvas, so every number in the file is a guide
+  unit.
+- **The base shape is the arch**, one of the sixteen the guide builds by merging
+  a circle with a rounded rectangle: a half circle of radius 42.7 on top of a
+  body whose bottom corners round by **3.5**. That radius is measured off the
+  guide's own artwork rather than guessed — the shapes are drawn there at
+  exactly 86 pt, so the numbers transfer one to one.
+- **The metaphor is the cover artwork's headphone**, scaled by 0.48 and centred.
+  That lands it 12 units in from each side, which is exactly the inset outline
+  the guide draws to keep metaphors inside the shape.
+- **The gradient is diagonal, dark to light**, matching the guide's own green
+  arch, which runs its fill corner to corner rather than straight down.
+
+Re-render after editing the SVG — one command per installed size:
+
+```sh
+for s in 86 108 128 172; do
+    rsvg-convert -w $s -h $s app/icons/harbour-lauscher.svg \
+        -o app/icons/${s}x${s}/harbour-lauscher.png
+done
+```
+
+Inkscape does as well. ImageMagick alone does **not**: its internal SVG renderer
+silently drops both the gradient and the stroked headband, leaving a black
+silhouette, and the `rsvg-convert` delegate it would otherwise use is a separate
+package.
 
 ## QML gotchas already paid for
 

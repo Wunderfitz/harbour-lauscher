@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (C) 2026 Sebastian J. Wolf and other contributors
+
+    This file is part of Lauscher.
+
+    Lauscher is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Lauscher is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Lauscher. If not, see <http://www.gnu.org/licenses/>.
+-->
+<!--
+    App icon master. Renders to app/icons/<size>/harbour-lauscher.png.
+
+    Built to Jolla's "Apps icon story" (48_SAILFISH-APPS-ICON-STORY.pdf):
+    an 86-unit canvas, one of the sixteen base shapes filling it edge to edge
+    with only a 0.3-unit gap, and the metaphor kept inside the shape's inset
+    outline - 12 units in from the sides, which is exactly what the headphone
+    below spans.
+
+    The base shape is the arch: a half circle merged with a rounded rectangle.
+    Its geometry is measured off the guide's own artwork - the bottom corners
+    round by 3.5 of 86, not more.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+     width="86" height="86" viewBox="0 0 86 86">
+  <defs>
+    <!-- Diagonal, dark to light, the way the guide's green arch is filled. -->
+    <linearGradient id="base" x1="0" y1="0" x2="86" y2="86" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#00702d"/>
+      <stop offset="1" stop-color="#3fbf92"/>
+    </linearGradient>
+  </defs>
+
+  <path d="M 0.3 43
+           A 42.7 42.7 0 0 1 85.7 43
+           L 85.7 82.2
+           A 3.5 3.5 0 0 1 82.2 85.7
+           L 3.8 85.7
+           A 3.5 3.5 0 0 1 0.3 82.2
+           Z"
+        fill="url(#base)"/>
+
+  <!-- The cover artwork's headphone, scaled by 0.48 onto the 86-unit canvas. -->
+  <g fill="#ffffff">
+    <path d="M 19.24 44.8 A 23.76 23.76 0 0 1 66.76 44.8"
+          fill="none" stroke="#ffffff" stroke-width="5.76" stroke-linecap="round"/>
+    <rect x="11.8" y="46.24" width="15.36" height="21.6" rx="7.68" ry="7.68"/>
+    <rect x="58.84" y="46.24" width="15.36" height="21.6" rx="7.68" ry="7.68"/>
+    <circle cx="43" cy="55.36" r="4.32"/>
+  </g>
+</svg>

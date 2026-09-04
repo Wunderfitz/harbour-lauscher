@@ -27,6 +27,7 @@ DISTFILES += \
     qml/pages/DevicePage.qml \
     qml/pages/AboutPage.qml \
     harbour-lauscher.desktop \
+    icons/harbour-lauscher.svg \
     $$files(images/*.svg)
 
 # sailfishapp.prf deploys qml/ for us but knows nothing about anything else, so
