@@ -201,10 +201,11 @@ app/src/BluezTransport.*      MDRConnection vtable over BlueZ Profile1
 app/src/MdrController.*       QML facade; owns the poll loop
 app/qml/pages/DeviceListPage  paired-device picker
 app/qml/pages/DevicePage      battery, playback, ambient sound control, listening mode
-app/qml/pages/AboutPage       credits and licences, in both pages' pulley menus
+app/qml/pages/AboutPage       logo, what to know about the app, credits
+app/qml/components/           small shared QML: the cover backdrop, about-page bits
 app/qml/cover/CoverPage       the cover: status at a glance, mode and distance actions
-app/icons/                    app icon: SVG master and the rendered PNGs
-app/images/                   cover artwork and cover-action icons (SVG)
+app/icons/                    the rendered app icon, one PNG per launcher size
+app/images/                   app icon master, cover artwork, cover-action icons (SVG)
 rpm/harbour-lauscher.spec
 ```
 
@@ -319,9 +320,12 @@ under `/usr/share/harbour-lauscher`.
 
 ## The app icon
 
-`app/icons/harbour-lauscher.svg` is the master; `SAILFISHAPP_ICONS` installs
-only the four rendered PNGs beside it, so the SVG ships nowhere and is listed in
-`DISTFILES` just to keep it in sight. It follows Jolla's [Apps icon
+`app/images/harbour-lauscher.svg` is the master and `app/icons/<size>/` holds
+what it renders to; `SAILFISHAPP_ICONS` installs those four PNGs and nothing
+else. The master sits in `images/` rather than beside them because that
+directory is installed as a whole (see The cover), which is what lets
+`AboutPage` show the icon as its logo, drawn from the SVG at whatever size the
+screen gives it. It follows Jolla's [Apps icon
 story](https://sailfishos.org/content/uploads/2018/11/48_SAILFISH-APPS-ICON-STORY.pdf):
 
 - **86 units, filled edge to edge.** The guide asks for an 86 px icon with no
@@ -343,7 +347,7 @@ Re-render after editing the SVG — one command per installed size:
 
 ```sh
 for s in 86 108 128 172; do
-    rsvg-convert -w $s -h $s app/icons/harbour-lauscher.svg \
+    rsvg-convert -w $s -h $s app/images/harbour-lauscher.svg \
         -o app/icons/${s}x${s}/harbour-lauscher.png
 done
 ```
@@ -356,6 +360,24 @@ package.
 ## QML gotchas already paid for
 
 Three bugs cost real debugging time here; do not reintroduce them.
+
+The host's own `qmllint` runs over these files without a device or an emulator —
+it only parses, so the Silica imports it cannot resolve do not bother it:
+
+```sh
+find app/qml -name '*.qml' -exec qmllint {} +
+```
+
+Worth running, but know what it is worth: it catches **syntax** and nothing
+else. A file with `Text.Wordwrap`, an undeclared property and an undefined type
+passes it clean — which is to say it would have caught none of the three bugs
+below. It is a guard against a stray brace, not against any of this.
+
+For the names it cannot check, read them off the target in
+`~/SailfishOS/mersdk/targets/SailfishOS-<version>-<arch>.default/usr/lib*/qt5/qml/Sailfish/Silica`:
+the QML sources are there, and `plugins.qmltypes` covers what is implemented in
+C++ — that is where `Separator.horizontalAlignment` turns out to come from
+`Underline`.
 
 - **`import "pages"` in `app/qml/harbour-lauscher.qml` is mandatory.** Without it
   `DeviceListPage {}` does not resolve, and the failure mode is *silent*: the app

@@ -22,12 +22,13 @@ HEADERS += \
 DISTFILES += \
     qml/harbour-lauscher.qml \
     qml/cover/CoverPage.qml \
+    qml/components/AboutLink.qml \
+    qml/components/AboutParagraph.qml \
     qml/components/BackgroundImage.qml \
     qml/pages/DeviceListPage.qml \
     qml/pages/DevicePage.qml \
     qml/pages/AboutPage.qml \
     harbour-lauscher.desktop \
-    icons/harbour-lauscher.svg \
     $$files(images/*.svg)
 
 # sailfishapp.prf deploys qml/ for us but knows nothing about anything else, so

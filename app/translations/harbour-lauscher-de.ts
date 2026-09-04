@@ -8,23 +8,95 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Lauscher controls Sony headphones over the MDR protocol. The protocol implementation is libmdr from the SonyHeadphonesClient project; the Bluetooth transport is BlueZ&apos;s own Profile1 D-Bus API.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Credits</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Protocol</source>
+        <source>Lauscher %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Licence</source>
+        <source>Sony headphone control for Sailfish OS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Lauscher</source>
+        <source>By Sebastian J. Wolf and Claude</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send e-mail</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licensed under GNU GPLv3 or later</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sources on GitHub</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Good to know</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pair the headset in the Bluetooth settings first. Lauscher lists what is paired and connects on tap — it is a control channel, not an audio one, so music keeps playing over the usual route.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Only one app can hold that channel. Leaving the device page closes it on purpose, so Sony&apos;s own app — or another phone — can take over right away.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>What you see is what the headset advertises. Two Sony models rarely offer the same set of features, and a section that is missing is one this device did not offer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A battery level of 0 % is shown dimmed. The headset reports it both for an earbud sitting in its charging case and for an empty one, and says nothing that would tell the two apart.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Devices</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Developed against the Sony LinkBuds Clip. Other Sony headsets speaking the same protocol are expected to work, and the app shows whichever features they report. The older protocol of the WH-1000XM4 and its generation is built in but has not been tried.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lauscher is an independent project. It is not affiliated with, endorsed or certified by Sony.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The protocol is spoken by libmdr from the SonyHeadphonesClient project. Thanks for making it available under the conditions of the MIT License!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open SonyHeadphonesClient on GitHub</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Formatting inside libmdr uses fmt. Copyright 2012 to the present day, Victor Zverovich and the fmt contributors. Thanks for making it available under the conditions of the MIT License!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open fmt on GitHub</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The Bluetooth connection is set up by BlueZ, over the profile API bluetoothd already offers every app on the phone.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open the BlueZ website</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lauscher was written by its author together with Claude, Anthropic&apos;s assistant, in Claude Code. The commits it worked on name it as a co-author.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open the Claude Code website</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

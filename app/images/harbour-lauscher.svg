@@ -18,7 +18,9 @@
     along with Lauscher. If not, see <http://www.gnu.org/licenses/>.
 -->
 <!--
-    App icon master. Renders to app/icons/<size>/harbour-lauscher.png.
+    App icon master. Renders to app/icons/<size>/harbour-lauscher.png, and is
+    installed along with the rest of images/ so AboutPage can show it as the
+    logo - which is why it lives here rather than beside the rendered PNGs.
 
     Built to Jolla's "Apps icon story" (48_SAILFISH-APPS-ICON-STORY.pdf):
     an 86-unit canvas, one of the sixteen base shapes filling it edge to edge
