@@ -201,6 +201,7 @@ app/src/BluezTransport.*      MDRConnection vtable over BlueZ Profile1
 app/src/MdrController.*       QML facade; owns the poll loop
 app/qml/pages/DeviceListPage  paired-device picker
 app/qml/pages/DevicePage      battery, playback, ambient sound control, listening mode
+app/qml/pages/AboutPage       credits and licences, in both pages' pulley menus
 app/qml/cover/CoverPage       the cover: status at a glance, mode and distance actions
 app/icons/                    app icon: SVG master and the rendered PNGs
 app/images/                   cover artwork and cover-action icons (SVG)
@@ -354,7 +355,7 @@ package.
 
 ## QML gotchas already paid for
 
-Two bugs cost real debugging time here; do not reintroduce them.
+Three bugs cost real debugging time here; do not reintroduce them.
 
 - **`import "pages"` in `app/qml/harbour-lauscher.qml` is mandatory.** Without it
   `DeviceListPage {}` does not resolve, and the failure mode is *silent*: the app
@@ -363,6 +364,14 @@ Two bugs cost real debugging time here; do not reintroduce them.
   app, suspect an unresolved QML type first.
 - **`Text.WordWrap`, not `Text.Wordwrap`.** The misspelling is not an error in
   QML — the value is simply undefined and text silently stops wrapping.
+- **`PageStatus.Deactivating` does not mean the user left the page.** Silica
+  sets it when a page is pushed on *top* of one, too - that is `PageStack.qml`'s
+  `pushExit()`. `DevicePage` drops the RFCOMM channel when it is left, and
+  hanging that on the status meant opening the about page from its pulley menu
+  disconnected the headset. It uses `Component.onDestruction` instead: PageStack
+  owns pages pushed by URL and destroys them when they are popped, so that fires
+  only on the way out for good. Anything else that must survive a pushed page
+  needs the same distinction.
 
 Also: Silica's `ComboBox.currentIndex` and `Slider.value` are **written to** by
 the controls themselves. Binding them to a `mdr.*` property works exactly once —

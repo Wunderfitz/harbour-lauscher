@@ -33,16 +33,24 @@ Page {
     // Leaving the page tears the RFCOMM channel down; the headset only allows
     // one control session at a time and Sound Connect on another phone would
     // otherwise be locked out.
-    onStatusChanged: {
-        if (status === PageStatus.Deactivating)
-            mdr.disconnectDevice()
-    }
+    //
+    // Destruction, not PageStatus.Deactivating: Silica deactivates a page when
+    // one is pushed on top of it as well (PageStack.qml's pushExit()), so the
+    // about page below would have dropped the session the moment the user
+    // opened it. This page is pushed by URL, so PageStack owns it and destroys
+    // it when it is popped, and main.cpp declares the controller before the
+    // view - it outlives the QML engine, so the call is safe this late.
+    Component.onDestruction: mdr.disconnectDevice()
 
     SilicaFlickable {
         anchors.fill: parent
         contentHeight: content.height + Theme.paddingLarge
 
         PullDownMenu {
+            MenuItem {
+                text: qsTr("About")
+                onClicked: pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
+            }
             MenuItem {
                 text: qsTr("Disconnect")
                 onClicked: pageStack.pop()
