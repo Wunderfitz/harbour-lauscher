@@ -173,7 +173,14 @@ void MdrController::closeDevice()
     m_listeningModeAvailable = false;
     m_listeningModes.clear();
     m_backgroundRoomAvailable = false;
+    m_multipointAvailable = false;
+    m_sourceSwitchingAvailable = false;
     emit featuresChanged();
+
+    m_multipointDevices.clear();
+    m_sourceSwitchingEnabled = true;
+    m_multipointMessage.clear();
+    emit multipointChanged();
 
     /* The next device is a different one until it says otherwise; leaving the last
      * one's mode standing would make the repopulated picker send it back out. */
@@ -282,10 +289,16 @@ void MdrController::pumpDevice()
     case MDR_EVENT_LISTENING_MODE_CHANGED:
         refreshListening();
         break;
+    /* Covers the whole multipoint area: the device list, which of them holds
+     * playback, and whether the headset may move it by itself. */
+    case MDR_EVENT_PAIRED_DEVICES_CHANGED:
+        refreshMultipoint();
+        break;
     case MDR_EVENT_APPLY_COMPLETE:
         refreshPlayback();
         refreshNoiseControl();
         refreshListening();
+        refreshMultipoint();
         break;
     default:
         break;
@@ -406,6 +419,12 @@ void MdrController::refreshFeatures()
         modes.clear();
     m_listeningModes = modes;
     m_backgroundRoomAvailable = m_listeningModeAvailable && backgroundMusic;
+
+    /* Two separate things: the headset keeping a list of the devices it is paired
+     * with, and it letting playback be pinned to one of them. A device can have
+     * the first without the second. */
+    m_multipointAvailable = featureAvailable(MDR_FEATURE_PAIRED_DEVICE_MANAGEMENT);
+    m_sourceSwitchingAvailable = featureAvailable(MDR_FEATURE_SOURCE_SWITCH_CONTROL);
     emit featuresChanged();
 }
 
@@ -489,6 +508,59 @@ void MdrController::refreshListening()
     emit listeningChanged();
 }
 
+/* The headset's own view of what it is paired with: names, which of them are
+ * connected, and which one currently gets the audio. All of it arrives on
+ * MDR_EVENT_PAIRED_DEVICES_CHANGED, including the automatic-switching flag,
+ * which is why one refresh covers the lot. */
+void MdrController::refreshMultipoint()
+{
+    QVariantList devices;
+    if (m_device) {
+        /* Two passes: asked with no buffer, the ABI reports how many there are. */
+        uint32_t count = 0;
+        if (mdrHeadphonesGetPairedDevices(m_device, nullptr, &count) == MDR_RESULT_OK && count > 0) {
+            /* Resized rather than constructed with the count: QVector values(int(count))
+             * parses as a function declaration, not a vector. */
+            QVector<MDRPairedDevice> values;
+            values.resize(int(count));
+            if (mdrHeadphonesGetPairedDevices(m_device, values.data(), &count) == MDR_RESULT_OK) {
+                for (uint32_t i = 0; i < count; ++i) {
+                    QVariantMap entry;
+                    entry.insert(QStringLiteral("name"), QString::fromUtf8(values[int(i)].name));
+                    entry.insert(QStringLiteral("address"),
+                                 QString::fromLatin1(values[int(i)].macAddress));
+                    entry.insert(QStringLiteral("connected"),
+                                 values[int(i)].connected != MDR_FALSE);
+                    entry.insert(QStringLiteral("playbackDevice"),
+                                 values[int(i)].playback_device != MDR_FALSE);
+                    devices.append(entry);
+                }
+            }
+        }
+    }
+
+    bool switching = m_sourceSwitchingEnabled;
+    MDRBoolean enabled = MDR_FALSE;
+    if (m_device && mdrHeadphonesGetSourceSwitchControl(m_device, &enabled) == MDR_RESULT_OK)
+        switching = enabled != MDR_FALSE;
+
+    /* A refused request leaves the previous state standing, so without this the UI
+     * would show a tap that simply did nothing. */
+    QString message;
+    MDRSourceSwitchControlResult result = MDR_SOURCE_SWITCH_CONTROL_SUCCESS;
+    if (m_device &&
+        mdrHeadphonesGetSourceSwitchControlResult(m_device, &result) == MDR_RESULT_OK)
+        message = sourceSwitchMessage(result);
+
+    if (devices == m_multipointDevices && switching == m_sourceSwitchingEnabled &&
+        message == m_multipointMessage)
+        return;
+    m_multipointDevices = devices;
+    m_sourceSwitchingEnabled = switching;
+    m_multipointMessage = message;
+    emit multipointChanged();
+}
+
 void MdrController::refreshAll()
 {
     refreshIdentity();
@@ -496,11 +568,31 @@ void MdrController::refreshAll()
     refreshPlayback();
     refreshNoiseControl();
     refreshListening();
+    refreshMultipoint();
 }
 
 int MdrController::maximumVolume() const
 {
     return kMaxVolume;
+}
+
+/* Why the headset would not move playback. A member rather than a file-local
+ * helper so the strings land in the MdrController translation context with the
+ * rest of the class. */
+QString MdrController::sourceSwitchMessage(MDRSourceSwitchControlResult result) const
+{
+    switch (result) {
+    case MDR_SOURCE_SWITCH_CONTROL_FAILED_ON_CALL:
+        return tr("Not while a call is going on");
+    case MDR_SOURCE_SWITCH_CONTROL_FAILED_NOT_CONNECTED:
+        return tr("That device is not connected to the headset");
+    case MDR_SOURCE_SWITCH_CONTROL_FAILED_VOICE_ASSISTANT:
+        return tr("Not while the voice assistant is listening");
+    case MDR_SOURCE_SWITCH_CONTROL_FAILED:
+        return tr("The headset would not change the playback device");
+    default:
+        return QString();
+    }
 }
 
 /* Both the slider and the cover say the volume in percent; the device counts in
@@ -656,4 +748,57 @@ void MdrController::setBackgroundRoom(int room)
 
     m_backgroundRoom = room;
     emit listeningChanged();
+}
+
+/* Connect, disconnect and "play here" are all one staged MAC address in libmdr,
+ * which the next commit turns into the matching frame. The address has to be the
+ * 17-character form the headset reported; anything else is refused there. */
+void MdrController::sendPairedDeviceCommand(MDRPairedDeviceCommand command,
+                                            const QString &address)
+{
+    const QByteArray id = address.toLatin1();
+
+    MDRPairedDeviceAction action;
+    memset(&action, 0, sizeof(action));
+    action.command = command;
+    action.device_id = id.constData();
+    action.device_id_size = uint32_t(id.size());
+
+    /* Nothing is reflected locally on purpose. The headset answers every one of
+     * these with a paired-device notification carrying what it actually did -
+     * including a refusal, which is the whole point of multipointMessage - so
+     * predicting the outcome here would only get in the way of the truth. */
+    if (!m_device || mdrHeadphonesSetPairedDevice(m_device, &action) != MDR_RESULT_OK)
+        return;
+}
+
+void MdrController::selectPlaybackDevice(const QString &address)
+{
+    sendPairedDeviceCommand(MDR_PAIRED_DEVICE_SELECT_PLAYBACK, address);
+}
+
+void MdrController::connectPairedDevice(const QString &address)
+{
+    sendPairedDeviceCommand(MDR_PAIRED_DEVICE_CONNECT, address);
+}
+
+void MdrController::disconnectPairedDevice(const QString &address)
+{
+    sendPairedDeviceCommand(MDR_PAIRED_DEVICE_DISCONNECT, address);
+}
+
+void MdrController::setSourceSwitchingEnabled(bool enabled)
+{
+    if (!m_device ||
+        mdrHeadphonesSetSourceSwitchControl(m_device, enabled ? MDR_TRUE : MDR_FALSE) !=
+            MDR_RESULT_OK) {
+        /* The switch has already moved; put it back where the device has it. */
+        emit multipointChanged();
+        return;
+    }
+
+    /* Staging this clears the last refusal in libmdr, so clear ours with it. */
+    m_multipointMessage.clear();
+    m_sourceSwitchingEnabled = enabled;
+    emit multipointChanged();
 }

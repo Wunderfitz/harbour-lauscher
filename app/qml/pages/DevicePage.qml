@@ -305,8 +305,11 @@ Page {
             TextSwitch {
                 visible: mdr.noiseControlAvailable && mdr.noiseMode === Mdr.AmbientSound
                 text: qsTr("Focus on voice")
+                // As above: without this the first tap replaces the binding with a
+                // plain value and the switch stops following the headset.
+                automaticCheck: false
                 checked: mdr.focusOnVoice
-                onClicked: mdr.setFocusOnVoice(checked)
+                onClicked: mdr.setFocusOnVoice(!checked)
             }
 
             /* ------------------------------------------------ listening mode */
@@ -427,6 +430,115 @@ Page {
                     if (room !== mdr.backgroundRoom)
                         mdr.setBackgroundRoom(room)
                 }
+            }
+
+            /* -------------------------------------------- connected devices */
+
+            // Both halves are separately advertised, and the header belongs to
+            // whichever of them this headset actually has. Never an empty section:
+            // a device list of nothing at all leaves nothing to head.
+            SectionHeader {
+                text: qsTr("Connected devices")
+                visible: mdr.state === Mdr.Ready
+                         && (mdr.multipointDevices.length > 0 || mdr.sourceSwitchingAvailable)
+            }
+
+            Label {
+                x: Theme.horizontalPageMargin
+                width: parent.width - 2 * Theme.horizontalPageMargin
+                visible: mdr.state === Mdr.Ready && mdr.multipointAvailable
+                         && mdr.multipointDevices.length > 0
+                wrapMode: Text.WordWrap
+                font.pixelSize: Theme.fontSizeExtraSmall
+                color: Theme.secondaryHighlightColor
+                text: qsTr("Tap a connected device to move playback to it, or a disconnected one to connect it.")
+            }
+
+            // Why the headset would not do it. Without this a refused request looks
+            // exactly like a tap that did nothing: the previous state stays put.
+            Label {
+                x: Theme.horizontalPageMargin
+                width: parent.width - 2 * Theme.horizontalPageMargin
+                visible: mdr.multipointMessage.length > 0
+                wrapMode: Text.WordWrap
+                font.pixelSize: Theme.fontSizeSmall
+                color: Theme.errorColor
+                text: mdr.multipointMessage
+            }
+
+            Repeater {
+                model: mdr.multipointDevices
+
+                ListItem {
+                    id: multipointItem
+                    width: page.width
+                    contentHeight: Theme.itemSizeMedium
+
+                    // The device that is already playing has nothing to switch to.
+                    onClicked: {
+                        if (modelData.playbackDevice)
+                            return
+                        if (modelData.connected)
+                            mdr.selectPlaybackDevice(modelData.address)
+                        else
+                            mdr.connectPairedDevice(modelData.address)
+                    }
+
+                    menu: ContextMenu {
+                        MenuItem {
+                            text: modelData.connected ? qsTr("Disconnect") : qsTr("Connect")
+                            onClicked: {
+                                if (modelData.connected)
+                                    mdr.disconnectPairedDevice(modelData.address)
+                                else
+                                    mdr.connectPairedDevice(modelData.address)
+                            }
+                        }
+                    }
+
+                    Column {
+                        anchors {
+                            left: parent.left
+                            leftMargin: Theme.horizontalPageMargin
+                            right: parent.right
+                            rightMargin: Theme.horizontalPageMargin
+                            verticalCenter: parent.verticalCenter
+                        }
+
+                        Label {
+                            width: parent.width
+                            truncationMode: TruncationMode.Fade
+                            // A device that never sent a friendly name is still worth
+                            // showing; its address is all the headset knows of it.
+                            text: modelData.name.length > 0 ? modelData.name : modelData.address
+                            color: modelData.playbackDevice || multipointItem.highlighted
+                                   ? Theme.highlightColor : Theme.primaryColor
+                        }
+
+                        Label {
+                            width: parent.width
+                            truncationMode: TruncationMode.Fade
+                            font.pixelSize: Theme.fontSizeExtraSmall
+                            color: Theme.secondaryColor
+                            text: modelData.playbackDevice
+                                  ? qsTr("Playing · %1").arg(modelData.address)
+                                  : modelData.connected
+                                    ? qsTr("Connected · %1").arg(modelData.address)
+                                    : qsTr("Not connected · %1").arg(modelData.address)
+                        }
+                    }
+                }
+            }
+
+            TextSwitch {
+                visible: mdr.state === Mdr.Ready && mdr.sourceSwitchingAvailable
+                text: qsTr("Let the headset move playback")
+                description: qsTr("While this is on, the headset may hand playback to the other connected device by itself. Off keeps it where it is now - Sound Connect draws that as a padlock - and the headset frees it again once that device disconnects.")
+                // The switch would otherwise write to its own checked property on the
+                // first tap and lose the binding, deafening it to the headset.
+                automaticCheck: false
+                checked: mdr.sourceSwitchingEnabled
+                onClicked: mdr.setSourceSwitchingEnabled(!checked)
             }
 
             /* ------------------------------------------------ device info */

@@ -316,6 +316,38 @@
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Connected devices</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tap a connected device to move playback to it, or a disconnected one to connect it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Playing · %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connected · %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not connected · %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Let the headset move playback</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>While this is on, the headset may hand playback to the other connected device by itself. Off keeps it where it is now - Sound Connect draws that as a padlock - and the headset frees it again once that device disconnects.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MdrController</name>
@@ -345,6 +377,22 @@
     </message>
     <message>
         <source>Could not apply the change</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not while a call is going on</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>That device is not connected to the headset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not while the voice assistant is listening</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The headset would not change the playback device</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

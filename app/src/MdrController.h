@@ -77,6 +77,12 @@ class MdrController : public QObject
     Q_PROPERTY(int listeningMode READ listeningMode NOTIFY listeningChanged)
     Q_PROPERTY(int backgroundRoom READ backgroundRoom NOTIFY listeningChanged)
 
+    Q_PROPERTY(bool multipointAvailable READ multipointAvailable NOTIFY featuresChanged)
+    Q_PROPERTY(bool sourceSwitchingAvailable READ sourceSwitchingAvailable NOTIFY featuresChanged)
+    Q_PROPERTY(QVariantList multipointDevices READ multipointDevices NOTIFY multipointChanged)
+    Q_PROPERTY(bool sourceSwitchingEnabled READ sourceSwitchingEnabled NOTIFY multipointChanged)
+    Q_PROPERTY(QString multipointMessage READ multipointMessage NOTIFY multipointChanged)
+
 public:
     enum State {
         Idle,
@@ -164,6 +170,12 @@ public:
     int listeningMode() const { return m_listeningMode; }
     int backgroundRoom() const { return m_backgroundRoom; }
 
+    bool multipointAvailable() const { return m_multipointAvailable; }
+    bool sourceSwitchingAvailable() const { return m_sourceSwitchingAvailable; }
+    QVariantList multipointDevices() const { return m_multipointDevices; }
+    bool sourceSwitchingEnabled() const { return m_sourceSwitchingEnabled; }
+    QString multipointMessage() const { return m_multipointMessage; }
+
 public slots:
     void refreshPairedDevices();
     void connectToDevice(const QString &address);
@@ -180,6 +192,11 @@ public slots:
     void setListeningMode(int mode);
     void setBackgroundRoom(int room);
 
+    void selectPlaybackDevice(const QString &address);
+    void connectPairedDevice(const QString &address);
+    void disconnectPairedDevice(const QString &address);
+    void setSourceSwitchingEnabled(bool enabled);
+
 signals:
     void stateChanged();
     void statusMessageChanged();
@@ -190,6 +207,7 @@ signals:
     void playbackChanged();
     void noiseControlChanged();
     void listeningChanged();
+    void multipointChanged();
 
 private slots:
     void tick();
@@ -211,9 +229,12 @@ private:
     void refreshPlayback();
     void refreshNoiseControl();
     void refreshListening();
+    void refreshMultipoint();
     void refreshAll();
 
     void sendPlaybackAction(MDRPlaybackAction action);
+    void sendPairedDeviceCommand(MDRPairedDeviceCommand command, const QString &address);
+    QString sourceSwitchMessage(MDRSourceSwitchControlResult result) const;
 
     QString textOf(MDRText text, uint32_t index = 0) const;
     bool featureAvailable(MDRFeature feature) const;
@@ -261,6 +282,17 @@ private:
     bool m_backgroundRoomAvailable = false;
     int m_listeningMode = MDR_LISTENING_STANDARD;
     int m_backgroundRoom = MDR_ROOM_UNKNOWN;
+
+    bool m_multipointAvailable = false;
+    bool m_sourceSwitchingAvailable = false;
+    /* The devices the headset itself knows about - phones and computers it is
+     * paired with - not the BlueZ list above. One of them holds playback. */
+    QVariantList m_multipointDevices;
+    /* True while the headset may hand playback to the other device on its own.
+     * Sound Connect shows the false case as a padlock on the playing device. */
+    bool m_sourceSwitchingEnabled = true;
+    /* Why the headset refused the last playback-device request, or empty. */
+    QString m_multipointMessage;
 
     /* The mode asked of the device and not yet seen coming back, or -1. The device
      * passes through "every mode off" on its way between two listening modes, and

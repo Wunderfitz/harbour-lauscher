@@ -395,18 +395,29 @@ C++ — that is where `Separator.horizontalAlignment` turns out to come from
   only on the way out for good. Anything else that must survive a pushed page
   needs the same distinction.
 
-Also: Silica's `ComboBox.currentIndex` and `Slider.value` are **written to** by
-the controls themselves. Binding them to a `mdr.*` property works exactly once —
-the first user interaction destroys the binding and the control then ignores
-changes made on the headset itself. `DevicePage.qml` therefore assigns them from
-`Component.onCompleted` plus a `Connections` block instead of binding.
+Also: Silica's `ComboBox.currentIndex`, `Slider.value` and `TextSwitch.checked`
+are **written to** by the controls themselves. Binding them to a `mdr.*` property
+works exactly once — the first user interaction destroys the binding and the
+control then ignores changes made on the headset itself. `DevicePage.qml`
+therefore assigns the first two from `Component.onCompleted` plus a `Connections`
+block instead of binding.
+
+`TextSwitch` (and `Switch`) has a way out that the other two lack:
+**`automaticCheck: false`** stops it assigning `checked` on click, so the binding
+survives and the switch shows what the device reports rather than what was
+tapped. `onClicked` then fires while `checked` still holds the old value, which
+is why the handlers send `!checked`. Both switches on the page do it this way —
+"Focus on voice" had the plain binding and would have gone deaf to the headset
+after its first tap.
 
 ## Status / next steps
 
 Proof of concept. Working: paired-device listing, connect, identity, battery,
 playback (track names, play/pause/next/previous, volume), ambient sound control
 (off / NC / ambient + level + focus-on-voice), listening mode (all four, plus the
-background-music distance), cover page.
+background-music distance), the headset's own connected devices (which one plays,
+connect and disconnect, and whether the headset may move playback itself), cover
+page.
 
 Everything under Playback rides on one event. Volume, play/pause status and the
 track names all report `MDR_EVENT_PLAYBACK_CHANGED`, so `refreshPlayback()` reads
@@ -483,6 +494,39 @@ which a poll-driven protocol library has no business owning. The related fix tha
 after - closes a second, shorter window of the same shape, where our own
 two-frame switch (deactivate, then activate) left no mode set in between.
 
+### Connected devices (multipoint)
+
+Sony calls it multipoint: the headset holds two source devices at once and one of
+them has playback. `MdrController::refreshMultipoint()` reads all of it and the
+"Connected devices" section on `DevicePage` shows it.
+
+- **Two feature bits, not one.** `MDR_FEATURE_PAIRED_DEVICE_MANAGEMENT` says the
+  headset keeps a list of what it is paired with; `MDR_FEATURE_SOURCE_SWITCH_CONTROL`
+  says playback can be pinned to one of them. A device may advertise either without
+  the other, so the list and the switch are gated separately and the section header
+  appears for whichever exists.
+- **One event covers the lot.** `MDR_EVENT_PAIRED_DEVICES_CHANGED` reports the
+  device list, which entry holds playback, the automatic-switching flag and a
+  refusal — libmdr raises it for all four — so a single refresh reads them all,
+  the same shape as `refreshPlayback()` under Playback.
+- **Nothing is reflected optimistically**, unlike the listening mode. Every
+  paired-device command is answered by a notification carrying what the headset
+  actually did, refusals included, so predicting the outcome here would only
+  compete with the truth arriving a moment later.
+- **A refusal leaves the old state standing**, which on its own is
+  indistinguishable from a tap that did nothing. `mdrHeadphonesGetSourceSwitchControlResult()`
+  is where the reason lives - on a call, not connected, voice assistant busy - and
+  `multipointMessage` carries it to the page. Staging a new request clears it, in
+  libmdr and here.
+- **The address must be the headset's own 17-character form.** libmdr validates
+  that and refuses anything else, which is why the list's `address` is passed back
+  untouched rather than reformatted for display.
+- Turning multipoint itself on and off is **not** here. It is not a dedicated
+  request in the protocol; it sits among the device-defined booleans behind
+  `mdrHeadphonesGetGeneralSetting*`, whose labels come from the device. Sound
+  Connect is still the place to switch it on, and this section shows what the
+  headset reports either way.
+
 ### Confirmed on hardware, 2026-08-30
 
 The "reasoned through but never observed" caveat this section used to carry is
@@ -520,6 +564,13 @@ one is active lands on it directly, with no pass through Standard in the picker 
 on the cover. Both halves of that - the libmdr commit ordering and the hold in
 `refreshListening()` - are in.
 
+### Confirmed on hardware, 2026-09-04
+
+The connected-devices section works against the LinkBuds Clip. So the device does
+advertise the paired-device management and source-switch bits, the list it reports
+is the one Sound Connect shows, and moving playback between two connected devices
+from here does what it says.
+
 Known gaps:
 - No reconnect-on-wake; leaving `DevicePage` drops the RFCOMM channel on
   purpose (the headset allows one control session at a time).
@@ -532,5 +583,6 @@ Known gaps:
   has a UI here yet; whichever gets one has to gate on those, not on
   `MDR_FEATURE_EQUALIZER` / `MDR_FEATURE_DSEE`.
 - V1 (XM4 and older) is compiled in and the UUID fallback exists, but untested.
-- Equalizer, touch controls, multipoint, speak-to-chat, DSEE are all reachable
-  through the C ABI already; only the UI is missing.
+- Equalizer, touch controls, speak-to-chat, DSEE and the device's general
+  settings are all reachable through the C ABI already; only the UI is missing.
+  The general settings are where multipoint's own on/off switch would come from.
