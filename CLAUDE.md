@@ -168,8 +168,10 @@ Instead bluetoothd does the SDP lookup for us:
 
 **The picker lists only devices the app can drive**, and the test is the BlueZ
 `UUIDs` property carrying `MDR_SERVICE_UUID_XM5` or `MDR_SERVICE_UUID_LEGACY` —
-the very UUIDs `MdrController` connects on. bluetoothd cached those SDP records
-at pairing time, so asking costs nothing. Phones, speakers, keyboards and car
+the very UUIDs `MdrController` connects on. That list is bluetoothd's cache of
+what the device has offered, over BR/EDR *and* LE, so it is the best signal
+available for a picker but not a promise that the record is live right now (see
+`br-connection-not-supported` below). Phones, speakers, keyboards and car
 kits never appear.
 
 **That test has to be the only one.** bluetoothd builds its per-device service
@@ -192,6 +194,41 @@ invents an `Alias` for a device that never sent a name, and what it invents is
 the address with dashes for colons, so `pairedDevices()` drops that spelling of
 one rather than passing it off as a name; the QML shows "Unnamed device"
 instead, on both the picker and the connected-devices list.
+
+### What `br-connection-not-supported` means
+
+`ConnectProfile` answering `org.bluez.Error.Failed: br-connection-not-supported`
+does **not** mean the app asked for the wrong thing. bluetoothd says it in its
+own log as `src/profile.c:record_cb() No SDP records found for Lauscher MDR`:
+it brought the BR/EDR link up, searched the headset's SDP database for the MDR
+service, and got nothing back. There is no channel to hand over, so the
+registered `Profile1` is never called.
+
+**The headset does not publish that record at all times.** Browsed with
+`sdptool browse <addr>` while the LinkBuds Clip sat idle, its record set was 12
+entries — Handsfree, the GATT bits and vendor records (BTNOTIFYR, Airoha\_APP,
+GSOUND\_BT\_CONTROL, BTFASTPAIR, BT\_SAR\_\*) — with **no MDR record and no A2DP
+record either**, though bluetoothd's cached `UUIDs` for the same device listed
+both. So the cache is a record of what the headset *has* offered, not of what it
+offers right now, and a device can be correctly listed in the picker and still
+refuse the profile a second later.
+
+Two consequences worth keeping:
+
+- **Reproduce transport failures outside the app.** A ~50-line Python
+  `Profile1` client (`RegisterProfile` with the same options, then
+  `ConnectProfile`) fails identically when the app does, which separates "the
+  app's handshake is wrong" from "the headset is not offering the service" in
+  one run. `journalctl -u bluetooth` then gives bluetoothd's own reason, which
+  the D-Bus error keyword only hints at.
+- **`ConnectProfile` leaves the ACL link up** when it fails this way
+  (`Connected` goes true, `ServicesResolved` stays false). That is bluetoothd
+  connecting in order to run the SDP search, not a socket the app leaked, and a
+  second attempt over the standing link fails exactly the same way. The app
+  must not "clean it up" — the link is the user's audio connection.
+
+`BluezTransport::explainConnectFailure()` turns these keywords into sentences,
+because the raw one on screen sends the reader looking in the wrong place.
 
 Verified policy facts (Sailfish 5.1.0.11):
 - `/usr/share/dbus-1/system.d/bluetooth.conf` has

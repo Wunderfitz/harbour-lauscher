@@ -117,6 +117,8 @@ private:
     static const char *vtGetLastError(void *user);
 
     MDRResult doConnect(const QString &macAddress, const QString &serviceUUID);
+    /** BlueZ's connect-error keyword turned into a sentence for the user. */
+    QString explainConnectFailure(const QString &message) const;
     void doDisconnect();
     MDRResult doPoll(int timeout);
 

@@ -403,7 +403,42 @@ void BluezTransport::onConnectProfileFinished(QDBusPendingCallWatcher *watcher)
      * gets to retry on the other service UUID before giving up. */
     m_connecting = false;
     m_pendingResult = MDR_RESULT_ERROR_NET;
-    setError(QStringLiteral("ConnectProfile failed: %1").arg(message));
+    qWarning() << "[lauscher] bluez: ConnectProfile failed:" << message;
+    setError(explainConnectFailure(message));
+}
+
+/* BlueZ answers a failed ConnectProfile with a keyword meant for programs, and
+ * putting that on screen tells the user nothing. Two of them are worth naming,
+ * because both are states on the headset rather than faults here:
+ *
+ * br-connection-not-supported is what bluetoothd returns when its SDP search
+ * for our profile came back empty ("No SDP records found" in its own log). The
+ * headset publishes the MDR record only while it is properly awake - out of
+ * its case, connected as an audio device - so a device that speaks MDR every
+ * other day answers this one while it sits in the case. It is also what a
+ * device that never spoke MDR at all would say, but the picker has already
+ * ruled those out.
+ *
+ * br-connection-page-timeout is the headset not answering the radio at all. */
+QString BluezTransport::explainConnectFailure(const QString &message) const
+{
+    if (message.contains(QStringLiteral("not-supported"))
+        || message.contains(QStringLiteral("profile-unavailable"))
+        || message.contains(QStringLiteral("sdp-search"))
+        || message.contains(QStringLiteral("No more profiles"), Qt::CaseInsensitive))
+        return tr("The headset is not offering its control channel. Take it out "
+                  "of the charging case, connect it in the Bluetooth settings, "
+                  "and try again.");
+
+    if (message.contains(QStringLiteral("page-timeout"))
+        || message.contains(QStringLiteral("timeout"), Qt::CaseInsensitive))
+        return tr("The headset did not answer. Switch it on and keep it nearby.");
+
+    if (message.contains(QStringLiteral("busy"))
+        || message.contains(QStringLiteral("in-progress"), Qt::CaseInsensitive))
+        return tr("Bluetooth is busy with this headset. Try again in a moment.");
+
+    return tr("Could not open the control channel: %1").arg(message);
 }
 
 void BluezTransport::handleRelease()

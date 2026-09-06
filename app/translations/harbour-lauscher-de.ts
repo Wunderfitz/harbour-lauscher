@@ -101,6 +101,25 @@
     </message>
 </context>
 <context>
+    <name>BluezTransport</name>
+    <message>
+        <source>The headset is not offering its control channel. Take it out of the charging case, connect it in the Bluetooth settings, and try again.</source>
+        <translation>Der Kopfhörer bietet seinen Steuerkanal nicht an. Nehmen Sie ihn aus dem Ladeetui, verbinden Sie ihn in den Bluetooth-Einstellungen und versuchen Sie es erneut.</translation>
+    </message>
+    <message>
+        <source>The headset did not answer. Switch it on and keep it nearby.</source>
+        <translation>Der Kopfhörer hat nicht geantwortet. Schalten Sie ihn ein und halten Sie ihn in der Nähe.</translation>
+    </message>
+    <message>
+        <source>Bluetooth is busy with this headset. Try again in a moment.</source>
+        <translation>Bluetooth ist gerade mit diesem Kopfhörer beschäftigt. Versuchen Sie es gleich noch einmal.</translation>
+    </message>
+    <message>
+        <source>Could not open the control channel: %1</source>
+        <translation>Der Steuerkanal konnte nicht geöffnet werden: %1</translation>
+    </message>
+</context>
+<context>
     <name>CoverPage</name>
     <message>
         <source>Lauscher</source>
