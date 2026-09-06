@@ -166,6 +166,33 @@ Instead bluetoothd does the SDP lookup for us:
    (the `QDBusUnixFileDescriptor` only owns it for the duration of the call),
    set `O_NONBLOCK`, and from there it is plain `recv`/`send`/`poll`.
 
+**The picker lists only devices the app can drive**, and the test is the BlueZ
+`UUIDs` property carrying `MDR_SERVICE_UUID_XM5` or `MDR_SERVICE_UUID_LEGACY` —
+the very UUIDs `MdrController` connects on. bluetoothd cached those SDP records
+at pairing time, so asking costs nothing. Phones, speakers, keyboards and car
+kits never appear.
+
+**That test has to be the only one.** bluetoothd builds its per-device service
+objects from the same cached list when `RegisterProfile` runs, so a device the
+list does not cover has nothing for `ConnectProfile` to reach and answers
+`br-connection-not-supported`. An earlier version of this filter fell back to
+`Icon` (BlueZ's own reading of the class of device — `audio-headset`,
+`audio-headphones`) for a device it held no UUIDs for at all; that put entries
+in the picker that cannot connect, which is the opposite of the point, and cost
+a debugging round on the phone. `looksLikeHeadset()` survives for one purpose
+only: logging why a device that plainly is a headset was left out. A headset
+missing from the picker means bluetoothd has no MDR record for it, and
+reconnecting it once in the Bluetooth settings is what re-runs the SDP lookup —
+the empty-list hint on `DeviceListPage` says so.
+
+**No MAC address is shown anywhere in the UI.** Addresses are passed through as
+identifiers (`connectToDevice()`, and the paired-device commands, which libmdr
+validates against the headset's 17-character form) and nothing more. BlueZ
+invents an `Alias` for a device that never sent a name, and what it invents is
+the address with dashes for colons, so `pairedDevices()` drops that spelling of
+one rather than passing it off as a name; the QML shows "Unnamed device"
+instead, on both the picker and the connected-devices list.
+
 Verified policy facts (Sailfish 5.1.0.11):
 - `/usr/share/dbus-1/system.d/bluetooth.conf` has
   `<policy context="default"><allow send_destination="org.bluez"/></policy>`,

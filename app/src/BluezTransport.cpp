@@ -29,6 +29,7 @@
 #include <QDBusReply>
 #include <QCoreApplication>
 #include <QDebug>
+#include <QStringList>
 
 #include <errno.h>
 #include <fcntl.h>
@@ -46,6 +47,50 @@ const char *const kProfileManagerPath = "/org/bluez";
 const char *const kProfileManagerIface = "org.bluez.ProfileManager1";
 const char *const kDeviceIface = "org.bluez.Device1";
 const char *const kObjectManagerIface = "org.freedesktop.DBus.ObjectManager";
+
+/* Qt hands an "as" property straight back as a QStringList, but a variant that
+ * came through a nested demarshalling arrives as a QDBusArgument instead. */
+QStringList stringListProperty(const QVariantMap &props, const QString &key)
+{
+    const QVariant value = props.value(key);
+    if (value.userType() == qMetaTypeId<QDBusArgument>()) {
+        QStringList list;
+        value.value<QDBusArgument>() >> list;
+        return list;
+    }
+    return value.toStringList();
+}
+
+/* Only devices this app can actually drive belong in the picker, and the MDR
+ * service UUID in bluetoothd's cached SDP records answers that exactly: it is
+ * the RFCOMM channel the app connects on.
+ *
+ * The test has to be this and nothing else. bluetoothd builds a service object
+ * per device from that same cached list when the Profile1 is registered, so a
+ * device the list does not cover has no service for ConnectProfile to reach -
+ * it answers br-connection-not-supported however headset-shaped the device
+ * looks. Guessing from the class of device (Icon audio-headset) therefore
+ * offers entries that cannot connect, which is the opposite of the point. */
+bool speaksMdr(const QStringList &uuids)
+{
+    for (int i = 0; i < uuids.size(); ++i) {
+        if (uuids.at(i).compare(QLatin1String(MDR_SERVICE_UUID_XM5), Qt::CaseInsensitive) == 0
+            || uuids.at(i).compare(QLatin1String(MDR_SERVICE_UUID_LEGACY), Qt::CaseInsensitive) == 0)
+            return true;
+    }
+    return false;
+}
+
+/* BlueZ's own reading of the class of device: audio-headset covers the
+ * wearable-headset and hands-free minor classes, audio-headphones the
+ * headphones one. Not a criterion for listing - only for saying, in the log,
+ * why a device that plainly is a headset was left out. */
+bool looksLikeHeadset(const QVariantMap &props)
+{
+    const QString icon = props.value(QStringLiteral("Icon")).toString();
+    return icon == QLatin1String("audio-headset")
+        || icon == QLatin1String("audio-headphones");
+}
 
 /* a{oa{sa{sv}}} as returned by GetManagedObjects. */
 typedef QMap<QString, QVariantMap> InterfaceList;
@@ -160,12 +205,30 @@ QVariantList BluezTransport::pairedDevices()
         const QString address = props.value(QStringLiteral("Address")).toString();
         if (address.isEmpty())
             continue;
+        const QStringList uuids = stringListProperty(props, QStringLiteral("UUIDs"));
+        if (!speaksMdr(uuids)) {
+            /* A headset bluetoothd has no MDR record for is the one case worth
+             * a word: from the picker it is simply absent, and this says why. */
+            if (looksLikeHeadset(props))
+                qInfo() << "[lauscher] bluez: skipping" << address
+                        << "- none of its" << uuids.size()
+                        << "services is the MDR profile";
+            continue;
+        }
         m_addressToPath.insert(address.toUpper(), it.key().path());
 
+        /* BlueZ makes up an Alias for a device that never told it a name, and
+         * what it makes up is the address with dashes for colons. The UI does
+         * not show addresses, so that spelling of one is dropped here rather
+         * than being passed off as a name. */
+        QString name = props.value(QStringLiteral("Alias"),
+                                   props.value(QStringLiteral("Name"))).toString();
+        if (name.compare(QString(address).replace(QLatin1Char(':'), QLatin1Char('-')),
+                         Qt::CaseInsensitive) == 0)
+            name.clear();
+
         QVariantMap entry;
-        entry.insert(QStringLiteral("name"),
-                     props.value(QStringLiteral("Alias"),
-                                 props.value(QStringLiteral("Name"), address)).toString());
+        entry.insert(QStringLiteral("name"), name);
         entry.insert(QStringLiteral("address"), address);
         entry.insert(QStringLiteral("connected"), props.value(QStringLiteral("Connected")).toBool());
         result.append(entry);

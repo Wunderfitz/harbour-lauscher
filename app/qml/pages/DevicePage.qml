@@ -509,8 +509,9 @@ Page {
                             width: parent.width
                             truncationMode: TruncationMode.Fade
                             // A device that never sent a friendly name is still worth
-                            // showing; its address is all the headset knows of it.
-                            text: modelData.name.length > 0 ? modelData.name : modelData.address
+                            // showing, but its address says nothing to the reader.
+                            text: modelData.name.length > 0
+                                  ? modelData.name : qsTr("Unnamed device")
                             color: modelData.playbackDevice || multipointItem.highlighted
                                    ? Theme.highlightColor : Theme.primaryColor
                         }
@@ -521,10 +522,10 @@ Page {
                             font.pixelSize: Theme.fontSizeExtraSmall
                             color: Theme.secondaryColor
                             text: modelData.playbackDevice
-                                  ? qsTr("Playing · %1").arg(modelData.address)
+                                  ? qsTr("Playing")
                                   : modelData.connected
-                                    ? qsTr("Connected · %1").arg(modelData.address)
-                                    : qsTr("Not connected · %1").arg(modelData.address)
+                                    ? qsTr("Connected")
+                                    : qsTr("Not connected")
                         }
                     }
                 }

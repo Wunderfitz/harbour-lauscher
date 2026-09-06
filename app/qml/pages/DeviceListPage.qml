@@ -57,7 +57,7 @@ Page {
                 wrapMode: Text.WordWrap
                 font.pixelSize: Theme.fontSizeSmall
                 color: Theme.secondaryHighlightColor
-                text: qsTr("Pick a paired Sony headset. Devices that do not speak the Sony protocol will simply fail to connect.")
+                text: qsTr("Pick a paired headset. Only headphones that speak the Sony protocol are listed, so anything else you have paired is missing on purpose.")
             }
 
             Item { width: 1; height: Theme.paddingLarge }
@@ -81,17 +81,21 @@ Page {
                 Label {
                     width: parent.width
                     truncationMode: TruncationMode.Fade
-                    text: modelData.name
+                    // A device that never told BlueZ a name is still worth
+                    // listing; its address would say nothing to the reader.
+                    text: modelData.name.length > 0
+                          ? modelData.name : qsTr("Unnamed device")
                     color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
                 }
 
                 Label {
                     width: parent.width
+                    // The address identifies the device to BlueZ, not to the
+                    // reader; only its state is worth a second line.
+                    visible: modelData.connected
                     font.pixelSize: Theme.fontSizeExtraSmall
                     color: delegate.highlighted ? Theme.secondaryHighlightColor : Theme.secondaryColor
-                    text: modelData.connected
-                          ? qsTr("%1 · connected").arg(modelData.address)
-                          : modelData.address
+                    text: qsTr("Connected")
                 }
             }
 
@@ -103,8 +107,8 @@ Page {
 
         ViewPlaceholder {
             enabled: listView.count === 0
-            text: qsTr("No paired devices")
-            hintText: qsTr("Pair your headphones in the Bluetooth settings first.")
+            text: qsTr("No headphones")
+            hintText: qsTr("Pair your Sony headphones in the Bluetooth settings first. If they are paired but missing here, connect them there once so the phone reads their services again.")
         }
 
         VerticalScrollDecorator {}

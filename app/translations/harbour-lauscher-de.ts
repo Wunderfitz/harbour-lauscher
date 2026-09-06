@@ -166,20 +166,24 @@
         <translation>Lauscher</translation>
     </message>
     <message>
-        <source>Pick a paired Sony headset. Devices that do not speak the Sony protocol will simply fail to connect.</source>
-        <translation>Wählen Sie einen gekoppelten Sony-Kopfhörer. Geräte, die das Sony-Protokoll nicht sprechen, lassen sich schlicht nicht verbinden.</translation>
+        <source>Unnamed device</source>
+        <translation>Unbenanntes Gerät</translation>
     </message>
     <message>
-        <source>%1 · connected</source>
-        <translation>%1 · verbunden</translation>
+        <source>Connected</source>
+        <translation>Verbunden</translation>
     </message>
     <message>
-        <source>No paired devices</source>
-        <translation>Keine gekoppelten Geräte</translation>
+        <source>Pick a paired headset. Only headphones that speak the Sony protocol are listed, so anything else you have paired is missing on purpose.</source>
+        <translation>Wählen Sie einen gekoppelten Kopfhörer. Aufgeführt sind nur Kopfhörer, die das Sony-Protokoll sprechen – alles andere, was Sie gekoppelt haben, fehlt hier mit Absicht.</translation>
     </message>
     <message>
-        <source>Pair your headphones in the Bluetooth settings first.</source>
-        <translation>Koppeln Sie Ihre Kopfhörer zuerst in den Bluetooth-Einstellungen.</translation>
+        <source>No headphones</source>
+        <translation>Keine Kopfhörer</translation>
+    </message>
+    <message>
+        <source>Pair your Sony headphones in the Bluetooth settings first. If they are paired but missing here, connect them there once so the phone reads their services again.</source>
+        <translation>Koppeln Sie Ihre Sony-Kopfhörer zuerst in den Bluetooth-Einstellungen. Sind sie gekoppelt, fehlen hier aber, verbinden Sie sie dort einmal, damit das Telefon ihre Dienste erneut ausliest.</translation>
     </message>
 </context>
 <context>
@@ -329,24 +333,28 @@
         <translation>Verbinden</translation>
     </message>
     <message>
-        <source>Playing · %1</source>
-        <translation>Wiedergabe · %1</translation>
-    </message>
-    <message>
-        <source>Connected · %1</source>
-        <translation>Verbunden · %1</translation>
-    </message>
-    <message>
-        <source>Not connected · %1</source>
-        <translation>Nicht verbunden · %1</translation>
-    </message>
-    <message>
         <source>Let the headset move playback</source>
         <translation>Der Kopfhörer darf die Wiedergabe wechseln</translation>
     </message>
     <message>
         <source>While this is on, the headset may hand playback to the other connected device by itself. Off keeps it where it is now - Sound Connect draws that as a padlock - and the headset frees it again once that device disconnects.</source>
         <translation>Ist das eingeschaltet, darf der Kopfhörer die Wiedergabe von sich aus an das andere verbundene Gerät übergeben. Ausgeschaltet bleibt sie dort, wo sie gerade ist – Sound Connect zeichnet dafür ein Vorhängeschloss – und der Kopfhörer gibt sie erst wieder frei, wenn dieses Gerät die Verbindung trennt.</translation>
+    </message>
+    <message>
+        <source>Unnamed device</source>
+        <translation>Unbenanntes Gerät</translation>
+    </message>
+    <message>
+        <source>Playing</source>
+        <translation>Wiedergabe</translation>
+    </message>
+    <message>
+        <source>Connected</source>
+        <translation>Verbunden</translation>
+    </message>
+    <message>
+        <source>Not connected</source>
+        <translation>Nicht verbunden</translation>
     </message>
 </context>
 <context>
