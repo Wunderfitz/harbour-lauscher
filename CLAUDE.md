@@ -330,6 +330,29 @@ target and configuration.
   libmdr is vendored inside the project, but it has never been tried;
   `.gitignore` covers the leftovers it would drop into a checkout.
 
+### Nightlies
+
+`.github/workflows/nightly.yml` builds an RPM per architecture on every push and
+attaches them to the run as a downloadable artifact, so a fix can be handed to
+whoever reported it without cutting a release. It uses
+`coderus/github-sfos-build`, which runs `mb2` inside
+`coderus/sailfishos-platform-sdk` — the same route harbour-fernschreiber uses,
+and an **in-tree** build, which is safe there only because each architecture gets
+a fresh container.
+
+- **The release tag is 5.1.0.11 and cannot go lower.** libmdr needs C++20, and
+  that arrived in the Sailfish toolchain with this target's GCC 13.4.
+- **Push is the only trigger**, deliberately. Tags are what a release would be
+  cut from and pull requests carry code from outside the repository; neither
+  should produce something that looks like a nightly.
+- **The workflow rewrites `Release` before building**, to
+  `0.<UTC timestamp>.git<commit>`. RPM compares that field piecewise, so a
+  nightly sorts above the previous release and below the one its `Version`
+  names: a tester on a nightly is upgraded by the real 0.2, not blocked by it.
+  `Version` is left alone — that is the spec's own statement.
+- `sfdk check` is not run there, and should not be: this package fails harbour's
+  Requires suite on purpose (see Dependencies).
+
 ## Dependencies
 
 `rpm/harbour-lauscher.spec` declares what rpmbuild cannot work out on its own.

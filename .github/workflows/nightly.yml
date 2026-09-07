@@ -1,0 +1,68 @@
+# Builds an installable RPM for every push, so a fix can be tested before it is
+# a release. The RPMs land as a downloadable artifact on the run's summary page;
+# nothing is published anywhere else.
+#
+# Push only, on purpose. Pull requests would build code from outside the
+# repository, and tags are what releases are cut from - neither should quietly
+# produce something that looks like a nightly.
+
+name: Nightly RPM
+
+on: push
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build RPMs
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # A nightly has to be tellable from the release it precedes, and has to
+      # lose to it once that release exists. RPM compares Release field by field,
+      # so a snapshot of "0.<when>.git<commit>" sorts below the spec's plain "1":
+      # installing 0.2-1 later is an upgrade, not a downgrade. Version itself is
+      # left alone - it is the spec's statement about what this is a build of.
+      - name: Stamp this build as a snapshot
+        run: |
+          set -eu
+          short_sha="$(git rev-parse --short HEAD)"
+          stamp="0.$(date -u +%Y%m%d%H%M).git${short_sha}"
+          sed -i "s/^Release:.*/Release:    ${stamp}/" rpm/harbour-lauscher.spec
+          echo "SHORT_SHA=${short_sha}" >> "$GITHUB_ENV"
+          grep -E '^(Version|Release):' rpm/harbour-lauscher.spec
+
+      # 5.1.0.11 is the target the app is developed against, and the oldest one
+      # it can use: libmdr needs C++20, which arrived in the Sailfish toolchain
+      # with GCC 13.4 here. Building against an older release will not work.
+      - name: Build aarch64
+        uses: coderus/github-sfos-build@master
+        with:
+          release: 5.1.0.11
+          arch: aarch64
+
+      - name: Build armv7hl
+        uses: coderus/github-sfos-build@master
+        with:
+          release: 5.1.0.11
+          arch: armv7hl
+
+      - name: Build i486
+        uses: coderus/github-sfos-build@master
+        with:
+          release: 5.1.0.11
+          arch: i486
+
+      # sfdk check is deliberately not run: the app declares bluez5,
+      # sailjail-permissions and the QtQuick import plugin, which harbour's
+      # Requires suite rejects and this package accepts. See CLAUDE.md.
+      - name: Upload RPMs
+        uses: actions/upload-artifact@v4
+        with:
+          name: harbour-lauscher-${{ env.SHORT_SHA }}
+          path: RPMS/*.rpm
+          if-no-files-found: error
+          retention-days: 30
