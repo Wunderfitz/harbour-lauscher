@@ -1,11 +1,16 @@
 #pragma once
+// TODO @mos9527: Documentation.
 
-#include "Base.h"
-#include "Connection.h"
 #include <stddef.h>
 #include <stdint.h>
+#include "Base.h"
+#include "Connection.h"
 
 typedef struct MDRHeadphones MDRHeadphones;
+
+typedef uint32_t MDRProtocolVersion;
+#define MDR_PROTOCOL_V1 ((MDRProtocolVersion)1u)
+#define MDR_PROTOCOL_V2 ((MDRProtocolVersion)2u)
 
 typedef uint32_t MDRBoolean;
 #define MDR_FALSE ((MDRBoolean)0u)
@@ -79,7 +84,11 @@ typedef uint32_t MDREvent;
 #define MDR_EVENT_ALERT ((MDREvent)19u)
 #define MDR_EVENT_INTERACTION ((MDREvent)20u)
 #define MDR_EVENT_DEVICE_MESSAGE ((MDREvent)21u)
-#define MDR_EVENT_UNHANDLED ((MDREvent)22u)
+// Rarely do you need this. This currently applies to V1 protocol where e.x. playback metadata (MDR_EVENT_PLAYBACK_CHANGED)
+// is only sent after a @ref mdrHeadphonesRequestSync.
+// The change events are sent by device as stub payloads w/o actual info. Xref to here to see what's going to use it.
+#define MDR_EVENT_NEED_SYNC ((MDREvent)22u)
+#define MDR_EVENT_UNHANDLED ((MDREvent)23u)
 
 typedef uint32_t MDRPacketDirection;
 #define MDR_PACKET_DIRECTION_RX ((MDRPacketDirection)0u)
@@ -147,6 +156,7 @@ typedef uint32_t MDRSourceSwitchControlResult;
 typedef uint32_t MDRNoiseMode;
 #define MDR_NOISE_MODE_OFF ((MDRNoiseMode)0u)
 #define MDR_NOISE_MODE_CANCELLING ((MDRNoiseMode)1u)
+#define MDR_NOISE_MODE_V1_ON ((MDRNoiseMode)1u)
 #define MDR_NOISE_MODE_AMBIENT ((MDRNoiseMode)2u)
 
 typedef uint32_t MDRAdaptiveSensitivity;
@@ -249,8 +259,12 @@ typedef uint32_t MDRAssignableAction;
 #define MDR_ASSIGNABLE_NOISE_CONTROL ((MDRAssignableAction)2u)
 #define MDR_ASSIGNABLE_NOISE_CONTROL_QUICK_ACCESS ((MDRAssignableAction)3u)
 #define MDR_ASSIGNABLE_TRACK_CONTROL ((MDRAssignableAction)4u)
-#define MDR_ASSIGNABLE_VOICE_ASSISTANT ((MDRAssignableAction)5u)
-#define MDR_ASSIGNABLE_QUICK_ACCESS ((MDRAssignableAction)6u)
+#define MDR_ASSIGNABLE_VOICE_RECOGNITION ((MDRAssignableAction)5u)
+#define MDR_ASSIGNABLE_GOOGLE_ASSISTANT ((MDRAssignableAction)6u)
+#define MDR_ASSIGNABLE_AMAZON_ALEXA ((MDRAssignableAction)7u)
+#define MDR_ASSIGNABLE_TENCENT_XIAOWEI ((MDRAssignableAction)8u)
+#define MDR_ASSIGNABLE_MICROSOFT_CORTANA ((MDRAssignableAction)9u)
+#define MDR_ASSIGNABLE_QUICK_ACCESS ((MDRAssignableAction)10u)
 
 typedef uint32_t MDRWearingPowerMode;
 #define MDR_WEARING_POWER_UNAVAILABLE ((MDRWearingPowerMode)0u)
@@ -294,6 +308,7 @@ typedef struct MDRNoiseControl
 {
     MDRNoiseMode mode;
     uint8_t ambient_level;
+    MDRBoolean changing_asm_level;
     MDRBoolean focus_on_voice;
     MDRNoiseButtonMode button_mode;
     MDRBoolean adaptive_ambient;
@@ -364,11 +379,23 @@ typedef struct MDRGeneralSetting
     MDRBoolean boolean_value;
 } MDRGeneralSetting;
 
-typedef struct MDRAssignableControls
+typedef uint32_t MDRAssignableActionKeyLocation;
+#define MDR_ASSIGNABLE_ACTION_KEY_UNKNOWN ((MDRAssignableActionKeyLocation)0u)
+#define MDR_ASSIGNABLE_ACTION_KEY_LEFT ((MDRAssignableActionKeyLocation)1u)
+#define MDR_ASSIGNABLE_ACTION_KEY_RIGHT ((MDRAssignableActionKeyLocation)2u)
+#define MDR_ASSIGNABLE_ACTION_KEY_CUSTOM ((MDRAssignableActionKeyLocation)3u)
+
+typedef uint32_t MDRAssignableActionKeyType;
+#define MDR_ASSIGNABLE_ACTION_KEY_TYPE_UNKNOWN ((MDRAssignableActionKeyType)0u)
+#define MDR_ASSIGNABLE_ACTION_KEY_TYPE_TOUCH_SENSOR ((MDRAssignableActionKeyType)1u)
+#define MDR_ASSIGNABLE_ACTION_KEY_TYPE_BUTTON ((MDRAssignableActionKeyType)2u)
+
+typedef struct MDRAssignableControl
 {
-    MDRAssignableAction left;
-    MDRAssignableAction right;
-} MDRAssignableControls;
+    MDRAssignableActionKeyLocation location;
+    MDRAssignableActionKeyType type;
+    MDRAssignableAction action;
+} MDRAssignableControl;
 
 typedef struct MDRPower
 {
@@ -397,32 +424,38 @@ typedef struct MDRSafeListening
 } MDRSafeListening;
 
 // See @ref mdrHeadphonesSetPacketCallback
-typedef void (*MDRPacketCallback)(
-    void* user_data,
-    MDRPacketDirection direction,
-    const unsigned char* frame,
-    int frame_size
-);
+typedef void (*MDRPacketCallback)(void* user_data, MDRPacketDirection direction, const unsigned char* frame,
+                                  int frame_size);
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /**
- * @brief Creates a new MDRHeadphones instance with an existing @ref MDRConnection.
+ * @brief Creates a new MDRHeadphones instance bound to an existing @ref MDRConnection.
+ *
  * @param abiVersion Always pass @ref MDR_ABI_VERSION. This is the one handshake between the header
  *                   you compiled against and the library you ended up linked to; every struct in
- *                   this header is fixed layout for a given value of it.
- * @return @ref MDR_RESULT_ERROR_ABI_MISMATCH if this library does not implement @p abiVersion, in
- *         which case no instance is created and every other entry point is unsafe to call.
+ *                   this header has a fixed layout for a given value of it.
+ * @param connection The @ref MDRConnection carrying the transport for the device. It must already be
+ *                   connected (see mdrConnectionConnect) and remain valid for the lifetime of the
+ *                   created instance.
+ * @param protocolVersion The protocol family used by the headphones reachable via @p connection.
+ *                        Note that a physical @ref MDRConnection implies a known protocol family.
+ *                        - For Bluetooth Classic (RFCOMM) devices, matching UUID per protocol family is required for
+ * proper SDP service discovery.
+ *                        - For BLE devices, there's currently no exception in that they are always @ref MDR_PROTOCOL_V2
+ * devices.
+ * @param[out] ppHeadphones Receives the created instance on success. Untouched on failure.
+ *
+ * @return @ref MDR_RESULT_OK on success, or @ref MDR_RESULT_ERROR_ABI_MISMATCH if this library does
+ *         not implement @p abiVersion, in which case no instance is created and every other entry
+ *         point is unsafe to call.
  */
-MDR_API MDRResult mdrHeadphonesCreate(
-    uint32_t abiVersion,
-    MDRConnection* connection,
-    MDRHeadphones** ppHeadphones
-);
+MDR_API MDRResult mdrHeadphonesCreate(uint32_t abiVersion, MDRConnection* connection,
+                                      MDRProtocolVersion protocolVersion, MDRHeadphones** ppHeadphones);
 /**
- * @brief Frees the @ref MDRHeadphones instance. 
+ * @brief Frees the @ref MDRHeadphones instance.
  */
 MDR_API void mdrHeadphonesDestroy(MDRHeadphones* headphones);
 /**
@@ -431,25 +464,25 @@ MDR_API void mdrHeadphonesDestroy(MDRHeadphones* headphones);
 MDR_API MDRBoolean mdrHeadphonesIsInitialized(const MDRHeadphones* headphones);
 /**
  * @brief Returns true if new ...Request calls can be made.
- *        If any in-flight request is pending/incomplete, this will return false, and subsequent ...Request calls will 
- *        fail with @ref MDR_RESULT_INPROGRESS. 
+ *        If any in-flight request is pending/incomplete, this will return false, and subsequent ...Request calls will
+ *        fail with @ref MDR_RESULT_INPROGRESS.
  */
 MDR_API MDRBoolean mdrHeadphonesIsReady(const MDRHeadphones* headphones);
 /**
  * @brief Returns true if there are pending changes made through the ...Set calls that have not yet been committed to
- *        the device via @ref mdrHeadphonesRequestCommit. 
+ *        the device via @ref mdrHeadphonesRequestCommit.
  */
 MDR_API MDRBoolean mdrHeadphonesIsDirty(const MDRHeadphones* headphones);
 /**
- * @brief Request initialization. This MUST be called prior to other operations. 
- *        See also @ref mdrHeadphonesIsInitialized, @ref mdrHeadphonesIsReady, and @ref mdrHeadphonesIsDirty. 
+ * @brief Request initialization. This MUST be called prior to other operations.
+ *        See also @ref mdrHeadphonesIsInitialized, @ref mdrHeadphonesIsReady, and @ref mdrHeadphonesIsDirty.
  */
 MDR_API MDRResult mdrHeadphonesRequestInit(MDRHeadphones* headphones);
 /**
- * @brief Request pulling latest states from the device. This includes e.g. battery levels and some other states that may change without being 
- *        notified by the headphones themselves. 
+ * @brief Request pulling latest states from the device. This includes e.g. battery levels and some other states that
+ * may change without being notified by the headphones themselves.
  */
-MDR_API MDRResult mdrHeadphonesRequestFetch(MDRHeadphones* headphones);
+MDR_API MDRResult mdrHeadphonesRequestSync(MDRHeadphones* headphones);
 /**
  * @brief Commits any pending changes made via the ...Set calls. Changes are ONLY applied to the devices
  *        after this call is complete, and only then @ref mdrHeadphonesIsDirty will return false
@@ -468,111 +501,48 @@ MDR_API MDRResult mdrHeadphonesPoll(MDRHeadphones* headphones, MDREvent* out_eve
  * Observes raw packets independently of semantic events. Passing NULL disables
  * observation.
  */
-MDR_API void mdrHeadphonesSetPacketCallback(
-    MDRHeadphones* headphones,
-    MDRPacketCallback callback,
-    void* user_data
-);
+MDR_API void mdrHeadphonesSetPacketCallback(MDRHeadphones* headphones, MDRPacketCallback callback, void* user_data);
 
 /* Capability and caller-owned UTF-8 text access. */
-MDR_API MDRResult mdrHeadphonesGetFeature(
-    MDRHeadphones* headphones,
-    MDRFeature feature,
-    MDRFeatureAvailability* out_availability
-);
-MDR_API MDRResult mdrHeadphonesGetText(
-    MDRHeadphones* headphones,
-    MDRText text,
-    uint32_t index,
-    char* buffer,
-    uint32_t* inout_size
-);
+MDR_API MDRResult mdrHeadphonesGetFeature(MDRHeadphones* headphones, MDRFeature feature,
+                                          MDRFeatureAvailability* out_availability);
+MDR_API MDRResult mdrHeadphonesGetText(MDRHeadphones* headphones, MDRText text, uint32_t index, char* buffer,
+                                       uint32_t* inout_size);
 
 /* Model, battery, and playback. */
 MDR_API MDRResult mdrHeadphonesGetModel(MDRHeadphones* headphones, MDRModel* out_identity);
-MDR_API MDRResult mdrHeadphonesGetBatteries(
-    MDRHeadphones* headphones,
-    MDRBattery* batteries,
-    uint32_t* inout_count
-);
-MDR_API MDRResult mdrHeadphonesGetPlayback(
-    MDRHeadphones* headphones,
-    MDRPlayback* out_playback
-);
+MDR_API MDRResult mdrHeadphonesGetBatteries(MDRHeadphones* headphones, MDRBattery* batteries, uint32_t* inout_count);
+MDR_API MDRResult mdrHeadphonesGetPlayback(MDRHeadphones* headphones, MDRPlayback* out_playback);
 MDR_API MDRResult mdrHeadphonesSetPlayback(MDRHeadphones* headphones, const MDRPlayback* playback);
-MDR_API MDRResult mdrHeadphonesPlayback(
-    MDRHeadphones* headphones,
-    const MDRPlaybackCommand* command
-);
+MDR_API MDRResult mdrHeadphonesPlayback(MDRHeadphones* headphones, const MDRPlaybackCommand* command);
 
 /* Sound controls. */
-MDR_API MDRResult mdrHeadphonesGetNoiseControl(
-    MDRHeadphones* headphones,
-    MDRNoiseControl* out_noise_control
-);
-MDR_API MDRResult mdrHeadphonesSetNoiseControl(
-    MDRHeadphones* headphones,
-    const MDRNoiseControl* noise_control
-);
-MDR_API MDRResult mdrHeadphonesGetSpeakToChat(
-    MDRHeadphones* headphones,
-    MDRSpeakToChat* out_speak_to_chat
-);
-MDR_API MDRResult mdrHeadphonesSetSpeakToChat(
-    MDRHeadphones* headphones,
-    const MDRSpeakToChat* speak_to_chat
-);
-MDR_API MDRResult mdrHeadphonesGetListening(
-    MDRHeadphones* headphones,
-    MDRListening* out_listening
-);
-MDR_API MDRResult mdrHeadphonesSetListening(
-    MDRHeadphones* headphones,
-    const MDRListening* listening
-);
-MDR_API MDRResult mdrHeadphonesGetEqualizer(
-    MDRHeadphones* headphones,
-    MDREqualizer* out_equalizer
-);
-MDR_API MDRResult mdrHeadphonesSetEqualizer(
-    MDRHeadphones* headphones,
-    const MDREqualizer* equalizer
-);
-MDR_API MDRResult mdrHeadphonesGetEqualizerBands(
-    MDRHeadphones* headphones,
-    int8_t* bands,
-    uint32_t* inout_count
-);
-MDR_API MDRResult mdrHeadphonesSetEqualizerBands(
-    MDRHeadphones* headphones,
-    const int8_t* bands,
-    uint32_t count
-);
+MDR_API MDRResult mdrHeadphonesGetNoiseControl(MDRHeadphones* headphones, MDRNoiseControl* out_noise_control);
+MDR_API MDRResult mdrHeadphonesSetNoiseControl(MDRHeadphones* headphones, const MDRNoiseControl* noise_control);
+MDR_API MDRResult mdrHeadphonesGetSpeakToChat(MDRHeadphones* headphones, MDRSpeakToChat* out_speak_to_chat);
+MDR_API MDRResult mdrHeadphonesSetSpeakToChat(MDRHeadphones* headphones, const MDRSpeakToChat* speak_to_chat);
+MDR_API MDRResult mdrHeadphonesGetListening(MDRHeadphones* headphones, MDRListening* out_listening);
+MDR_API MDRResult mdrHeadphonesSetListening(MDRHeadphones* headphones, const MDRListening* listening);
+MDR_API MDRResult mdrHeadphonesGetEqualizer(MDRHeadphones* headphones, MDREqualizer* out_equalizer);
+MDR_API MDRResult mdrHeadphonesSetEqualizer(MDRHeadphones* headphones, const MDREqualizer* equalizer);
+MDR_API MDRResult mdrHeadphonesGetEqualizerBands(MDRHeadphones* headphones, int8_t* bands, uint32_t* inout_count);
+MDR_API MDRResult mdrHeadphonesSetEqualizerBands(MDRHeadphones* headphones, const int8_t* bands, uint32_t count);
 
 /* Paired devices and pairing. Device names/IDs use MDR_TEXT_* with index. */
-MDR_API MDRResult mdrHeadphonesGetPairedDevices(
-    MDRHeadphones* headphones,
-    MDRPairedDevice* devices,
-    uint32_t* inout_count
-);
-MDR_API MDRResult mdrHeadphonesSetPairedDevice(
-    MDRHeadphones* headphones,
-    const MDRPairedDeviceAction* action
-);
-MDR_API MDRResult mdrHeadphonesGetPairing(
-    MDRHeadphones* headphones,
-    MDRPairing* out_pairing
-);
+MDR_API MDRResult mdrHeadphonesGetPairedDevices(MDRHeadphones* headphones, MDRPairedDevice* devices,
+                                                uint32_t* inout_count);
+MDR_API MDRResult mdrHeadphonesSetPairedDevice(MDRHeadphones* headphones, const MDRPairedDeviceAction* action);
+MDR_API MDRResult mdrHeadphonesGetPairing(MDRHeadphones* headphones, MDRPairing* out_pairing);
 MDR_API MDRResult mdrHeadphonesSetPairing(MDRHeadphones* headphones, const MDRPairing* pairing);
 
 /**
  * @brief Whether the headphones may switch playback to the other multipoint device on their own.
  *
- * Mirrors Sound Connect's "Fixing playback device", inverted: while enabled, switching is free and
- * the headphones may hand audio over to the other multipoint device. While disabled, playback stays
- * pinned to the device that currently holds the playback right - Sound Connect shows this as a
- * padlock. The headphones re-enable switching on their own once that device disconnects.
+ * When enabled, switching in-between multipoint devices is allowed. Otherwise active playback changes
+ * will NOT cause the headphones to switch to the other multipoint device.
  * Requires @ref MDR_FEATURE_SOURCE_SWITCH_CONTROL.
+ *
+ * @note Contribution by @jkolo in https://github.com/mos9527/SonyHeadphonesClient/pull/57
  */
 MDR_API MDRResult mdrHeadphonesGetSourceSwitchControl(MDRHeadphones* headphones, MDRBoolean* out_enabled);
 MDR_API MDRResult mdrHeadphonesSetSourceSwitchControl(MDRHeadphones* headphones, MDRBoolean enabled);
@@ -580,67 +550,39 @@ MDR_API MDRResult mdrHeadphonesSetSourceSwitchControl(MDRHeadphones* headphones,
 /**
  * @brief Outcome the headphones reported for the last source switch control request.
  *
- * A refused request leaves the previous state in place, so a caller watching only
- * @ref mdrHeadphonesGetSourceSwitchControl cannot tell a refusal from a no-op. Staging a new
- * request resets this to @ref MDR_SOURCE_SWITCH_CONTROL_SUCCESS.
+ * This is only guaranteed to be valid after a @ref mdrHeadphonesSetSourceSwitchControl call AND a
+ * @ref MDR_EVENT_PAIRED_DEVICES_CHANGED event.
+ *
+ * The result is otherwise undefined.
+ *
+ * @note Contribution by @jkolo in https://github.com/mos9527/SonyHeadphonesClient/pull/57
  */
 MDR_API MDRResult mdrHeadphonesGetSourceSwitchControlResult(MDRHeadphones* headphones,
                                                             MDRSourceSwitchControlResult* out_result);
 
 /* General settings and assignable controls. */
-MDR_API MDRResult mdrHeadphonesGetGeneralSettingInfo(
-    MDRHeadphones* headphones,
-    MDRGeneralSettingInfo* settings,
-    uint32_t* inout_count
-);
-MDR_API MDRResult mdrHeadphonesGetGeneralSetting(
-    MDRHeadphones* headphones,
-    uint32_t index,
-    MDRGeneralSetting* out_setting
-);
-MDR_API MDRResult mdrHeadphonesSetGeneralSetting(
-    MDRHeadphones* headphones,
-    const MDRGeneralSetting* setting
-);
-MDR_API MDRResult mdrHeadphonesGetAssignableControls(
-    MDRHeadphones* headphones,
-    MDRAssignableControls* out_controls
-);
-MDR_API MDRResult mdrHeadphonesSetAssignableControls(
-    MDRHeadphones* headphones,
-    const MDRAssignableControls* controls
-);
+MDR_API MDRResult mdrHeadphonesGetGeneralSettingInfo(MDRHeadphones* headphones, MDRGeneralSettingInfo* settings,
+                                                     uint32_t* inout_count);
+MDR_API MDRResult mdrHeadphonesGetGeneralSetting(MDRHeadphones* headphones, uint32_t index,
+                                                 MDRGeneralSetting* out_setting);
+MDR_API MDRResult mdrHeadphonesSetGeneralSetting(MDRHeadphones* headphones, const MDRGeneralSetting* setting);
+MDR_API MDRResult mdrHeadphonesGetAssignableControls(MDRHeadphones* headphones, MDRAssignableControl* out_controls,
+                                                     uint32_t* inout_count);
+MDR_API MDRResult mdrHeadphonesGetAssignableControlActions(MDRHeadphones* headphones,
+                                                           MDRAssignableActionKeyLocation key,
+                                                           MDRAssignableAction* out_options, uint32_t* inout_count);
+MDR_API MDRResult mdrHeadphonesSetAssignableControls(MDRHeadphones* headphones, const MDRAssignableControl* controls,
+                                                     uint32_t count);
 
 /* Power, wearing behavior, voice guidance, and related system settings. */
-MDR_API MDRResult mdrHeadphonesGetPower(
-    MDRHeadphones* headphones,
-    MDRPower* out_power
-);
+MDR_API MDRResult mdrHeadphonesGetPower(MDRHeadphones* headphones, MDRPower* out_power);
 MDR_API MDRResult mdrHeadphonesSetPower(MDRHeadphones* headphones, const MDRPower* power);
-MDR_API MDRResult mdrHeadphonesGetVoiceGuidance(
-    MDRHeadphones* headphones,
-    MDRVoiceGuidance* out_voice_guidance
-);
-MDR_API MDRResult mdrHeadphonesSetVoiceGuidance(
-    MDRHeadphones* headphones,
-    const MDRVoiceGuidance* voice_guidance
-);
-MDR_API MDRResult mdrHeadphonesGetConnectionMode(
-    MDRHeadphones* headphones,
-    MDRConnectionMode* out_mode
-);
-MDR_API MDRResult mdrHeadphonesSetConnectionMode(
-    MDRHeadphones* headphones,
-    const MDRConnectionMode* mode
-);
-MDR_API MDRResult mdrHeadphonesGetSafeListening(
-    MDRHeadphones* headphones,
-    MDRSafeListening* out_safe_listening
-);
-MDR_API MDRResult mdrHeadphonesSetSafeListening(
-    MDRHeadphones* headphones,
-    const MDRSafeListening* safe_listening
-);
+MDR_API MDRResult mdrHeadphonesGetVoiceGuidance(MDRHeadphones* headphones, MDRVoiceGuidance* out_voice_guidance);
+MDR_API MDRResult mdrHeadphonesSetVoiceGuidance(MDRHeadphones* headphones, const MDRVoiceGuidance* voice_guidance);
+MDR_API MDRResult mdrHeadphonesGetConnectionMode(MDRHeadphones* headphones, MDRConnectionMode* out_mode);
+MDR_API MDRResult mdrHeadphonesSetConnectionMode(MDRHeadphones* headphones, const MDRConnectionMode* mode);
+MDR_API MDRResult mdrHeadphonesGetSafeListening(MDRHeadphones* headphones, MDRSafeListening* out_safe_listening);
+MDR_API MDRResult mdrHeadphonesSetSafeListening(MDRHeadphones* headphones, const MDRSafeListening* safe_listening);
 
 #ifdef __cplusplus
 }

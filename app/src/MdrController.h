@@ -250,7 +250,7 @@ private:
     QVariantList m_pairedDevices;
 
     QString m_address;
-    /* XM5-and-newer UUID first, legacy second; index into kServiceUuids. */
+    /* XM5-and-newer UUID first, legacy second; index into kServices. */
     int m_serviceIndex = 0;
 
     QString m_deviceName;

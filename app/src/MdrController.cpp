@@ -30,12 +30,17 @@ namespace {
 
 /* Sony uses one RFCOMM service for XM5-and-newer and another for XM4-and-older.
  * Which one a device answers on is the practical protocol-family discriminator,
- * so we try them in turn. LinkBuds Clip is a V2 device and answers on the first. */
-const char *const kServiceUuids[] = {
-    MDR_SERVICE_UUID_XM5,
-    MDR_SERVICE_UUID_LEGACY
+ * so we try them in turn and hand mdrHeadphonesCreate() the family that goes with
+ * the one that answered. LinkBuds Clip is a V2 device and answers on the first. */
+struct MdrService {
+    const char *uuid;
+    MDRProtocolVersion protocol;
 };
-const int kServiceUuidCount = int(sizeof(kServiceUuids) / sizeof(kServiceUuids[0]));
+const MdrService kServices[] = {
+    { MDR_SERVICE_UUID_XM5, MDR_PROTOCOL_V2 },
+    { MDR_SERVICE_UUID_LEGACY, MDR_PROTOCOL_V1 }
+};
+const int kServiceCount = int(sizeof(kServices) / sizeof(kServices[0]));
 
 /* 30 ms keeps the protocol's coroutines responsive without busy-spinning the
  * phone; libmdr does no work of its own between polls. */
@@ -116,7 +121,7 @@ void MdrController::connectToDevice(const QString &address)
     setState(Connecting);
 
     const MDRResult result = mdrConnectionConnect(
-        m_transport->connection(), address.toUtf8().constData(), kServiceUuids[m_serviceIndex]);
+        m_transport->connection(), address.toUtf8().constData(), kServices[m_serviceIndex].uuid);
     if (result != MDR_RESULT_OK && result != MDR_RESULT_INPROGRESS) {
         fail(m_transport->lastError());
         return;
@@ -175,7 +180,8 @@ void MdrController::closeDevice()
 
 void MdrController::openDevice()
 {
-    if (mdrHeadphonesCreate(MDR_ABI_VERSION, m_transport->connection(), &m_device) != MDR_RESULT_OK) {
+    if (mdrHeadphonesCreate(MDR_ABI_VERSION, m_transport->connection(),
+                            kServices[m_serviceIndex].protocol, &m_device) != MDR_RESULT_OK) {
         fail(tr("libmdr rejected this build's ABI version"));
         return;
     }
@@ -213,11 +219,11 @@ void MdrController::pumpConnection()
 
     /* A device that refuses the modern service may still be an older one, so
      * fall back to the legacy UUID before giving up. */
-    if (++m_serviceIndex < kServiceUuidCount) {
-        qInfo() << "[lauscher] retrying with service" << kServiceUuids[m_serviceIndex];
+    if (++m_serviceIndex < kServiceCount) {
+        qInfo() << "[lauscher] retrying with service" << kServices[m_serviceIndex].uuid;
         mdrConnectionDisconnect(m_transport->connection());
         const MDRResult retry = mdrConnectionConnect(
-            m_transport->connection(), m_address.toUtf8().constData(), kServiceUuids[m_serviceIndex]);
+            m_transport->connection(), m_address.toUtf8().constData(), kServices[m_serviceIndex].uuid);
         if (retry == MDR_RESULT_OK || retry == MDR_RESULT_INPROGRESS)
             return;
     }
@@ -236,7 +242,7 @@ void MdrController::pumpDevice()
     switch (event) {
     case MDR_EVENT_INITIALIZE_COMPLETE:
         /* Capabilities are known; ask for the values that are not pushed to us. */
-        if (mdrHeadphonesRequestFetch(m_device) != MDR_RESULT_OK) {
+        if (mdrHeadphonesRequestSync(m_device) != MDR_RESULT_OK) {
             fail(tr("Could not read the device state"));
             return;
         }
@@ -264,6 +270,13 @@ void MdrController::pumpDevice()
         break;
     case MDR_EVENT_LISTENING_MODE_CHANGED:
         refreshListening();
+        break;
+    /* A notification that carries only its discriminator - V1 announces the track
+     * names this way. The values follow a sync, so ask for one; a device that is
+     * still busy with something else answers MDR_RESULT_INPROGRESS, and the next
+     * notification asks again. */
+    case MDR_EVENT_NEED_SYNC:
+        mdrHeadphonesRequestSync(m_device);
         break;
     /* Covers the whole multipoint area: the device list, which of them holds
      * playback, and whether the headset may move it by itself. */

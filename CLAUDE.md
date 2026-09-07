@@ -19,8 +19,8 @@ that means in practice:
   the LinkBuds Clip. [libmdr/UPSTREAM.md](libmdr/UPSTREAM.md) records which
   commit, what was added on top, and how to refresh it.
 - The pinned state includes protocol fixes that are **not upstream yet** (the
-  transmit sequence number, the pre-handshake frame guard, gating V2 init
-  requests on the advertised function list, the four listening modes, and
+  transmit sequence number, which is also the pre-handshake frame guard; gating
+  V2 init requests on the advertised function list; the four listening modes; and
   committing the staged listening flags before the switch is sent rather than
   after). Plain upstream will not drive this device correctly.
 - Bugs found here that live in the protocol belong in the SonyHeadphonesClient
@@ -92,7 +92,11 @@ SonyHeadphonesClient checkout is not needed to build.
 
 Driven by coroutines in `libmdr/upstream/src/Headphones*.cpp`:
 
-1. `CONNECT_GET_PROTOCOL_INFO` → decides V1 vs V2 and which tables exist.
+0. `mdrHeadphonesCreate()` is told which family to speak — `MDR_PROTOCOL_V1` or
+   `MDR_PROTOCOL_V2`. It is not discovered: the RFCOMM service UUID that answered
+   already says which one it is, so `MdrController`'s `kServices` table pairs each
+   UUID with its family and hands over the entry that connected.
+1. `CONNECT_GET_PROTOCOL_INFO` → confirms it and says which tables exist.
 2. `CONNECT_GET_CAPABILITY_INFO` / `CONNECT_GET_DEVICE_INFO` → model name,
    firmware, serial, colour.
 3. `CONNECT_GET_SUPPORT_FUNCTION` → the feature bitmap. **Everything the UI
@@ -101,6 +105,11 @@ Driven by coroutines in `libmdr/upstream/src/Headphones*.cpp`:
 4. Per-feature `*_GET_CAPABILITY` / `*_GET_PARAM` / `*_GET_STATUS`.
 5. Afterwards the device pushes `*_NTFY_PARAM` frames unprompted (battery,
    noise mode changes made on the device itself).
+
+Some of those pushes carry only their discriminator and no value — V1 announces
+the track names that way. libmdr reports those as `MDR_EVENT_NEED_SYNC`, which
+means "ask for it": `pumpDevice()` answers with `mdrHeadphonesRequestSync()`, the
+same call the app makes once initialization completes.
 
 ---
 
@@ -250,6 +259,12 @@ commits staged changes:
 setNoiseMode() → mdrHeadphonesSetNoiseControl()   // stages, does not send
 tick()         → mdrHeadphonesIsDirty() → mdrHeadphonesRequestCommit()
 ```
+
+The `Set*` calls take a whole struct, and libmdr validates every field in it, so
+each setter reads the current one with the matching `Get*` and changes only what
+it means to. That is not just tidiness: `MDRNoiseControl` grew a
+`changing_asm_level` field, and a struct filled in from scratch would have been
+refused outright for the field nobody remembered to set.
 
 ---
 

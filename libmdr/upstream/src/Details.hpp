@@ -2,16 +2,28 @@
 
 #include <mdr-c/Headphones.h>
 #include <mdr/Command.hpp>
-#include <mdr/ProtocolV1T1.hpp>
-#include <mdr/ProtocolV1T2.hpp>
-#include <mdr/ProtocolV2T1.hpp>
-#include <mdr/ProtocolV2T2.hpp>
+#include <mdr/Protocol.hpp>
+#include "Property.hpp"
+#include "DetailsV1.hpp"
+#include "DetailsV2.hpp"
 
 #include <coroutine>
 #include <time.h>
 
 namespace mdr
 {
+    namespace detail
+    {
+        template <typename T>
+        bool ReadEnumTag(Span<const UInt8> command, T& out, size_t offset = 1)
+        {
+            if (command.size() <= offset)
+                return false;
+            out = static_cast<T>(command[offset]);
+            return true;
+        }
+    } // namespace detail
+
     // NOLINTBEGIN
     /**
      * @brief Coroutine task boilerplate from https://github.com/mos9527/coro
@@ -100,64 +112,15 @@ namespace mdr
     }
 
     // NOLINTEND
-    template <typename T>
-    struct MDRProperty
-    {
-        T desired{};
-        T current{};
-        T submitted{};
-        uint64_t revision{};
-        uint64_t submittedRevision{};
-
-        void stage(T const& value)
-        {
-            desired = value;
-            ++revision;
-        }
-
-        void stage(T&& value)
-        {
-            desired = std::move(value);
-            ++revision;
-        }
-
-        void overwrite(T const& value)
-        {
-            current = value;
-            if (revision == submittedRevision)
-                desired = value;
-        }
-
-        void submit()
-        {
-            submitted = desired;
-            submittedRevision = revision;
-        }
-
-        [[nodiscard]] constexpr bool dirty() const noexcept { return desired != current; }
-        [[nodiscard]] constexpr bool pending() const noexcept { return submitted != current; }
-
-        void commit()
-        {
-            current = submitted;
-            if (revision == submittedRevision)
-                desired = submitted;
-        }
-
-        void override(T const& v)
-        {
-            current = v;
-            if (revision == submittedRevision)
-                desired = v;
-            submitted = v;
-        }
-    };
-
     struct MDRHeadphones
     {
     private:
         MDRConnection* mConn;
 
+        // TODO Make these configurable
+        int mACKRetriesCount = 10u;
+        int mACKRetriesTimeout = 1000u;
+        int mDefaultTimeout = 5000u;
     public:
         enum AwaitType
         {
@@ -176,9 +139,6 @@ namespace mdr
             V2
         };
 
-        static constexpr int kAwaitAckRetries = 10;
-        static constexpr int kAwaitTimeout = 3; // Seconds
-
         // NOLINTBEGIN
         struct Awaiter
         {
@@ -186,8 +146,10 @@ namespace mdr
             AwaitType type;
 
             std::coroutine_handle<> h = nullptr;
-            // Timepoint when Awaiter is invoked in NS
-            time_t tick;
+            // Timepoint when Awaiter is invoked in milliseconds
+            clock_t tick;
+            // Timeout in milliseconds
+            int timeout;
             // co_await Result on resumption
             int result = MDR_RESULT_OK;
 
@@ -198,7 +160,7 @@ namespace mdr
                 if (h) [[unlikely]]
                     std::terminate(); // Misuse. Only _one_ task is allowed at a time
                 if (handle)
-                    h = std::move(handle), tick = time(nullptr);
+                    h = std::move(handle), tick = clock();
             }
 
             int await_resume() noexcept { return result; }
@@ -216,13 +178,13 @@ namespace mdr
 
         // NOLINTEND
 
-        explicit MDRHeadphones(MDRConnection* conn) : mConn(conn)
+        explicit MDRHeadphones(MDRConnection* conn, ProtocolFamily family) : mConn(conn), mProtocolFamily(family)
         {
             for (size_t i = 0; i < AWAIT_NUM_TYPES; ++i)
                 mAwaiters[i] = Awaiter{this, static_cast<AwaitType>(i)};
         }
 
-        MDRHeadphones() : MDRHeadphones(nullptr) {}
+        MDRHeadphones() : MDRHeadphones(nullptr, ProtocolFamily::UNKNOWN) {}
 
 
         // Move-only ctor
@@ -256,6 +218,8 @@ namespace mdr
          * @brief Check if there's any @ref MDRProperty that's dirty.
          */
         [[nodiscard]] bool IsDirty() const;
+        [[nodiscard]] bool IsDirtyV1() const;
+        [[nodiscard]] bool IsDirtyV2() const;
         /**
          * @brief Schedules the task to be run on the next @ref MoveNext call.
          * @return @ref MDR_RESULT_OK if task has been scheduled, @ref MDR_RESULT_INPROGRESS if _another_ task
@@ -267,9 +231,13 @@ namespace mdr
          * @brief This does what you think it does.
          *        Schedules the calling coroutine to be executed once the next @ref AwaitType
          *        event has arrived through @ref MoveNext
+         * @param type The type of event to wait for.
+         * @param timeoutMS The timeout in milliseconds. If the event does not arrive within this time, the coroutine
+         *                  will be resumed with @ref MDR_RESULT_ERROR_TIMEOUT.
+         *                  Defaults to -1, which means @ref mDefaultTimeout is used instead.
          * @note  As always, needs @ref PollEvents
          */
-        Awaiter& Await(AwaitType type);
+        Awaiter& Await(AwaitType type, int timeoutMS = -1);
         /**
          * @brief Wake up zero or one awaited coroutine, and resume it in the current callstack.
          */
@@ -280,201 +248,17 @@ namespace mdr
         [[nodiscard]] const char* GetLastError() const { return mLastError.c_str(); }
         /**
          * @brief Record @p error against @p context and signal it on the event channel.
-         * @return -1, the channel's failure marker. The code itself is kept on the instance rather
-         *         than encoded here, so the channel stays a plain @ref MDREvent. @ref PollEvents
-         *         turns the marker back into the code.
          */
         int SetLastError(int error, const char* context)
         {
             mLastError = mdr::Format("{} ({})", context, mdrResultString(error));
             mLastErrorCode = static_cast<::MDRResult>(error);
-            return -1;
+            return -1; // NOTE: convenience only for co_return SetLastError(...);
         }
 
-#pragma region States
-        // @ref HandleProtocolInfoT1
-        struct ProtocolStates
-        {
-            int version;
-            int hasTable1;
-            int hasTable2;
-        } mProtocol{};
         ProtocolFamily mProtocolFamily{ProtocolFamily::UNKNOWN};
-
-        // @ref HandleSupportFunctionT1
-        // Q: Why not std::bitset?
-        // A: They are not constexpr until C++23 - while std::array[] are since 14.
-        //    Since there's no other C++23 feature usage anywhere else in the lib,
-        //    we're sticking with C++20 as is.
-        struct SupportStates
-        {
-            enum class Provenance
-            {
-                UNKNOWN,
-                ADVERTISED,
-                LEGACY_PROFILE
-            };
-
-            Array<bool, 256> v1Functions;
-            Array<bool, 256> table1Functions;
-            Array<bool, 256> table2Functions;
-            Array<bool, 256> neutralFeatures;
-            Provenance provenance{Provenance::UNKNOWN};
-
-            [[nodiscard]] constexpr bool contains(v1::t1::FunctionType v) const
-            {
-                return v1Functions[static_cast<UInt8>(v)];
-            }
-
-            [[nodiscard]] constexpr bool contains(v2::t1::FunctionType v) const
-            {
-                return table1Functions[static_cast<UInt8>(v)];
-            }
-
-            [[nodiscard]] constexpr bool contains(v2::t2::FunctionType v) const
-            {
-                return table2Functions[static_cast<UInt8>(v)];
-            }
-
-            [[nodiscard]] constexpr bool contains(MDRFeature feature) const
-            {
-                return neutralFeatures[static_cast<UInt8>(feature)];
-            }
-        } mSupport{};
-
-        void RefreshNeutralFeaturesV1();
-        void RefreshNeutralFeaturesV2();
-
-        /**
-         * @brief Whether the device advertises any background-music listening mode.
-         * @note  There is no neutral feature for this: @ref MDR_FEATURE_LISTENING_MODE covers
-         *        the grouping the device presents, not the individual modes underneath it.
-         */
-        [[nodiscard]] bool SupportsBGMMode() const
-        {
-            using F = v2::t1::FunctionType;
-            return mSupport.contains(F::BGM_MODE_SMALL_MIDDLE_LARGE) ||
-                mSupport.contains(F::BGM_MODE_SMALL_MIDDLE_LARGE_AND_ERRORCODE) ||
-                mSupport.contains(F::BGM_MODE_CANT_BE_USED_WITH_LEA_CONNECTION);
-        }
-
-        String mUniqueId; // MAC Address
-        String mFWVersion;
-        String mModelName;
-        v2::t1::ModelSeries mModelSeries{};
-        v2::ModelColor mModelColor{};
-        v2::t1::AudioCodec mAudioCodec{};
-
-        v2::t1::AlertMessageType mLastAlertMessage{};
-        String mLastInteractionMessage;
-        String mLastDeviceJSONMessage;
-
-        struct PeripheralDevice
-        {
-            String macAddress;
-            String name;
-            bool connected;
-            bool playbackDevice{};
-        };
-
-        Vector<PeripheralDevice> mPairedDevices;
-        UInt8 mPairedDevicesPlaybackDeviceID{};
-
-        int mSafeListeningSoundPressure{};
-
-        struct BatteryState
-        {
-            UInt8 level{}; // Percentage
-            UInt8 threshold{}; // Used in FW update check, see https://github.com/mos9527/SonyHeadphonesClient/issues/30
-            v2::t1::BatteryChargingStatus charging{};
-        };
-
-        BatteryState mBatteryL, mBatteryR, mBatteryCase;
-
-        String mPlayTrackTitle;
-        String mPlayTrackAlbum;
-        String mPlayTrackArtist;
-        v2::t1::PlaybackStatus mPlayPause{};
-
-        v2::t1::UpscalingType mUpscalingType{};
-        // Available until the device reports otherwise - not every device ever does.
-        bool mUpscalingAvailable{true};
-
-        struct GsCapability
-        {
-            v2::t1::GsSettingType type{};
-            v2::t1::GsSettingInfo value{};
-        };
-
-        GsCapability mGsCapability1, mGsCapability2, mGsCapability3, mGsCapability4;
-#pragma endregion
-
-#pragma region Properties
-        MDRProperty<bool> mShutdown;
-
-        MDRProperty<bool> mNcAsmEnabled;
-        MDRProperty<bool> mNcAsmFocusOnVoice;
-        MDRProperty<int> mNcAsmAmbientLevel; // [0,20] - 0 is not possible on the App.
-        MDRProperty<v2::t1::Function> mNcAsmButtonFunction;
-        MDRProperty<v2::t1::NcAsmMode> mNcAsmMode;
-        MDRProperty<bool> mNcAsmAutoAsmEnabled; // WH-1000XM6+
-        MDRProperty<v2::t1::NoiseAdaptiveSensitivity> mNcAsmNoiseAdaptiveSensitivity; // WH-1000XM6+
-
-        MDRProperty<v2::t1::AutoPowerOffElements> mPowerAutoOff;
-        MDRProperty<v2::t1::AutoPowerOffWearingDetectionElements> mPowerAutoOffWearingDetection;
-
-        MDRProperty<int> mPlayVolume; // [0,30]
-        MDRProperty<v2::t1::PlaybackControl> mPlayControl;
-
-        MDRProperty<bool> mGsParamBool1, mGsParamBool2, mGsParamBool3, mGsParamBool4;
-
-
-        MDRProperty<bool> mUpscalingEnabled;
-
-        MDRProperty<v2::t1::PriorMode> mAudioPriorityMode;
-
-        MDRProperty<bool> mBGMModeEnabled;
-        MDRProperty<v2::t1::RoomSize> mBGMModeRoomSize;
-        MDRProperty<bool> mUpmixCinemaEnabled;
-        MDRProperty<bool> mVoiceContentsEnabled;
-        MDRProperty<bool> mSoundLeakageReductionEnabled;
-
-        MDRProperty<bool> mAutoPauseEnabled;
-
-        MDRProperty<v2::t1::Preset> mTouchFunctionLeft, mTouchFunctionRight;
-
-        MDRProperty<bool> mSpeakToChatEnabled;
-        MDRProperty<v2::t1::DetectSensitivity> mSpeakToChatDetectSensitivity;
-        MDRProperty<v2::t1::ModeOutTime> mSpeakToModeOutTime;
-        v1::t1::CommonOnOffSettingValue mV1SpeakToChatVoiceFocus{v1::t1::CommonOnOffSettingValue::OFF};
-
-        MDRProperty<bool> mHeadGestureEnabled;
-
-
-        MDRProperty<bool> mEqAvailable{true, true, true};
-        MDRProperty<v2::t1::EqPresetId> mEqPresetId;
-        MDRProperty<int> mEqClearBass;
-        // Non-zero band count of either 5: [400,1k,2.5k,6.3k,16k] or 10: [31,63,125,250,500,1k,2k,4k,8k,16k]
-        MDRProperty<Vector<int>> mEqConfig;
-
-        MDRProperty<bool> mVoiceGuidanceEnabled;
-        // Volume range [-2,2]
-        MDRProperty<int> mVoiceGuidanceVolume;
-
-        MDRProperty<bool> mPairingMode;
-
-        MDRProperty<String> mMultipointDeviceMac;
-        MDRProperty<String> mPairedDeviceDisconnectMac, mPairedDeviceConnectMac, mPairedDeviceUnpairMac;
-
-        // SOURCE_SWITCH_CONTROL's param byte: 1 while playback may switch to the other multipoint
-        // device on its own, 0 once it's pinned to the current device (verified on WF-1000XM5). This
-        // is Sound Connect's "Fixing playback device", inverted.
-        MDRProperty<bool> mSourceSwitchControlEnabled;
-        // Outcome of the last source switch control request the headphones reported.
-        v2::t2::SourceSwitchControlResult mSourceSwitchControlResult{v2::t2::SourceSwitchControlResult::SUCCESS};
-
-        MDRProperty<bool> mSafeListeningPreviewMode;
-#pragma endregion
+        DetailsV1 mDetailsV1;
+        DetailsV2 mDetailsV2;
 
 #pragma region Tasks
         /**
@@ -505,8 +289,8 @@ namespace mdr
         MDRTask RequestInitV1();
         MDRTask RequestSyncV1();
         MDRTask RequestCommitV1();
-
-        void SnapshotProperties();
+        void SnapshotPropertiesV1();
+        void RefreshSupportV1();
 
         /**
          * @brief Send initialization payloads to the headphones.
@@ -514,7 +298,6 @@ namespace mdr
          * @return @ref MDR_EVENT_INITIALIZE_COMPLETE on completion (returned in @ref PollEvents)
          **/
         MDRTask RequestInitV2();
-        MDRTask RequestInitV2Selected();
         /**
          * @brief Requests states that the device won't send automatically. (e.g. Battery levels)
          * @note  To be used with @ref Invoke.
@@ -527,14 +310,11 @@ namespace mdr
          * @return @ref MDR_EVENT_APPLY_COMPLETE on completion (returned in @ref PollEvents)
          */
         MDRTask RequestCommitV2();
+        void SnapshotPropertiesV2();
 #pragma endregion
 
-        /*
-         * Protocol-neutral C facade bookkeeping. These fields deliberately do
-         * not participate in wire handling; the existing V2 Headphones remains the
-         * temporary source of current/desired state.
-         */
-        bool mNeutralInitialized{};
+        // Common lifecycle state; family device state lives in DetailsV1/DetailsV2.
+        bool mInitialized{};
 
     private:
         /**
@@ -610,7 +390,11 @@ namespace mdr
             MDRDataType type = MDRTraits<T>::kDataType;
             const auto serialized = T::Serialize(command, buf, kMDRMaxPacketSize);
             if (!serialized)
+            {
+                SetLastError(serialized.error,
+                             serialized.errMessage ? serialized.errMessage : "Unable to serialize command");
                 return serialized.error;
+            }
             SendCommandImpl({buf, buf + serialized.value}, type, mTxSeqNumber);
             return MDR_RESULT_OK;
         }
@@ -621,12 +405,15 @@ namespace mdr
          */
         int Handle(Span<const UInt8> command, MDRDataType type, MDRCommandSeqNumber seq);
         int HandleProtocolInfo(Span<const UInt8> command);
+        int HandleProtocolInfoV1(Span<const UInt8> command);
+        int HandleProtocolInfoV2(Span<const UInt8> command);
         int HandleCommandV1T1(Span<const UInt8> cmd, MDRCommandSeqNumber seq);
         int HandleCommandV1T2(Span<const UInt8> cmd, MDRCommandSeqNumber seq);
         int HandleCommandV2T1(Span<const UInt8> cmd, MDRCommandSeqNumber seq);
         int HandleCommandV2T2(Span<const UInt8> cmd, MDRCommandSeqNumber seq);
         void HandleAck(MDRCommandSeqNumber seq);
     };
+
 } // namespace mdr
 
 namespace mdr::detail
@@ -660,24 +447,31 @@ namespace mdr::detail
  * while all we need is merely a `co_await`...
  *
  * TL;DR, this helps with compiler bloats. Use it well.
+ *
+ * @note On the sequence number across retries. A retransmission deliberately repeats the sequence
+ *       number of the frame it re-sends: that is how the device tells a genuine retry apart from a
+ *       new request, and @ref mTxSeqNumber only advances once a frame has actually been
+ *       acknowledged. Flipping it here would make every retry look like a fresh frame, and the
+ *       device would then answer the following request as if it were the duplicate.
  */
 #define SendCommandACK(Type, ...)                                                                                      \
+    do                                                                                                                 \
     {                                                                                                                  \
         int _retries;                                                                                                  \
-        const int _maxRetries = kAwaitAckRetries;                                                                      \
-        for (_retries = 0; _retries < _maxRetries; _retries++)                                                         \
+        for (_retries = 0; _retries < mACKRetriesCount; _retries++)                                                    \
         {                                                                                                              \
             const int _sendResult = SendCommandImpl<Type>(__VA_ARGS__);                                                \
             if (_sendResult != MDR_RESULT_OK)                                                                          \
-                co_return SetLastError(_sendResult, "Unable to serialize command");                                    \
-            int res = co_await Await(AWAIT_ACK);                                                                       \
+                co_return -1u;                                                                                         \
+            int res = co_await Await(AWAIT_ACK, mACKRetriesTimeout);                                                   \
             if (res == MDR_RESULT_OK)                                                                                  \
                 break;                                                                                                 \
-            MDR_LOG("FIXME-ACK Timeout. Retry {}/{}", _retries, _maxRetries);                                          \
+            MDR_LOG("FIXME-ACK Timeout. Retry {}/{}", _retries, mACKRetriesCount);                                     \
         }                                                                                                              \
-        if (_retries == _maxRetries)                                                                                   \
+        if (_retries == mACKRetriesCount)                                                                              \
             co_return SetLastError(MDR_RESULT_ERROR_TIMEOUT, "Timeout exceeded waiting for device to respond");        \
-    }
+    }                                                                                                                  \
+    while (false)
 
 /**
  * @brief Just a helper macro to deserialize a command payload.

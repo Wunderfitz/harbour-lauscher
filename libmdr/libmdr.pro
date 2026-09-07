@@ -26,6 +26,13 @@ QMAKE_CXXFLAGS += -fno-rtti -ffunction-sections -fdata-sections
 
 DEFINES += MDR_ENABLE_LOG=1
 
+# src/ and src/Generated/ both carry a ProtocolV<n>T<n>Serialization.cpp - the
+# hand-written one overrides individual payloads the codegen cannot express, and
+# both have to be linked. qmake names object files after the source's basename
+# alone, so without this the second of each pair silently replaces the first in
+# libmdr.a and the link fails on whatever it defined.
+CONFIG += object_parallel_to_source
+
 INCLUDEPATH += \
     $$MDR_ROOT/include \
     $$MDR_ROOT/src \
@@ -40,6 +47,10 @@ SOURCES += \
     $$MDR_ROOT/src/HeadphonesV2.cpp \
     $$MDR_ROOT/src/HeadphonesV2T1.cpp \
     $$MDR_ROOT/src/HeadphonesV2T2.cpp \
+    $$MDR_ROOT/src/ProtocolV1T1Serialization.cpp \
+    $$MDR_ROOT/src/ProtocolV1T2Serialization.cpp \
+    $$MDR_ROOT/src/ProtocolV2T1Serialization.cpp \
+    $$MDR_ROOT/src/ProtocolV2T2Serialization.cpp \
     $$MDR_ROOT/src/Generated/ProtocolV1T1Serialization.cpp \
     $$MDR_ROOT/src/Generated/ProtocolV1T1Validation.cpp \
     $$MDR_ROOT/src/Generated/ProtocolV1T2Serialization.cpp \
