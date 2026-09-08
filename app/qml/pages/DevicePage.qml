@@ -446,15 +446,43 @@ Page {
                 onClicked: pageStack.push(Qt.resolvedUrl("EqualizerPage.qml"))
             }
 
+            // Upscaling sits here rather than on the equalizer page: it is one switch and
+            // a feature of its own, and the device gates it exactly as it gates the
+            // equalizer - so it belongs beside that button, disabled when the button is.
+            // The name is the device's own, since Sony has four of them.
+            TextSwitch {
+                visible: mdr.state === Mdr.Ready && mdr.dseeAvailable
+                enabled: mdr.dseeUsable
+                text: mdr.dseeName
+                description: qsTr("Restores what compression takes out of a track. On is the headset's automatic mode - it decides which sources want it.")
+                // Without this the first tap replaces the binding with a plain value and
+                // the switch stops following the headset.
+                automaticCheck: false
+                checked: mdr.dseeEnabled
+                onClicked: mdr.setDseeEnabled(!checked)
+            }
+
+            // One note for both controls rather than one apiece: the listening mode takes
+            // them away together and on the same terms, and two sentences saying that side
+            // by side reads as a stutter. Which of them a device has decides the wording.
             Label {
                 x: Theme.horizontalPageMargin
                 width: parent.width - 2 * Theme.horizontalPageMargin
-                visible: mdr.state === Mdr.Ready && mdr.equalizerAvailable
-                         && !mdr.equalizerUsable
+                visible: mdr.state === Mdr.Ready
+                         && ((mdr.equalizerAvailable && !mdr.equalizerUsable)
+                             || (mdr.dseeAvailable && !mdr.dseeUsable))
                 wrapMode: Text.WordWrap
                 font.pixelSize: Theme.fontSizeExtraSmall
                 color: Theme.secondaryHighlightColor
-                text: qsTr("The headset turns the equalizer off while a listening mode other than Standard is active.")
+                text: {
+                    var equalizer = mdr.equalizerAvailable && !mdr.equalizerUsable
+                    var dsee = mdr.dseeAvailable && !mdr.dseeUsable
+                    if (equalizer && dsee)
+                        return qsTr("The headset turns the equalizer and %1 off while a listening mode other than Standard is active.").arg(mdr.dseeName)
+                    if (dsee)
+                        return qsTr("The headset turns %1 off while a listening mode other than Standard is active.").arg(mdr.dseeName)
+                    return qsTr("The headset turns the equalizer off while a listening mode other than Standard is active.")
+                }
             }
 
             /* -------------------------------------------- connected devices */

@@ -521,7 +521,7 @@ playback (track names, play/pause/next/previous, volume), ambient sound control
 (off / NC / ambient + level + focus-on-voice), listening mode (all four, plus the
 background-music distance), the headset's own connected devices (which one plays,
 connect and disconnect, and whether the headset may move playback itself), the
-equalizer (preset, band steps, clear bass), cover page.
+equalizer (preset, band steps, clear bass), DSEE, cover page.
 
 Everything under Playback rides on one event. Volume, play/pause status and the
 track names all report `MDR_EVENT_PLAYBACK_CHANGED`, so `refreshPlayback()` reads
@@ -605,6 +605,40 @@ which a poll-driven protocol library has no business owning. The related fix tha
 *did* belong there - committing the staged flags before the sends instead of
 after - closes a second, shorter window of the same shape, where our own
 two-frame switch (deactivate, then activate) left no mode set in between.
+
+### DSEE
+
+Sony's upscaling. It rides in `MDREqualizer` and arrives on the same
+`MDR_EVENT_EQUALIZER_CHANGED`, but it is its own feature bit and its own switch, so
+`refreshEqualizer()` compares it separately and reports it on `dseeChanged` — the
+equalizer page rebuilds a picker on `equalizerChanged`, and a switch flip has no
+business doing that.
+
+- **It sits under the Equalizer button on `DevicePage`**, not on the equalizer page.
+  It is one switch, and the device gates it on exactly the terms it gates the
+  equalizer, so it belongs where the reader can see both go grey together.
+- **Two gates again**: `MDR_FEATURE_DSEE` for having it,
+  `MDREqualizer.dsee_available` for acting on it now. The second goes false while a
+  listening mode other than Standard is active, which the WF-LC900 does over
+  `AUDIO_NTFY_STATUS UPSCALING DISABLE`.
+- **Both gates depend on the device having said so**, and until the libmdr refresh below
+  the only thing that ever said it was an unsolicited notification. Nothing re-read either
+  status — not even `mdrHeadphonesRequestSync()` — so a client that missed one frame kept
+  a stale answer for the rest of the session. Applying a listening mode now asks for both
+  statuses, which is what makes the Equalizer button and this switch grey out together and
+  reliably. A mode changed on the headset itself still arrives as a notification; that path
+  is unchanged.
+- **One note for both controls.** The listening mode takes the equalizer and DSEE away
+  together and on the same terms; two sentences saying so side by side read as a
+  stutter, so the label under the switch names whichever of the two this device has.
+- **On is the device's automatic mode.** libmdr stages the upscaling setting as `AUTO`,
+  not as a fixed strength — the headset decides which sources want it. The switch says
+  so rather than implying a level.
+- **The switch is labelled with the device's own name for it.** Sony ships DSEE, DSEE
+  HX, DSEE HX AI and DSEE Ultimate, and the device reports which one it has in its
+  audio capability; `dseeTypeName()` turns that into the label. A LinkBuds Clip reports
+  plain `DSEE`. These are product names, so only the fallback for a device that did not
+  say is translated.
 
 ### Connected devices (multipoint)
 
@@ -723,8 +757,9 @@ clear bass. `MdrController::refreshEqualizer()` reads all of that on
   `mdrHeadphonesSetEqualizerBands` takes the whole band array, so every setter reads
   the current state first and changes only its own field — the same reason
   `setVolume()` puts the playback status back unaltered.
-- **DSEE is not here.** It rides in the same `MDREqualizer` struct but is its own
-  feature bit and its own thing; the setters pass it back untouched.
+- **DSEE is not on this page.** It rides in the same `MDREqualizer` struct but is its
+  own feature bit and its own switch, on `DevicePage` — see DSEE below. The equalizer
+  setters pass it back untouched, as it passes theirs back.
 
 ### Confirmed on hardware, 2026-08-30
 
@@ -787,6 +822,14 @@ does nothing, or one that undoes itself.
 The `Repeater`-built `ComboBox` menu behaves too, which is the reading of
 `ComboBoxController` in the QML gotchas confirmed rather than argued.
 
+**DSEE and the gating were confirmed in the same session.** The switch turns upscaling
+on and off — audibly, if you believe the ears; there is a short break in playback as the
+device applies it, which is the reliable part — and it greys out while a listening mode
+other than Standard is active. The Equalizer button beside it did not, at first: both
+flags come from one `MDREqualizer` read, so the answer underneath had to be stale, and it
+was. Only an unsolicited notification ever carried it and nothing re-read it. With the
+libmdr refresh that asks after a listening change, the two grey out together.
+
 **The bands changed shape the same day, and were driven again afterwards.** They were
 horizontal Silica `Slider`s in the run above and are a strip of vertical faders now;
 every band of the new one has been moved on the device since. So what is confirmed is
@@ -801,10 +844,7 @@ Known gaps:
   reports no NC/ASM function of any kind — the ambient sound control section
   simply will not appear. It offers background music, voice boost and sound
   leakage reduction, but no cinema.
-- DSEE has no UI. When it gets one it has to gate on `MDREqualizer.dsee_available`,
-  not on `MDR_FEATURE_DSEE` — the device switches DSEE off alongside the equalizer
-  while a listening mode other than Standard is active (see Equalizer).
 - V1 (XM4 and older) is compiled in and the UUID fallback exists, but untested.
-- Touch controls, speak-to-chat, DSEE and the device's general settings are all
-  reachable through the C ABI already; only the UI is missing. The general settings
-  are where multipoint's own on/off switch would come from.
+- Touch controls, speak-to-chat and the device's general settings are all reachable
+  through the C ABI already; only the UI is missing. The general settings are where
+  multipoint's own on/off switch would come from.

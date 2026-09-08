@@ -94,6 +94,13 @@ class MdrController : public QObject
     Q_PROPERTY(int clearBassMinimum READ clearBassMinimum CONSTANT)
     Q_PROPERTY(int clearBassMaximum READ clearBassMaximum CONSTANT)
 
+    /* DSEE rides in the same struct as the equalizer and arrives on the same event, but
+     * it is its own feature bit and its own switch - the two are gated separately. */
+    Q_PROPERTY(bool dseeAvailable READ dseeAvailable NOTIFY featuresChanged)
+    Q_PROPERTY(bool dseeUsable READ dseeUsable NOTIFY dseeChanged)
+    Q_PROPERTY(bool dseeEnabled READ dseeEnabled NOTIFY dseeChanged)
+    Q_PROPERTY(QString dseeName READ dseeName NOTIFY dseeChanged)
+
     Q_PROPERTY(bool multipointAvailable READ multipointAvailable NOTIFY featuresChanged)
     Q_PROPERTY(bool sourceSwitchingAvailable READ sourceSwitchingAvailable NOTIFY featuresChanged)
     Q_PROPERTY(QVariantList multipointDevices READ multipointDevices NOTIFY multipointChanged)
@@ -206,6 +213,11 @@ public:
     Q_INVOKABLE QString equalizerBandLabel(int index) const;
     Q_INVOKABLE QString equalizerBandFrequency(int index) const;
 
+    bool dseeAvailable() const { return m_dseeAvailable; }
+    bool dseeUsable() const { return m_dseeUsable; }
+    bool dseeEnabled() const { return m_dseeEnabled; }
+    QString dseeName() const { return m_dseeName; }
+
     bool multipointAvailable() const { return m_multipointAvailable; }
     bool sourceSwitchingAvailable() const { return m_sourceSwitchingAvailable; }
     QVariantList multipointDevices() const { return m_multipointDevices; }
@@ -231,6 +243,7 @@ public slots:
     void setEqualizerPreset(int preset);
     void setEqualizerBand(int index, int value);
     void setClearBass(int value);
+    void setDseeEnabled(bool enabled);
 
     void selectPlaybackDevice(const QString &address);
     void connectPairedDevice(const QString &address);
@@ -251,6 +264,7 @@ signals:
     /* Separate from equalizerChanged: the list arrives once and the page's picker is built
      * from it, so it must not be restated every time a band moves. */
     void equalizerPresetsChanged();
+    void dseeChanged();
     void multipointChanged();
 
 private slots:
@@ -283,6 +297,7 @@ private:
 
     QVariantList equalizerPresetList() const;
     QString equalizerPresetName(MDREqualizerPreset preset) const;
+    QString dseeTypeName(MDRDSEEType type) const;
 
     QString codecName(MDRAudioCodec codec) const;
     QString batteryPartName(MDRBatteryPart part) const;
@@ -349,6 +364,16 @@ private:
      * and libmdr reports 0 there. */
     bool m_clearBassAvailable = false;
     int m_clearBass = 0;
+
+    bool m_dseeAvailable = false;
+    /* As with the equalizer: available is the feature bit, usable is what the device
+     * will act on now. It switches DSEE off alongside the equalizer while a listening
+     * mode other than Standard is active. */
+    bool m_dseeUsable = true;
+    bool m_dseeEnabled = false;
+    /* What this device calls it - DSEE, DSEE HX, and so on. Read from its capability, so
+     * the switch is labelled the way the headset's own app labels it. */
+    QString m_dseeName;
 
     bool m_multipointAvailable = false;
     bool m_sourceSwitchingAvailable = false;

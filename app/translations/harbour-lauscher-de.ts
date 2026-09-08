@@ -383,6 +383,18 @@
         <source>The headset turns the equalizer off while a listening mode other than Standard is active.</source>
         <translation>Der Kopfhörer schaltet den Equalizer ab, solange ein anderer Hörmodus als Standard aktiv ist.</translation>
     </message>
+    <message>
+        <source>Restores what compression takes out of a track. On is the headset&apos;s automatic mode - it decides which sources want it.</source>
+        <translation>Stellt wieder her, was die Komprimierung einem Titel nimmt. An ist die Automatik des Kopfhörers – er entscheidet, welche Quellen sie brauchen.</translation>
+    </message>
+    <message>
+        <source>The headset turns the equalizer and %1 off while a listening mode other than Standard is active.</source>
+        <translation>Der Kopfhörer schaltet den Equalizer und %1 ab, solange ein anderer Hörmodus als Standard aktiv ist.</translation>
+    </message>
+    <message>
+        <source>The headset turns %1 off while a listening mode other than Standard is active.</source>
+        <translation>Der Kopfhörer schaltet %1 ab, solange ein anderer Hörmodus als Standard aktiv ist.</translation>
+    </message>
 </context>
 <context>
     <name>EqualizerPage</name>
@@ -584,6 +596,10 @@
     <message>
         <source>%1 Hz</source>
         <translation>%1 Hz</translation>
+    </message>
+    <message>
+        <source>Upscaling</source>
+        <translation>Hochskalierung</translation>
     </message>
 </context>
 </TS>

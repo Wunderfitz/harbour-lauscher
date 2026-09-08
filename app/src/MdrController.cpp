@@ -155,6 +155,7 @@ void MdrController::closeDevice()
     m_listeningModes.clear();
     m_backgroundRoomAvailable = false;
     m_equalizerAvailable = false;
+    m_dseeAvailable = false;
     m_multipointAvailable = false;
     m_sourceSwitchingAvailable = false;
     emit featuresChanged();
@@ -170,6 +171,11 @@ void MdrController::closeDevice()
     m_clearBassAvailable = false;
     m_clearBass = 0;
     emit equalizerChanged();
+
+    m_dseeUsable = true;
+    m_dseeEnabled = false;
+    m_dseeName.clear();
+    emit dseeChanged();
 
     m_multipointDevices.clear();
     m_sourceSwitchingEnabled = true;
@@ -430,6 +436,7 @@ void MdrController::refreshFeatures()
     m_backgroundRoomAvailable = m_listeningModeAvailable && backgroundMusic;
 
     m_equalizerAvailable = featureAvailable(MDR_FEATURE_EQUALIZER);
+    m_dseeAvailable = featureAvailable(MDR_FEATURE_DSEE);
 
     /* Two separate things: the headset keeping a list of the devices it is paired
      * with, and it letting playback be pinned to one of them. A device can have
@@ -552,6 +559,18 @@ void MdrController::refreshEqualizer()
     const bool usable = equalizer.available != MDR_FALSE;
     /* Only the five-band layout carries clear bass; libmdr reports 0 for the other. */
     const bool clearBassAvailable = bands.size() == 5;
+
+    /* DSEE travels in the same struct and on the same event, but it is a separate switch
+     * on a separate page of the UI, so it is compared and reported separately. */
+    const bool dseeUsable = equalizer.dsee_available != MDR_FALSE;
+    const bool dseeEnabled = equalizer.dsee_enabled != MDR_FALSE;
+    const QString dseeName = dseeTypeName(MDRDSEEType(equalizer.dsee_type));
+    if (m_dseeUsable != dseeUsable || m_dseeEnabled != dseeEnabled || m_dseeName != dseeName) {
+        m_dseeUsable = dseeUsable;
+        m_dseeEnabled = dseeEnabled;
+        m_dseeName = dseeName;
+        emit dseeChanged();
+    }
 
     if (m_equalizerUsable == usable && m_equalizerPreset == int(equalizer.preset) &&
         m_equalizerBands == bands && m_clearBassAvailable == clearBassAvailable &&
@@ -809,6 +828,20 @@ QString MdrController::equalizerPresetName(MDREqualizerPreset preset) const
     }
 }
 
+/* What the device calls its upscaling, from the capability it reported. These are
+ * product names - Sony writes them the same way in every language - so only the one
+ * for a device that did not say is a word. */
+QString MdrController::dseeTypeName(MDRDSEEType type) const
+{
+    switch (type) {
+    case MDR_DSEE_STANDARD: return QStringLiteral("DSEE");
+    case MDR_DSEE_HX: return QStringLiteral("DSEE HX");
+    case MDR_DSEE_HX_AI: return QStringLiteral("DSEE HX AI");
+    case MDR_DSEE_ULTIMATE: return QStringLiteral("DSEE Ultimate");
+    default: return tr("Upscaling");
+    }
+}
+
 QString MdrController::batteryPartName(MDRBatteryPart part) const
 {
     switch (part) {
@@ -1055,6 +1088,26 @@ void MdrController::setClearBass(int value)
 
     m_clearBass = int(equalizer.clear_bass);
     emit equalizerChanged();
+}
+
+/* On is the device's automatic mode, not a fixed one: libmdr stages the upscaling
+ * setting as AUTO, and the headset decides from there which sources want it. The rest of
+ * the struct goes back out as it came in, as with the equalizer setters above. */
+void MdrController::setDseeEnabled(bool enabled)
+{
+    MDREqualizer equalizer;
+    memset(&equalizer, 0, sizeof(equalizer));
+    if (!m_device || mdrHeadphonesGetEqualizer(m_device, &equalizer) != MDR_RESULT_OK)
+        return;
+
+    equalizer.dsee_enabled = enabled ? MDR_TRUE : MDR_FALSE;
+    if (mdrHeadphonesSetEqualizer(m_device, &equalizer) != MDR_RESULT_OK)
+        return;
+
+    /* Reflect the request; the device confirms it on the next MDR_EVENT_EQUALIZER_CHANGED,
+     * and that answer overrules this the moment it lands. */
+    m_dseeEnabled = enabled;
+    emit dseeChanged();
 }
 
 /* Connect, disconnect and "play here" are all one staged MAC address in libmdr,
