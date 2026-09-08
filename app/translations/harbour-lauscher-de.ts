@@ -410,6 +410,10 @@
         <source>Clear bass</source>
         <translation>Clear Bass</translation>
     </message>
+    <message>
+        <source>%1 · %2 dB</source>
+        <translation>%1 · %2 dB</translation>
+    </message>
 </context>
 <context>
     <name>MdrController</name>
@@ -572,6 +576,14 @@
     <message>
         <source>User 5</source>
         <translation>Benutzer 5</translation>
+    </message>
+    <message>
+        <source>%1 kHz</source>
+        <translation>%1 kHz</translation>
+    </message>
+    <message>
+        <source>%1 Hz</source>
+        <translation>%1 Hz</translation>
     </message>
 </context>
 </TS>

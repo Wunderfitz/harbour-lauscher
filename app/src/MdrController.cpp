@@ -660,11 +660,12 @@ int MdrController::clearBassMinimum() const
 QString MdrController::equalizerBandLabel(int index) const
 {
     /* The frequencies the two layouts sit on, in the order the device reports them -
-     * libmdr names them beside the band steps it unpacks. Hz and kHz are the units in
-     * every language, so there is nothing here to translate. */
-    static const char *const kFiveBand[] = { "400 Hz", "1 kHz", "2.5 kHz", "6.3 kHz", "16 kHz" };
-    static const char *const kTenBand[] = { "31 Hz", "63 Hz", "125 Hz", "250 Hz", "500 Hz",
-                                            "1 kHz", "2 kHz", "4 kHz", "8 kHz", "16 kHz" };
+     * libmdr names them beside the band steps it unpacks. Written the way an equalizer
+     * writes them, with the unit left to the k: a band is a tenth of the screen wide and
+     * "16 kHz" does not fit under one. Numbers in every language, so nothing to translate. */
+    static const char *const kFiveBand[] = { "400", "1k", "2.5k", "6.3k", "16k" };
+    static const char *const kTenBand[] = { "31", "63", "125", "250", "500",
+                                            "1k", "2k", "4k", "8k", "16k" };
     if (index < 0 || index >= m_equalizerBands.size())
         return QString();
     if (m_equalizerBands.size() == 5)
@@ -672,6 +673,18 @@ QString MdrController::equalizerBandLabel(int index) const
     if (m_equalizerBands.size() == 10)
         return QString::fromLatin1(kTenBand[index]);
     return QString();
+}
+
+/* The same frequency spelled out, for the readout above the strip. Derived from the
+ * label rather than tabled a second time: the trailing k is the unit. */
+QString MdrController::equalizerBandFrequency(int index) const
+{
+    const QString label = equalizerBandLabel(index);
+    if (label.isEmpty())
+        return QString();
+    if (label.endsWith(QLatin1Char('k')))
+        return tr("%1 kHz").arg(label.left(label.size() - 1));
+    return tr("%1 Hz").arg(label);
 }
 
 /* Both of these end up on screen, so they are members and not the file-local

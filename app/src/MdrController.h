@@ -200,9 +200,11 @@ public:
     int clearBassMinimum() const;
     int clearBassMaximum() const;
 
-    /* Which frequency a band sits on. A function of the layout the device reports,
-     * not of the value, so the sliders ask for it once. */
+    /* Which frequency a band sits on. A function of the layout the device reports, not
+     * of the value, so the strip asks once. The short form is what fits under a band a
+     * tenth of the screen wide; the spoken one is for the readout, which has room. */
     Q_INVOKABLE QString equalizerBandLabel(int index) const;
+    Q_INVOKABLE QString equalizerBandFrequency(int index) const;
 
     bool multipointAvailable() const { return m_multipointAvailable; }
     bool sourceSwitchingAvailable() const { return m_sourceSwitchingAvailable; }

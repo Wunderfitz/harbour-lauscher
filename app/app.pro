@@ -25,6 +25,7 @@ DISTFILES += \
     qml/components/AboutLink.qml \
     qml/components/AboutParagraph.qml \
     qml/components/BackgroundImage.qml \
+    qml/components/EqualizerBand.qml \
     qml/pages/DeviceListPage.qml \
     qml/pages/DevicePage.qml \
     qml/pages/EqualizerPage.qml \

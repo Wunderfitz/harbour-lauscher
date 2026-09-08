@@ -20,6 +20,7 @@
 import QtQuick 2.2
 import Sailfish.Silica 1.0
 import de.ygriega.lauscher 1.0
+import "../components"
 
 // Everything the headset says its equalizer has: the preset it is on, the band
 // steps it reports - five of them or ten, which is the device's choice, not ours -
@@ -142,42 +143,82 @@ Page {
                     visible: mdr.equalizerBandCount > 0
                 }
 
-                // The model is the count rather than the values: the values change on
-                // every tweak, and a list model would take the sliders down and build
-                // them again underneath the finger that is dragging one.
-                Repeater {
-                    model: mdr.equalizerBandCount
+                // What the band in hand is doing, spelled out. Ten readouts standing
+                // permanently under ten bands is noise; the curve is the display, and
+                // this is for the one being changed. The height is held whether or not
+                // there is anything to say, so the strip does not jump on a touch.
+                Label {
+                    x: Theme.horizontalPageMargin
+                    width: parent.width - 2 * Theme.horizontalPageMargin
+                    height: Theme.itemSizeExtraSmall
+                    visible: mdr.equalizerBandCount > 0
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    color: Theme.highlightColor
+                    text: bandStrip.readout
+                }
 
-                    Slider {
-                        id: bandSlider
-                        width: parent.width
-                        minimumValue: mdr.equalizerBandMinimum
-                        maximumValue: mdr.equalizerBandMaximum
-                        stepSize: 1
-                        label: mdr.equalizerBandLabel(index)
-                        // toFixed keeps the step an integer on screen; the slider
-                        // itself counts in reals.
-                        valueText: qsTr("%1 dB").arg(value > 0 ? "+" + value.toFixed(0)
-                                                               : value.toFixed(0))
+                // The bands side by side, as an equalizer draws them. The Repeater is
+                // modelled on the count rather than on the values: the values change on
+                // every step, and a list model would take the bands down and build them
+                // again underneath the finger dragging one.
+                //
+                // A band claims the vertical drag it needs (see EqualizerBand), so the
+                // page cannot be scrolled from one. The page margins either side of the
+                // strip are outside the bands and still scroll, which is what keeps a
+                // tall strip from trapping the page.
+                Row {
+                    id: bandStrip
 
-                        // Assigned, never bound: dragging writes to value, which would
-                        // destroy the binding and leave the slider deaf to the device.
-                        Component.onCompleted: value = mdr.equalizerBands[index]
+                    x: Theme.horizontalPageMargin
+                    width: parent.width - 2 * Theme.horizontalPageMargin
+                    visible: mdr.equalizerBandCount > 0
 
-                        Connections {
-                            target: mdr
-                            onEqualizerChanged: {
-                                if (bandSlider.pressed
-                                        || index >= mdr.equalizerBands.length
-                                        || bandSlider.value === mdr.equalizerBands[index])
-                                    return
-                                bandSlider.value = mdr.equalizerBands[index]
+                    property string readout: ""
+
+                    function describe(index, value) {
+                        return qsTr("%1 · %2 dB").arg(mdr.equalizerBandFrequency(index))
+                                                 .arg(value > 0 ? "+" + value : String(value))
+                    }
+
+                    Repeater {
+                        model: mdr.equalizerBandCount
+
+                        EqualizerBand {
+                            id: bandItem
+
+                            width: bandStrip.width / Math.max(1, mdr.equalizerBandCount)
+                            // Room for a finger to travel: about twenty pixels a step on
+                            // the ten-band layout, which is the one this device has.
+                            trackHeight: Theme.itemSizeHuge * 1.5
+                            minimumValue: mdr.equalizerBandMinimum
+                            maximumValue: mdr.equalizerBandMaximum
+                            label: mdr.equalizerBandLabel(index)
+
+                            // Assigned, never bound: dragging writes to value, and a
+                            // binding would not survive the first one.
+                            Component.onCompleted: value = mdr.equalizerBands[index]
+
+                            onPressedChanged: bandStrip.readout =
+                                pressed ? bandStrip.describe(index, value) : ""
+                            onValueChanged: if (pressed)
+                                bandStrip.readout = bandStrip.describe(index, value)
+
+                            Connections {
+                                target: mdr
+                                onEqualizerChanged: {
+                                    if (bandItem.pressed
+                                            || index >= mdr.equalizerBands.length
+                                            || bandItem.value === mdr.equalizerBands[index])
+                                        return
+                                    bandItem.value = mdr.equalizerBands[index]
+                                }
                             }
-                        }
 
-                        // On release rather than on every step: each change is a frame
-                        // the device has to acknowledge before the next one goes out.
-                        onReleased: mdr.setEqualizerBand(index, value)
+                            // On release rather than on every step: each change is a
+                            // frame the device has to acknowledge before the next.
+                            onReleased: mdr.setEqualizerBand(index, value)
+                        }
                     }
                 }
 

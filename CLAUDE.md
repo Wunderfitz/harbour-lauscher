@@ -282,7 +282,8 @@ app/qml/pages/DeviceListPage  paired-device picker
 app/qml/pages/DevicePage      battery, playback, ambient sound control, listening mode
 app/qml/pages/EqualizerPage   preset, band steps and clear bass
 app/qml/pages/AboutPage       logo, what to know about the app, credits
-app/qml/components/           small shared QML: the cover backdrop, about-page bits
+app/qml/components/           small shared QML: the cover backdrop, about-page bits,
+                              the equalizer's vertical band
 app/qml/cover/CoverPage       the cover: status at a glance, mode and distance actions
 app/icons/                    the rendered app icon, one PNG per launcher size
 app/images/                   app icon master, cover artwork, cover-action icons (SVG)
@@ -693,9 +694,30 @@ clear bass. `MdrController::refreshEqualizer()` reads all of that on
   on screen. The `Repeater`'s `onCountChanged` covers a list that arrives late. Silica
   turns a menu of more than five items into a page of its own, which is what makes the
   thirty-item fallback usable in a `ComboBox` at all.
-- **The band sliders' `Repeater` is modelled on the band *count*, not the values.**
-  The values change on every tweak, and a list model would destroy and rebuild the
-  sliders underneath the finger dragging one.
+- **The bands are a control of their own**, `app/qml/components/EqualizerBand.qml`,
+  laid out in a `Row` the way an equalizer has drawn them since they had faders.
+  Silica has no vertical slider and its horizontal one cannot be turned on its side:
+  `SliderBase` lays the groove along the item's width, drags on the X axis, and
+  reserves a row for a label and another for the value — ten of those is a page and a
+  half of scrolling that still does not show the curve. The band draws a groove, a
+  0 dB line and a fill that runs from that line rather than from the bottom, so the
+  length is the boost or the cut and the side says which.
+- **Dragging a band is relative, and the band claims the gesture.** Relative, because
+  ten targets side by side means a control that snapped to the touch would rewrite a
+  band every time the strip was brushed; a tap therefore changes nothing. Claimed via
+  `preventStealing`, because the page scrolls the way the band drags and whoever grabs
+  first keeps it — without it every drag goes to the flickable. The cost is that the
+  page cannot be scrolled by starting on the strip; the page margins either side of it
+  are outside the bands and still scroll, which is the way out. A gesture that declares
+  itself horizontal is rejected for the rest of the press, so a sideways swipe does not
+  get charged to a band.
+- **Two spellings of each frequency, one table.** `equalizerBandLabel()` is what fits
+  under a band a tenth of the screen wide (`31`, `1k`, `16k`); `equalizerBandFrequency()`
+  spells the same entry out for the readout (`16 kHz`), deriving the unit from the
+  trailing k rather than tabling it twice.
+- **The `Repeater` is modelled on the band *count*, not the values.** The values change
+  on every step, and a list model would destroy and rebuild a band underneath the finger
+  dragging it.
 - **Setting one field means sending them all.** `mdrHeadphonesSetEqualizer` stages
   the preset, clear bass and DSEE together and validates each, and
   `mdrHeadphonesSetEqualizerBands` takes the whole band array, so every setter reads
@@ -764,6 +786,13 @@ does nothing, or one that undoes itself.
 
 The `Repeater`-built `ComboBox` menu behaves too, which is the reading of
 `ComboBoxController` in the QML gotchas confirmed rather than argued.
+
+**The bands changed shape the same day, and were driven again afterwards.** They were
+horizontal Silica `Slider`s in the run above and are a strip of vertical faders now;
+every band of the new one has been moved on the device since. So what is confirmed is
+not only the reads and writes underneath — `EqualizerBand`'s drag arbitration holds too:
+claiming the gesture from the flickable rather than losing it, and moving by how far the
+finger moved rather than to where it landed.
 
 Known gaps:
 - No reconnect-on-wake; leaving `DevicePage` drops the RFCOMM channel on
