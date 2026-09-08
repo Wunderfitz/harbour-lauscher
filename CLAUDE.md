@@ -748,6 +748,23 @@ advertise the paired-device management and source-switch bits, the list it repor
 is the one Sound Connect shows, and moving playback between two connected devices
 from here does what it says.
 
+### Confirmed on hardware, 2026-09-08
+
+The equalizer page works against the LinkBuds Clip, bands included. So the whole
+chain behind it holds on the device: the capability request is answered and the
+picker offers the eight presets that device has rather than the thirty the ABI can
+express, a preset applies and stays applied, and dragging a band moves the sound
+and the slider stays where the device leaves it.
+
+That last part is the one worth naming, because it is where the two libmdr fixes
+meet. A preset change writes no band steps, so it no longer collapses into Custom;
+a band edit still writes, so the sliders are not merely decorative. The pair only
+looks right if both halves are — one without the other reads as a control that
+does nothing, or one that undoes itself.
+
+The `Repeater`-built `ComboBox` menu behaves too, which is the reading of
+`ComboBoxController` in the QML gotchas confirmed rather than argued.
+
 Known gaps:
 - No reconnect-on-wake; leaving `DevicePage` drops the RFCOMM channel on
   purpose (the headset allows one control session at a time).
@@ -755,11 +772,6 @@ Known gaps:
   reports no NC/ASM function of any kind — the ambient sound control section
   simply will not appear. It offers background music, voice boost and sound
   leakage reduction, but no cinema.
-- The equalizer section has not been driven from *this* app on hardware yet: it builds
-  and the page parses, but nobody has moved a band on the LinkBuds Clip from Lauscher.
-  The protocol underneath it has been, through the desktop client on 2.0.3 — the
-  capability request is answered (eight presets, ten bands, thirteen steps) and each of
-  Heavy, Clear, Hard and Soft applies and stays applied.
 - DSEE has no UI. When it gets one it has to gate on `MDREqualizer.dsee_available`,
   not on `MDR_FEATURE_DSEE` — the device switches DSEE off alongside the equalizer
   while a listening mode other than Standard is active (see Equalizer).
