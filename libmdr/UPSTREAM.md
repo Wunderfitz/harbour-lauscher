@@ -8,7 +8,7 @@ state this app is known to work against:
 |---|---|
 | Repository | `https://github.com/mos9527/SonyHeadphonesClient` |
 | Base | `965c458d` (branch `v1-compat`) |
-| Plus | the WF-LC900 protocol work, branch `mdr-v2-session-correctness-and-listening-modes` on `https://github.com/Wunderfitz/SonyHeadphonesClient`, tip `988f3d1` |
+| Plus | the WF-LC900 protocol work, branch `mdr-v2-session-correctness-and-listening-modes` on `https://github.com/Wunderfitz/SonyHeadphonesClient`, tip `9ad89b1` |
 | Taken on | 2026-09-08 |
 
 Those extra commits are **not upstream yet**, and four of them are load-bearing for the
@@ -42,6 +42,13 @@ load-bearing for the equalizer page:
   config from before the change. The band write now waits for `dirty()`, the caller's intent.
 
 `7487eac` sits between them with the capture both were found in.
+
+`9ad89b1` is a third, and it came out of the DSEE switch: applying a listening mode now asks
+the device for the equalizer and upscaling statuses instead of waiting to be told they went
+away. Only an unsolicited notification carried that before, and nothing re-read it -
+`RequestSyncV2` included - so one missed frame left a control on screen that the device was
+ignoring, with nothing to correct it. That is what the Equalizer button did on the phone
+while the DSEE switch beside it greyed out correctly.
 
 The copy is verbatim - `diff -r` against a checkout's `libmdr/` shows no differences -
 except for two files added here from that repository's root:

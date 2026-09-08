@@ -706,6 +706,20 @@ namespace mdr
                     state.mBGMModeEnabled.desired, state.mBGMModeRoomSize.desired,
                     state.mUpmixCinemaEnabled.desired, state.mVoiceContentsEnabled.desired,
                     state.mSoundLeakageReductionEnabled.desired);
+
+            /*
+             * A listening mode takes the equalizer and the upscaling with it: the device
+             * switches both off while one is active and reports that in its own time. Ask
+             * for the two statuses rather than waiting to be told, the way the preset write
+             * below asks for its parameters back. A status a client only ever learns from an
+             * unsolicited frame is one it can miss for the rest of the session - nothing
+             * re-reads it, RequestSyncV2 included - and the miss is silent: the caller goes
+             * on offering a control the device is ignoring.
+             */
+            if (SupportsFeature(state, MDR_FEATURE_EQUALIZER))
+                SendCommandACK(EqEbbGetStatus, {.type = EqEbbInquiredType::PRESET_EQ});
+            if (state.mSupport.contains(FunctionType::UPSCALING_AUTO_OFF))
+                SendCommandACK(AudioGetStatus, {.type = AudioInquiredType::UPSCALING});
         }
 
         /* EQ */
