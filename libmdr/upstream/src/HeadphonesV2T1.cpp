@@ -864,6 +864,45 @@ namespace mdr
         return MDR_EVENT_UNHANDLED;
     }
 
+    /*
+     * The preset list, and the only frame that carries it. A device answers with the payload
+     * that matches the variant it advertises, so the inquired type picks the struct: the ULT
+     * one carries an extra step count ahead of the list, the rest are the same shape.
+     */
+    int HandleEqEbbCapabilityT1(MDRHeadphones* self, Span<const UInt8> cmd)
+    {
+        EqEbbInquiredType type{};
+        if (!detail::ReadEnumTag(cmd, type))
+            return MDR_EVENT_UNHANDLED;
+        auto Store = [&](const auto& presets)
+        {
+            self->mDetailsV2.mEqPresets.clear();
+            for (const auto& preset : presets)
+                self->mDetailsV2.mEqPresets.push_back({preset.presetId, preset.name.value});
+        };
+        using enum EqEbbInquiredType;
+        switch (type)
+        {
+        case PRESET_EQ:
+        case PRESET_EQ_NONCUSTOMIZABLE:
+        case PRESET_EQ_AND_ERRORCODE:
+        {
+            Deserialize(EqEbbRetCapabilityEq, res, cmd);
+            Store(res.eqPresets);
+            return MDR_EVENT_EQUALIZER_CHANGED;
+        }
+        case PRESET_EQ_AND_ULT_MODE:
+        {
+            Deserialize(EqEbbRetCapabilityEqAndUltMode, res, cmd);
+            Store(res.eqPresets);
+            return MDR_EVENT_EQUALIZER_CHANGED;
+        }
+        default:
+            break;
+        }
+        return MDR_EVENT_UNHANDLED;
+    }
+
     int HandleEqEbbParamT1(MDRHeadphones* self, Span<const UInt8> cmd)
     {
         EqEbbInquiredType type{};
@@ -1090,6 +1129,8 @@ namespace mdr
         case SYSTEM_RET_EXT_PARAM:
         case SYSTEM_NTFY_EXT_PARAM:
             return HandleSystemExtParamT1(self, cmd);
+        case EQEBB_RET_CAPABILITY:
+            return HandleEqEbbCapabilityT1(self, cmd);
         case EQEBB_RET_STATUS:
         case EQEBB_NTFY_STATUS:
             return HandleEqEbbStatusT1(self, cmd);

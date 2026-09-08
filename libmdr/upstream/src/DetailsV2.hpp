@@ -132,6 +132,19 @@ namespace mdr
         MDRProperty<v2::t1::ModeOutTime> mSpeakToModeOutTime;
         UInt8 mSpeakToChatVoiceFocus{};
         MDRProperty<bool> mHeadGestureEnabled;
+        struct EqPresetInfo
+        {
+            v2::t1::EqPresetId presetId{};
+            String name;
+        };
+
+        /*
+         * The presets this device offers, in the order it listed them, with the names it
+         * gave them. Empty until the capability answer arrives, and on a device whose EQ
+         * variant carries no list at all - which is why "empty" has to mean "unknown"
+         * rather than "none", both here and everywhere it is read.
+         */
+        Vector<EqPresetInfo> mEqPresets;
         MDRProperty<bool> mEqAvailable{true, true, true};
         MDRProperty<v2::t1::EqPresetId> mEqPresetId;
         MDRProperty<int> mEqClearBass;
@@ -145,6 +158,28 @@ namespace mdr
         v2::t2::SourceSwitchControlResult mSourceSwitchControlResult{v2::t2::SourceSwitchControlResult::SUCCESS};
         MDRProperty<bool> mSafeListeningPreviewMode;
     };
+
+    /**
+     * @brief The equalizer variant this device advertises, as an inquired type.
+     * @return false when it has none whose capability carries a preset list - EBB, the sound
+     *         effect variants and the turn-key EQ answer with something else entirely.
+     * @note   Devices advertise exactly one of these, and it decides both what to ask for and
+     *         which capability payload comes back.
+     */
+    inline bool EqPresetInquiredType(const DetailsV2& state, v2::t1::EqEbbInquiredType& out)
+    {
+        using T1 = v2::t1::FunctionType;
+        using enum v2::t1::EqEbbInquiredType;
+        if (state.mSupport.contains(T1::PRESET_EQ))
+            return out = PRESET_EQ, true;
+        if (state.mSupport.contains(T1::PRESET_EQ_NON_CUSTOMIZABLE))
+            return out = PRESET_EQ_NONCUSTOMIZABLE, true;
+        if (state.mSupport.contains(T1::PRESET_EQ_AND_ULT_MODE))
+            return out = PRESET_EQ_AND_ULT_MODE, true;
+        if (state.mSupport.contains(T1::PRESET_EQ_AND_ERRORCODE))
+            return out = PRESET_EQ_AND_ERRORCODE, true;
+        return false;
+    }
 
     /**
      * @brief Whether the device advertises @p feature, derived from the functions it reported.

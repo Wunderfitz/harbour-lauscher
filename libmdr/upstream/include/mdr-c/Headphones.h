@@ -111,6 +111,8 @@ typedef uint32_t MDRText;
 #define MDR_TEXT_LAST_ALERT ((MDRText)14u)
 #define MDR_TEXT_LAST_INTERACTION ((MDRText)15u)
 #define MDR_TEXT_LAST_DEVICE_MESSAGE ((MDRText)16u)
+/* The device's own name for one entry of @ref mdrHeadphonesGetEqualizerPresets, by index. */
+#define MDR_TEXT_EQUALIZER_PRESET_NAME ((MDRText)17u)
 
 typedef uint32_t MDRAudioCodec;
 #define MDR_AUDIO_CODEC_UNKNOWN ((MDRAudioCodec)0u)
@@ -527,6 +529,27 @@ MDR_API MDRResult mdrHeadphonesGetEqualizer(MDRHeadphones* headphones, MDREquali
 MDR_API MDRResult mdrHeadphonesSetEqualizer(MDRHeadphones* headphones, const MDREqualizer* equalizer);
 MDR_API MDRResult mdrHeadphonesGetEqualizerBands(MDRHeadphones* headphones, int8_t* bands, uint32_t* inout_count);
 MDR_API MDRResult mdrHeadphonesSetEqualizerBands(MDRHeadphones* headphones, const int8_t* bands, uint32_t count);
+
+/**
+ * @brief The equalizer presets the device advertised, in the order it listed them.
+ *
+ * Read from its equalizer capability, which is also where the names behind
+ * @ref MDR_TEXT_EQUALIZER_PRESET_NAME come from - index into this list to reach one.
+ * Devices offer very different subsets, so this is what a picker should be built from
+ * rather than the full @ref MDREqualizerPreset range.
+ *
+ * An **empty list means the device has not said**, not that it has no presets: an equalizer
+ * variant whose capability carries no list, or a device that has not answered yet. While it
+ * is empty, @ref mdrHeadphonesSetEqualizer accepts any preset it can encode; once it is not,
+ * a preset outside it is refused with MDR_RESULT_ERROR_NOT_SUPPORTED.
+ *
+ * An entry this library has no @ref MDREqualizerPreset for reads MDR_EQ_UNKNOWN. It keeps its
+ * place, so the text index stays aligned, but it cannot be selected.
+ *
+ * Called with @p presets NULL and @p inout_count 0, reports the count instead of filling.
+ */
+MDR_API MDRResult mdrHeadphonesGetEqualizerPresets(MDRHeadphones* headphones, MDREqualizerPreset* presets,
+                                                   uint32_t* inout_count);
 
 /* Paired devices and pairing. Device names/IDs use MDR_TEXT_* with index. */
 MDR_API MDRResult mdrHeadphonesGetPairedDevices(MDRHeadphones* headphones, MDRPairedDevice* devices,

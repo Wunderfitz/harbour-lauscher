@@ -1336,6 +1336,11 @@ MDRResult mdrHeadphonesGetText(
                 buffer, inoutSize);
         return CopyText(
             {state.mPairedDevices[index].name.data(), state.mPairedDevices[index].name.size()}, buffer, inoutSize);
+    case MDR_TEXT_EQUALIZER_PRESET_NAME:
+        if (index >= state.mEqPresets.size())
+            return MDR_RESULT_ERROR_NOT_FOUND;
+        return CopyText(
+            {state.mEqPresets[index].name.data(), state.mEqPresets[index].name.size()}, buffer, inoutSize);
     case MDR_TEXT_GENERAL_SETTING_SUBJECT:
     case MDR_TEXT_GENERAL_SETTING_SUMMARY:
         {
@@ -1682,6 +1687,13 @@ MDRResult mdrHeadphonesSetEqualizer(MDRHeadphones* headphones, const MDREqualize
     auto preset = state.mEqPresetId.desired;
     if (equalizer->preset != MDR_EQ_UNKNOWN && !to_protocol(equalizer->preset, preset))
         return MDR_RESULT_ERROR_INVALID_ARGUMENT;
+    /* A preset the device did not list is one it has no setting for: it answers by staying
+     * where it is, which a caller cannot tell from success. Refuse it here instead - but only
+     * once the device has actually said, since an empty list means we never asked or it never
+     * answered, not that it has no presets. */
+    if (equalizer->preset != MDR_EQ_UNKNOWN && !state.mEqPresets.empty() &&
+        std::ranges::none_of(state.mEqPresets, [&](const auto& entry) { return entry.presetId == preset; }))
+        return MDR_RESULT_ERROR_NOT_SUPPORTED;
     if (equalizer->dsee_type != MDR_DSEE_UNKNOWN && equalizer->dsee_type != from_protocol(state.mUpscalingType))
         return MDR_RESULT_ERROR_NOT_SUPPORTED;
     const auto existingCount = state.mEqConfig.desired.size();
@@ -1742,6 +1754,37 @@ MDRResult mdrHeadphonesSetEqualizerBands(MDRHeadphones* headphones, const int8_t
     {
         state.mEqConfig.stage(values);
         return MDR_RESULT_OK;
+    });
+}
+
+MDRResult mdrHeadphonesGetEqualizerPresets(
+    MDRHeadphones* headphones, MDREqualizerPreset* presets, uint32_t* inoutCount)
+{
+    if (!headphones || !inoutCount)
+        return MDR_RESULT_ERROR_INVALID_ARGUMENT;
+    const auto& h = *Impl(headphones);
+    return WithDetails(h, [&](const auto& state) -> MDRResult
+    {
+    const uint32_t required = static_cast<uint32_t>(state.mEqPresets.size());
+    if (!presets)
+    {
+        if (*inoutCount != 0)
+            return MDR_RESULT_ERROR_INVALID_ARGUMENT;
+        *inoutCount = required;
+        return MDR_RESULT_OK;
+    }
+    if (*inoutCount < required)
+    {
+        *inoutCount = required;
+        return MDR_RESULT_ERROR_BUFFER_TOO_SMALL;
+    }
+    /* One entry per advertised preset, in the device's order, so the index also addresses
+     * MDR_TEXT_EQUALIZER_PRESET_NAME. An id with no MDREqualizerPreset keeps its place as
+     * MDR_EQ_UNKNOWN rather than shifting the ones after it. */
+    for (uint32_t i = 0; i < required; ++i)
+        presets[i] = from_protocol(state.mEqPresets[i].presetId);
+    *inoutCount = required;
+    return MDR_RESULT_OK;
     });
 }
 

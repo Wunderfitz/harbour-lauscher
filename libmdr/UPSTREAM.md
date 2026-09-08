@@ -8,8 +8,8 @@ state this app is known to work against:
 |---|---|
 | Repository | `https://github.com/mos9527/SonyHeadphonesClient` |
 | Base | `965c458d` (branch `v1-compat`) |
-| Plus | the WF-LC900 protocol work, branch `mdr-v2-session-correctness-and-listening-modes` on `https://github.com/Wunderfitz/SonyHeadphonesClient`, tip `f852611` |
-| Taken on | 2026-09-07 |
+| Plus | the WF-LC900 protocol work, branch `mdr-v2-session-correctness-and-listening-modes` on `https://github.com/Wunderfitz/SonyHeadphonesClient`, tip `988f3d1` |
+| Taken on | 2026-09-08 |
 
 Those extra commits are **not upstream yet**, and four of them are load-bearing for the
 LinkBuds Clip:
@@ -23,8 +23,25 @@ LinkBuds Clip:
   than after, so no read lands on the half-applied state that reads as Standard.
 
 `fa348bf` rides along: it reports whether the device will currently act on equalizer
-and DSEE changes, which nothing here has a UI for yet. A vanilla `v1-compat` checkout
+and DSEE changes, which `EqualizerPage` gates on. A vanilla `v1-compat` checkout
 will not drive this device correctly.
+
+Two more are the only ones this repository asked for rather than inherited, and both are
+load-bearing for the equalizer page:
+
+- `bd26c4d` reads the equalizer preset capability. `EQEBB_GET_CAPABILITY` is what says
+  *which* presets a device has, out of the thirty `MDREqualizerPreset` can express. V1 had
+  been requesting it and discarding the answer; V2 never asked. Both now do, and the list
+  reaches this app as `mdrHeadphonesGetEqualizerPresets`, with
+  `MDR_TEXT_EQUALIZER_PRESET_NAME` for the names - see the Equalizer section of
+  [../CLAUDE.md](../CLAUDE.md). It is not an ABI break: nothing crossing the boundary changed
+  shape, so `MDR_ABI_VERSION` stays 2.
+- `988f3d1` stops a preset change writing band steps. Choosing a preset landed the device on
+  CUSTOM with a flat curve, because `pending()` caught the device's own report of the new
+  curve - which arrives while the same commit pass is still running - and sent the band
+  config from before the change. The band write now waits for `dirty()`, the caller's intent.
+
+`7487eac` sits between them with the capture both were found in.
 
 The copy is verbatim - `diff -r` against a checkout's `libmdr/` shows no differences -
 except for two files added here from that repository's root:

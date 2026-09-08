@@ -110,6 +110,14 @@ namespace mdr
         MDRProperty<v1::t1::ModeOutTime> mSpeakToModeOutTime;
         v1::t1::CommonOnOffSettingValue mSpeakToChatVoiceFocus{v1::t1::CommonOnOffSettingValue::OFF};
         MDRProperty<bool> mHeadGestureEnabled;
+        struct EqPresetInfo
+        {
+            v1::t1::EqPresetId presetId{};
+            String name;
+        };
+
+        /* As in DetailsV2: what the device listed, in its order, empty while unknown. */
+        Vector<EqPresetInfo> mEqPresets;
         MDRProperty<bool> mEqAvailable{true, true, true};
         MDRProperty<v1::t1::EqPresetId> mEqPresetId;
         MDRProperty<int> mEqClearBass;
