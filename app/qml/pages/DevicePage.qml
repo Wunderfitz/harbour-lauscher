@@ -432,6 +432,31 @@ Page {
                 }
             }
 
+            // Two gates, because the device reports two things: whether it has an
+            // equalizer at all, and whether it will act on changes right now. It
+            // switches the equalizer off while a listening mode other than Standard
+            // is active, which is why the button sits under that picker - hidden on
+            // a headset without one, disabled while the headset is ignoring it.
+            Button {
+                anchors.horizontalCenter: parent.horizontalCenter
+                visible: mdr.state === Mdr.Ready && mdr.equalizerAvailable
+                enabled: mdr.equalizerUsable
+                preferredWidth: Theme.buttonWidthLarge
+                text: qsTr("Equalizer")
+                onClicked: pageStack.push(Qt.resolvedUrl("EqualizerPage.qml"))
+            }
+
+            Label {
+                x: Theme.horizontalPageMargin
+                width: parent.width - 2 * Theme.horizontalPageMargin
+                visible: mdr.state === Mdr.Ready && mdr.equalizerAvailable
+                         && !mdr.equalizerUsable
+                wrapMode: Text.WordWrap
+                font.pixelSize: Theme.fontSizeExtraSmall
+                color: Theme.secondaryHighlightColor
+                text: qsTr("The headset turns the equalizer off while a listening mode other than Standard is active.")
+            }
+
             /* -------------------------------------------- connected devices */
 
             // Both halves are separately advertised, and the header belongs to

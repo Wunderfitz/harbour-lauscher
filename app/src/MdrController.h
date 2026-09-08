@@ -77,6 +77,23 @@ class MdrController : public QObject
     Q_PROPERTY(int listeningMode READ listeningMode NOTIFY listeningChanged)
     Q_PROPERTY(int backgroundRoom READ backgroundRoom NOTIFY listeningChanged)
 
+    /* Two separate things, and the UI treats them differently: the feature bit says
+     * the headset has an equalizer at all, MDREqualizer.available says it will act on
+     * changes right now - it switches the equalizer off while a listening mode other
+     * than Standard is active. Hence available/usable rather than one flag. */
+    Q_PROPERTY(bool equalizerAvailable READ equalizerAvailable NOTIFY featuresChanged)
+    Q_PROPERTY(QVariantList equalizerPresets READ equalizerPresets NOTIFY equalizerPresetsChanged)
+    Q_PROPERTY(bool equalizerUsable READ equalizerUsable NOTIFY equalizerChanged)
+    Q_PROPERTY(int equalizerPreset READ equalizerPreset NOTIFY equalizerChanged)
+    Q_PROPERTY(int equalizerBandCount READ equalizerBandCount NOTIFY equalizerChanged)
+    Q_PROPERTY(QVariantList equalizerBands READ equalizerBands NOTIFY equalizerChanged)
+    Q_PROPERTY(int equalizerBandMinimum READ equalizerBandMinimum NOTIFY equalizerChanged)
+    Q_PROPERTY(int equalizerBandMaximum READ equalizerBandMaximum NOTIFY equalizerChanged)
+    Q_PROPERTY(bool clearBassAvailable READ clearBassAvailable NOTIFY equalizerChanged)
+    Q_PROPERTY(int clearBass READ clearBass NOTIFY equalizerChanged)
+    Q_PROPERTY(int clearBassMinimum READ clearBassMinimum CONSTANT)
+    Q_PROPERTY(int clearBassMaximum READ clearBassMaximum CONSTANT)
+
     Q_PROPERTY(bool multipointAvailable READ multipointAvailable NOTIFY featuresChanged)
     Q_PROPERTY(bool sourceSwitchingAvailable READ sourceSwitchingAvailable NOTIFY featuresChanged)
     Q_PROPERTY(QVariantList multipointDevices READ multipointDevices NOTIFY multipointChanged)
@@ -170,6 +187,23 @@ public:
     int listeningMode() const { return m_listeningMode; }
     int backgroundRoom() const { return m_backgroundRoom; }
 
+    bool equalizerAvailable() const { return m_equalizerAvailable; }
+    QVariantList equalizerPresets() const { return m_equalizerPresets; }
+    bool equalizerUsable() const { return m_equalizerUsable; }
+    int equalizerPreset() const { return m_equalizerPreset; }
+    int equalizerBandCount() const { return m_equalizerBands.size(); }
+    QVariantList equalizerBands() const { return m_equalizerBands; }
+    int equalizerBandMinimum() const;
+    int equalizerBandMaximum() const;
+    bool clearBassAvailable() const { return m_clearBassAvailable; }
+    int clearBass() const { return m_clearBass; }
+    int clearBassMinimum() const;
+    int clearBassMaximum() const;
+
+    /* Which frequency a band sits on. A function of the layout the device reports,
+     * not of the value, so the sliders ask for it once. */
+    Q_INVOKABLE QString equalizerBandLabel(int index) const;
+
     bool multipointAvailable() const { return m_multipointAvailable; }
     bool sourceSwitchingAvailable() const { return m_sourceSwitchingAvailable; }
     QVariantList multipointDevices() const { return m_multipointDevices; }
@@ -192,6 +226,10 @@ public slots:
     void setListeningMode(int mode);
     void setBackgroundRoom(int room);
 
+    void setEqualizerPreset(int preset);
+    void setEqualizerBand(int index, int value);
+    void setClearBass(int value);
+
     void selectPlaybackDevice(const QString &address);
     void connectPairedDevice(const QString &address);
     void disconnectPairedDevice(const QString &address);
@@ -207,6 +245,10 @@ signals:
     void playbackChanged();
     void noiseControlChanged();
     void listeningChanged();
+    void equalizerChanged();
+    /* Separate from equalizerChanged: the list arrives once and the page's picker is built
+     * from it, so it must not be restated every time a band moves. */
+    void equalizerPresetsChanged();
     void multipointChanged();
 
 private slots:
@@ -229,12 +271,16 @@ private:
     void refreshPlayback();
     void refreshNoiseControl();
     void refreshListening();
+    void refreshEqualizer();
     void refreshMultipoint();
     void refreshAll();
 
     void sendPlaybackAction(MDRPlaybackAction action);
     void sendPairedDeviceCommand(MDRPairedDeviceCommand command, const QString &address);
     QString sourceSwitchMessage(MDRSourceSwitchControlResult result) const;
+
+    QVariantList equalizerPresetList() const;
+    QString equalizerPresetName(MDREqualizerPreset preset) const;
 
     QString codecName(MDRAudioCodec codec) const;
     QString batteryPartName(MDRBatteryPart part) const;
@@ -284,6 +330,23 @@ private:
     bool m_backgroundRoomAvailable = false;
     int m_listeningMode = MDR_LISTENING_STANDARD;
     int m_backgroundRoom = MDR_ROOM_UNKNOWN;
+
+    bool m_equalizerAvailable = false;
+    /* What the picker offers, each {preset, name}: the presets the device advertised, or
+     * everything this protocol family can encode where it advertised nothing - see
+     * equalizerPresetList(). */
+    QVariantList m_equalizerPresets;
+    /* Whether the device will act on equalizer changes at the moment, as opposed to
+     * having an equalizer at all. Both read true until the device says otherwise. */
+    bool m_equalizerUsable = true;
+    int m_equalizerPreset = MDR_EQ_OFF;
+    /* One entry per band, in the device's own steps: five bands step +-10, ten step
+     * +-6, and a device with neither reports none at all. */
+    QVariantList m_equalizerBands;
+    /* Only the five-band layout carries it; the ten-band frames have no room for it
+     * and libmdr reports 0 there. */
+    bool m_clearBassAvailable = false;
+    int m_clearBass = 0;
 
     bool m_multipointAvailable = false;
     bool m_sourceSwitchingAvailable = false;

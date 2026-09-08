@@ -375,6 +375,41 @@
         <source>Not connected</source>
         <translation>Nicht verbunden</translation>
     </message>
+    <message>
+        <source>Equalizer</source>
+        <translation>Equalizer</translation>
+    </message>
+    <message>
+        <source>The headset turns the equalizer off while a listening mode other than Standard is active.</source>
+        <translation>Der Kopfhörer schaltet den Equalizer ab, solange ein anderer Hörmodus als Standard aktiv ist.</translation>
+    </message>
+</context>
+<context>
+    <name>EqualizerPage</name>
+    <message>
+        <source>Equalizer</source>
+        <translation>Equalizer</translation>
+    </message>
+    <message>
+        <source>The headset has turned the equalizer off. It does that while a listening mode other than Standard is active.</source>
+        <translation>Der Kopfhörer hat den Equalizer abgeschaltet. Das tut er, solange ein anderer Hörmodus als Standard aktiv ist.</translation>
+    </message>
+    <message>
+        <source>Preset</source>
+        <translation>Voreinstellung</translation>
+    </message>
+    <message>
+        <source>Bands</source>
+        <translation>Frequenzbänder</translation>
+    </message>
+    <message>
+        <source>%1 dB</source>
+        <translation>%1 dB</translation>
+    </message>
+    <message>
+        <source>Clear bass</source>
+        <translation>Clear Bass</translation>
+    </message>
 </context>
 <context>
     <name>MdrController</name>
@@ -441,6 +476,102 @@
     <message>
         <source>Battery</source>
         <translation>Akku</translation>
+    </message>
+    <message>
+        <source>Off</source>
+        <translation>Aus</translation>
+    </message>
+    <message>
+        <source>Acoustic</source>
+        <translation>Akustik</translation>
+    </message>
+    <message>
+        <source>Bright</source>
+        <translation>Hell</translation>
+    </message>
+    <message>
+        <source>Excited</source>
+        <translation>Lebhaft</translation>
+    </message>
+    <message>
+        <source>Mellow</source>
+        <translation>Weich</translation>
+    </message>
+    <message>
+        <source>Relaxed</source>
+        <translation>Entspannt</translation>
+    </message>
+    <message>
+        <source>Vocal</source>
+        <translation>Vokal</translation>
+    </message>
+    <message>
+        <source>Treble</source>
+        <translation>Höhen</translation>
+    </message>
+    <message>
+        <source>Bass</source>
+        <translation>Bass</translation>
+    </message>
+    <message>
+        <source>Speech</source>
+        <translation>Sprache</translation>
+    </message>
+    <message>
+        <source>Heavy</source>
+        <translation>Kräftig</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>Klar</translation>
+    </message>
+    <message>
+        <source>Hard</source>
+        <translation>Hart</translation>
+    </message>
+    <message>
+        <source>Soft</source>
+        <translation>Sanft</translation>
+    </message>
+    <message>
+        <source>Gaming</source>
+        <translation>Gaming</translation>
+    </message>
+    <message>
+        <source>FPS 1</source>
+        <translation>FPS 1</translation>
+    </message>
+    <message>
+        <source>FPS 2</source>
+        <translation>FPS 2</translation>
+    </message>
+    <message>
+        <source>FPS 3</source>
+        <translation>FPS 3</translation>
+    </message>
+    <message>
+        <source>Custom</source>
+        <translation>Benutzerdefiniert</translation>
+    </message>
+    <message>
+        <source>User 1</source>
+        <translation>Benutzer 1</translation>
+    </message>
+    <message>
+        <source>User 2</source>
+        <translation>Benutzer 2</translation>
+    </message>
+    <message>
+        <source>User 3</source>
+        <translation>Benutzer 3</translation>
+    </message>
+    <message>
+        <source>User 4</source>
+        <translation>Benutzer 4</translation>
+    </message>
+    <message>
+        <source>User 5</source>
+        <translation>Benutzer 5</translation>
     </message>
 </context>
 </TS>

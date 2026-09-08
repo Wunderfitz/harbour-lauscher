@@ -154,9 +154,22 @@ void MdrController::closeDevice()
     m_listeningModeAvailable = false;
     m_listeningModes.clear();
     m_backgroundRoomAvailable = false;
+    m_equalizerAvailable = false;
     m_multipointAvailable = false;
     m_sourceSwitchingAvailable = false;
     emit featuresChanged();
+
+    /* Both flags read true until a device says otherwise, so the next one starts
+     * where a fresh MDREqualizer would rather than under this one's answer. */
+    m_equalizerPresets.clear();
+    emit equalizerPresetsChanged();
+
+    m_equalizerUsable = true;
+    m_equalizerPreset = MDR_EQ_OFF;
+    m_equalizerBands.clear();
+    m_clearBassAvailable = false;
+    m_clearBass = 0;
+    emit equalizerChanged();
 
     m_multipointDevices.clear();
     m_sourceSwitchingEnabled = true;
@@ -271,6 +284,12 @@ void MdrController::pumpDevice()
     case MDR_EVENT_LISTENING_MODE_CHANGED:
         refreshListening();
         break;
+    /* Covers the preset, the band steps, clear bass and whether the device will act
+     * on any of them, so one refresh reads the lot. It also arrives unprompted: the
+     * device turns the equalizer off when a listening mode is switched on. */
+    case MDR_EVENT_EQUALIZER_CHANGED:
+        refreshEqualizer();
+        break;
     /* A notification that carries only its discriminator - V1 announces the track
      * names this way. The values follow a sync, so ask for one; a device that is
      * still busy with something else answers MDR_RESULT_INPROGRESS, and the next
@@ -287,6 +306,7 @@ void MdrController::pumpDevice()
         refreshPlayback();
         refreshNoiseControl();
         refreshListening();
+        refreshEqualizer();
         refreshMultipoint();
         break;
     default:
@@ -409,6 +429,8 @@ void MdrController::refreshFeatures()
     m_listeningModes = modes;
     m_backgroundRoomAvailable = m_listeningModeAvailable && backgroundMusic;
 
+    m_equalizerAvailable = featureAvailable(MDR_FEATURE_EQUALIZER);
+
     /* Two separate things: the headset keeping a list of the devices it is paired
      * with, and it letting playback be pinned to one of them. A device can have
      * the first without the second. */
@@ -497,6 +519,52 @@ void MdrController::refreshListening()
     emit listeningChanged();
 }
 
+/* Preset, band steps, clear bass and whether the device will act on them at all -
+ * MDR_EVENT_EQUALIZER_CHANGED reports every one of them, so they are read together.
+ * The band count is the device's: five bands step +-10 with a clear-bass control
+ * beside them, ten step +-6 with none, and a preset-only device reports no bands. */
+void MdrController::refreshEqualizer()
+{
+    MDREqualizer equalizer;
+    memset(&equalizer, 0, sizeof(equalizer));
+    if (!m_device || mdrHeadphonesGetEqualizer(m_device, &equalizer) != MDR_RESULT_OK)
+        return;
+
+    QVariantList bands;
+    if (equalizer.band_count > 0) {
+        QVector<int8_t> values;
+        values.resize(int(equalizer.band_count));
+        uint32_t count = equalizer.band_count;
+        if (mdrHeadphonesGetEqualizerBands(m_device, values.data(), &count) == MDR_RESULT_OK)
+            for (uint32_t i = 0; i < count; ++i)
+                bands.append(int(values[int(i)]));
+    }
+
+    /* The list is answered by the same capability the device reports here, and it can
+     * arrive at any point - libmdr raises MDR_EVENT_EQUALIZER_CHANGED for it like everything
+     * else about the equalizer - so it is read here rather than once with the features. */
+    const QVariantList presets = equalizerPresetList();
+    if (presets != m_equalizerPresets) {
+        m_equalizerPresets = presets;
+        emit equalizerPresetsChanged();
+    }
+
+    const bool usable = equalizer.available != MDR_FALSE;
+    /* Only the five-band layout carries clear bass; libmdr reports 0 for the other. */
+    const bool clearBassAvailable = bands.size() == 5;
+
+    if (m_equalizerUsable == usable && m_equalizerPreset == int(equalizer.preset) &&
+        m_equalizerBands == bands && m_clearBassAvailable == clearBassAvailable &&
+        m_clearBass == int(equalizer.clear_bass))
+        return;
+    m_equalizerUsable = usable;
+    m_equalizerPreset = int(equalizer.preset);
+    m_equalizerBands = bands;
+    m_clearBassAvailable = clearBassAvailable;
+    m_clearBass = int(equalizer.clear_bass);
+    emit equalizerChanged();
+}
+
 /* The headset's own view of what it is paired with: names, which of them are
  * connected, and which one currently gets the audio. All of it arrives on
  * MDR_EVENT_PAIRED_DEVICES_CHANGED, including the automatic-switching flag,
@@ -557,12 +625,53 @@ void MdrController::refreshAll()
     refreshPlayback();
     refreshNoiseControl();
     refreshListening();
+    refreshEqualizer();
     refreshMultipoint();
 }
 
 int MdrController::maximumVolume() const
 {
     return kMaxVolume;
+}
+
+/* The steps libmdr accepts for each layout, and it refuses anything outside them:
+ * a five-band device runs +-10, a ten-band one +-6. Clear bass is +-10 either way,
+ * but only the five-band layout has one at all. */
+int MdrController::equalizerBandMaximum() const
+{
+    return m_equalizerBands.size() == 5 ? 10 : 6;
+}
+
+int MdrController::equalizerBandMinimum() const
+{
+    return -equalizerBandMaximum();
+}
+
+int MdrController::clearBassMaximum() const
+{
+    return 10;
+}
+
+int MdrController::clearBassMinimum() const
+{
+    return -clearBassMaximum();
+}
+
+QString MdrController::equalizerBandLabel(int index) const
+{
+    /* The frequencies the two layouts sit on, in the order the device reports them -
+     * libmdr names them beside the band steps it unpacks. Hz and kHz are the units in
+     * every language, so there is nothing here to translate. */
+    static const char *const kFiveBand[] = { "400 Hz", "1 kHz", "2.5 kHz", "6.3 kHz", "16 kHz" };
+    static const char *const kTenBand[] = { "31 Hz", "63 Hz", "125 Hz", "250 Hz", "500 Hz",
+                                            "1 kHz", "2 kHz", "4 kHz", "8 kHz", "16 kHz" };
+    if (index < 0 || index >= m_equalizerBands.size())
+        return QString();
+    if (m_equalizerBands.size() == 5)
+        return QString::fromLatin1(kFiveBand[index]);
+    if (m_equalizerBands.size() == 10)
+        return QString::fromLatin1(kTenBand[index]);
+    return QString();
 }
 
 /* Both of these end up on screen, so they are members and not the file-local
@@ -580,6 +689,109 @@ QString MdrController::codecName(MDRAudioCodec codec) const
     case MDR_AUDIO_CODEC_LC3: return QStringLiteral("LC3");
     /* This one is a word, not a name. */
     case MDR_AUDIO_CODEC_OTHER: return tr("Other");
+    default: return QString();
+    }
+}
+
+/*
+ * What the picker offers. The device's own capability list is the only account of what it
+ * will accept, so it wins where there is one; unknown ids are dropped, since libmdr has no
+ * way to ask for them.
+ *
+ * An empty list from libmdr means the device has not said - an equalizer variant whose
+ * capability carries no preset list, or one that never answered - and it refuses nothing in
+ * that case, so the fallback is everything the C ABI can encode for this family. V1 has no
+ * Heavy, Clear, Hard, Soft, Gaming or FPS preset and refuses those outright, hence the split.
+ * The family is the one mdrHeadphonesCreate() was told rather than MDRModel's reading of it,
+ * because this can run before identity has been refreshed.
+ *
+ * The names are ours, not the device's: MDR_TEXT_EQUALIZER_PRESET_NAME carries what the
+ * headset calls each preset, but only in the language it was asked for, and libmdr asks in
+ * English. A translated UI is better served by its own strings.
+ */
+QVariantList MdrController::equalizerPresetList() const
+{
+    QVector<MDREqualizerPreset> presets;
+
+    uint32_t count = 0;
+    if (m_device &&
+        mdrHeadphonesGetEqualizerPresets(m_device, nullptr, &count) == MDR_RESULT_OK && count > 0) {
+        QVector<MDREqualizerPreset> advertised;
+        advertised.resize(int(count));
+        if (mdrHeadphonesGetEqualizerPresets(m_device, advertised.data(), &count) == MDR_RESULT_OK)
+            for (uint32_t i = 0; i < count; ++i)
+                if (advertised[int(i)] != MDR_EQ_UNKNOWN)
+                    presets.append(advertised[int(i)]);
+    }
+
+    if (presets.isEmpty() && m_equalizerAvailable) {
+        static const MDREqualizerPreset kCommon[] = {
+            MDR_EQ_OFF, MDR_EQ_ROCK, MDR_EQ_POP, MDR_EQ_JAZZ, MDR_EQ_DANCE, MDR_EQ_EDM,
+            MDR_EQ_R_AND_B_HIP_HOP, MDR_EQ_ACOUSTIC, MDR_EQ_BRIGHT, MDR_EQ_EXCITED,
+            MDR_EQ_MELLOW, MDR_EQ_RELAXED, MDR_EQ_VOCAL, MDR_EQ_TREBLE, MDR_EQ_BASS,
+            MDR_EQ_SPEECH };
+        static const MDREqualizerPreset kV2Only[] = {
+            MDR_EQ_HEAVY, MDR_EQ_CLEAR, MDR_EQ_HARD, MDR_EQ_SOFT, MDR_EQ_GAMING,
+            MDR_EQ_FPS_1, MDR_EQ_FPS_2, MDR_EQ_FPS_3 };
+        static const MDREqualizerPreset kCustom[] = {
+            MDR_EQ_CUSTOM, MDR_EQ_USER_1, MDR_EQ_USER_2, MDR_EQ_USER_3, MDR_EQ_USER_4,
+            MDR_EQ_USER_5 };
+
+        for (size_t i = 0; i < sizeof(kCommon) / sizeof(kCommon[0]); ++i)
+            presets.append(kCommon[i]);
+        if (kServices[m_serviceIndex].protocol == MDR_PROTOCOL_V2)
+            for (size_t i = 0; i < sizeof(kV2Only) / sizeof(kV2Only[0]); ++i)
+                presets.append(kV2Only[i]);
+        for (size_t i = 0; i < sizeof(kCustom) / sizeof(kCustom[0]); ++i)
+            presets.append(kCustom[i]);
+    }
+
+    QVariantList list;
+    for (int i = 0; i < presets.size(); ++i) {
+        QVariantMap entry;
+        entry.insert(QStringLiteral("preset"), int(presets.at(i)));
+        entry.insert(QStringLiteral("name"), equalizerPresetName(presets.at(i)));
+        list.append(entry);
+    }
+    return list;
+}
+
+/* A member for the same reason as the two below: tr() only puts these in the
+ * MdrController context from inside the class. Genre names are left as they are -
+ * Rock is Rock everywhere - and the rest are ordinary words. */
+QString MdrController::equalizerPresetName(MDREqualizerPreset preset) const
+{
+    switch (preset) {
+    case MDR_EQ_OFF: return tr("Off");
+    case MDR_EQ_ROCK: return QStringLiteral("Rock");
+    case MDR_EQ_POP: return QStringLiteral("Pop");
+    case MDR_EQ_JAZZ: return QStringLiteral("Jazz");
+    case MDR_EQ_DANCE: return QStringLiteral("Dance");
+    case MDR_EQ_EDM: return QStringLiteral("EDM");
+    case MDR_EQ_R_AND_B_HIP_HOP: return QStringLiteral("R&B / Hip-Hop");
+    case MDR_EQ_ACOUSTIC: return tr("Acoustic");
+    case MDR_EQ_BRIGHT: return tr("Bright");
+    case MDR_EQ_EXCITED: return tr("Excited");
+    case MDR_EQ_MELLOW: return tr("Mellow");
+    case MDR_EQ_RELAXED: return tr("Relaxed");
+    case MDR_EQ_VOCAL: return tr("Vocal");
+    case MDR_EQ_TREBLE: return tr("Treble");
+    case MDR_EQ_BASS: return tr("Bass");
+    case MDR_EQ_SPEECH: return tr("Speech");
+    case MDR_EQ_HEAVY: return tr("Heavy");
+    case MDR_EQ_CLEAR: return tr("Clear");
+    case MDR_EQ_HARD: return tr("Hard");
+    case MDR_EQ_SOFT: return tr("Soft");
+    case MDR_EQ_GAMING: return tr("Gaming");
+    case MDR_EQ_FPS_1: return tr("FPS 1");
+    case MDR_EQ_FPS_2: return tr("FPS 2");
+    case MDR_EQ_FPS_3: return tr("FPS 3");
+    case MDR_EQ_CUSTOM: return tr("Custom");
+    case MDR_EQ_USER_1: return tr("User 1");
+    case MDR_EQ_USER_2: return tr("User 2");
+    case MDR_EQ_USER_3: return tr("User 3");
+    case MDR_EQ_USER_4: return tr("User 4");
+    case MDR_EQ_USER_5: return tr("User 5");
     default: return QString();
     }
 }
@@ -766,6 +978,70 @@ void MdrController::setBackgroundRoom(int room)
 
     m_backgroundRoom = room;
     emit listeningChanged();
+}
+
+/* Every equalizer setter reads the whole struct back before changing its one field:
+ * mdrHeadphonesSetEqualizer stages the preset, clear bass and DSEE together and
+ * validates each of them, so the fields this call is not about have to go out as they
+ * came in. Nothing here is put back on failure - the QML reads these properties
+ * directly, so an unchanged property leaves the control showing the device's value. */
+void MdrController::setEqualizerPreset(int preset)
+{
+    MDREqualizer equalizer;
+    memset(&equalizer, 0, sizeof(equalizer));
+    if (!m_device || mdrHeadphonesGetEqualizer(m_device, &equalizer) != MDR_RESULT_OK)
+        return;
+
+    equalizer.preset = MDREqualizerPreset(preset);
+    if (mdrHeadphonesSetEqualizer(m_device, &equalizer) != MDR_RESULT_OK)
+        return;
+
+    /* Reflect the request immediately - a staged value only becomes libmdr's current
+     * one when the commit goes out a tick later, so reading it back here would answer
+     * with the old preset. The device's own answer follows on the next
+     * MDR_EVENT_EQUALIZER_CHANGED and overrules this. */
+    m_equalizerPreset = preset;
+    emit equalizerChanged();
+}
+
+void MdrController::setEqualizerBand(int index, int value)
+{
+    /* The bands travel as one array, so the others go back out as the device last
+     * reported them. libmdr takes only a full five- or ten-band set. */
+    if (!m_device || index < 0 || index >= m_equalizerBands.size() ||
+        (m_equalizerBands.size() != 5 && m_equalizerBands.size() != 10))
+        return;
+
+    QVector<int8_t> values;
+    values.reserve(m_equalizerBands.size());
+    for (int i = 0; i < m_equalizerBands.size(); ++i) {
+        const int step = i == index
+                             ? qBound(equalizerBandMinimum(), value, equalizerBandMaximum())
+                             : m_equalizerBands.at(i).toInt();
+        values.append(int8_t(step));
+    }
+
+    if (mdrHeadphonesSetEqualizerBands(m_device, values.constData(),
+                                       uint32_t(values.size())) != MDR_RESULT_OK)
+        return;
+
+    m_equalizerBands[index] = int(values.at(index));
+    emit equalizerChanged();
+}
+
+void MdrController::setClearBass(int value)
+{
+    MDREqualizer equalizer;
+    memset(&equalizer, 0, sizeof(equalizer));
+    if (!m_device || mdrHeadphonesGetEqualizer(m_device, &equalizer) != MDR_RESULT_OK)
+        return;
+
+    equalizer.clear_bass = int8_t(qBound(clearBassMinimum(), value, clearBassMaximum()));
+    if (mdrHeadphonesSetEqualizer(m_device, &equalizer) != MDR_RESULT_OK)
+        return;
+
+    m_clearBass = int(equalizer.clear_bass);
+    emit equalizerChanged();
 }
 
 /* Connect, disconnect and "play here" are all one staged MAC address in libmdr,

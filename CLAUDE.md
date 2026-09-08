@@ -280,6 +280,7 @@ app/src/BluezTransport.*      MDRConnection vtable over BlueZ Profile1
 app/src/MdrController.*       QML facade; owns the poll loop
 app/qml/pages/DeviceListPage  paired-device picker
 app/qml/pages/DevicePage      battery, playback, ambient sound control, listening mode
+app/qml/pages/EqualizerPage   preset, band steps and clear bass
 app/qml/pages/AboutPage       logo, what to know about the app, credits
 app/qml/components/           small shared QML: the cover backdrop, about-page bits
 app/qml/cover/CoverPage       the cover: status at a glance, mode and distance actions
@@ -518,8 +519,8 @@ Proof of concept. Working: paired-device listing, connect, identity, battery,
 playback (track names, play/pause/next/previous, volume), ambient sound control
 (off / NC / ambient + level + focus-on-voice), listening mode (all four, plus the
 background-music distance), the headset's own connected devices (which one plays,
-connect and disconnect, and whether the headset may move playback itself), cover
-page.
+connect and disconnect, and whether the headset may move playback itself), the
+equalizer (preset, band steps, clear bass), cover page.
 
 Everything under Playback rides on one event. Volume, play/pause status and the
 track names all report `MDR_EVENT_PLAYBACK_CHANGED`, so `refreshPlayback()` reads
@@ -562,10 +563,18 @@ says the device groups them into one exclusive setting — so the menu keeps a
 fixed item per mode and hides the ones this device lacks. That is deliberate:
 Silica numbers menu items whether or not they are visible
 (`ContextMenu._foreachMenuItem`, `ComboBoxController._updateCurrent`), so hiding
-one does not shift the others, whereas a `Repeater`-built menu would, and its
-items would arrive only after `ComboBoxController` had given up looking for
-them. `MdrController.listeningModes` carries the advertised set for the `visible`
+one does not shift the others, whereas on this page a `Repeater`-built menu would
+have been filled in only after the last `currentIndex` assignment had already run
+against an empty menu — `DevicePage` is built while the device is still being
+read. `MdrController.listeningModes` carries the advertised set for the `visible`
 bindings.
+
+**That is a rule about timing, not about `Repeater`.** `ComboBoxController`
+resolves `currentIndex` against the menu items that exist at the moment it is
+assigned: `_updateCurrent()` walks `_contentColumn.children` on every assignment,
+and `onCurrentIndexChanged` calls it again. So a `Repeater`-built menu works
+wherever the assignment is repeated after the items arrive, which is what
+`EqualizerPage`'s preset picker does — see Equalizer.
 
 **The device does not switch modes in one step, and the app has to cover for
 that.** Asked for a listening mode while another is active, it reports every mode
@@ -629,6 +638,72 @@ them has playback. `MdrController::refreshMultipoint()` reads all of it and the
   Connect is still the place to switch it on, and this section shows what the
   headset reports either way.
 
+### Equalizer
+
+`MDR_FEATURE_EQUALIZER` puts a button under the listening-mode picker on
+`DevicePage`; it pushes `EqualizerPage`, which shows the preset, the band steps and
+clear bass. `MdrController::refreshEqualizer()` reads all of that on
+`MDR_EVENT_EQUALIZER_CHANGED`, which the device raises for every part of it.
+
+- **Two gates, and they mean different things.** `MDR_FEATURE_EQUALIZER` says the
+  headset has an equalizer at all — no bit, no button. `MDREqualizer.available`
+  says it will act on a change *right now*, and it goes false while any listening
+  mode other than Standard is active. That is the disabled button, not a hidden
+  one, and `EqualizerPage` dims its controls and says so if the device switches it
+  off while the page is open. `equalizerAvailable` and `equalizerUsable` are those
+  two, in that order.
+- **The band layout is the device's.** It reports five bands stepping ±10 with a
+  clear-bass control beside them, or ten stepping ±6 with none, or no bands at all
+  — libmdr refuses anything else, and the LinkBuds Clip is a ten-band device, so
+  clear bass never appears on it. The frequency labels come from
+  `MdrController::equalizerBandLabel()`, in the order the frames carry them.
+- **The presets are the ones the device advertised.** `EQEBB_GET_CAPABILITY` answers
+  with the ids a headset has — a small subset of the thirty `MDREqualizerPreset` can
+  express — and `mdrHeadphonesGetEqualizerPresets` reports them in the order they were
+  listed. That request is work this repository asked for in the SonyHeadphonesClient
+  checkout (see [libmdr/UPSTREAM.md](libmdr/UPSTREAM.md)); before it, the page offered
+  everything and left the device to ignore what it did not have.
+- **An empty list means the device has not said**, not that it has no presets: an
+  equalizer variant whose capability carries no list, or one that never answered.
+  libmdr refuses nothing while it is empty, so `equalizerPresetList()` falls back to
+  everything the C ABI can encode for the family — V1 has no Heavy, Clear, Hard, Soft,
+  Gaming or FPS preset and `mdrHeadphonesSetEqualizer` refuses those outright, hence
+  the split. The family is read off `kServices[m_serviceIndex]` rather than `MDRModel`:
+  this can run before `refreshIdentity()` has.
+- **The names are ours, not the headset's.** `MDR_TEXT_EQUALIZER_PRESET_NAME` carries
+  what the device calls each preset, but in the one language libmdr asked for, which is
+  English. `equalizerPresetName()` is translated, so it wins; an id it has no name for
+  is one `MDR_EQ_UNKNOWN` covers, which cannot be selected either and is dropped. On the
+  LinkBuds Clip the point is moot in the other direction: it sends an **empty name for
+  every preset**, so there would be nothing to show.
+- **A preset change must not carry band steps.** Band steps are what makes an EQ custom,
+  so a preset write followed by the curve that was on screen before lands the device on
+  Custom, flat. That was a libmdr commit-path bug - `pending()` catching the device's own
+  mid-commit report of the new curve - fixed in the checkout and vendored with the rest;
+  nothing in this app works around it.
+- **The list has its own signal.** It arrives whenever the capability answer does —
+  `MDR_EVENT_EQUALIZER_CHANGED` covers it like everything else about the equalizer, so
+  `refreshEqualizer()` reads it — but the picker is built from it, and restating it on
+  every band move would take the list down and rebuild it. Hence
+  `equalizerPresetsChanged`, emitted only when the list actually differs.
+- **The preset picker is a `ComboBox` with a `Repeater`-built menu**, which the QML
+  gotchas rule out on `DevicePage` and allow here: the list is in hand before this page
+  can be opened, and `syncCurrent()` assigns `currentIndex` again whenever the list or
+  the device's preset changes, so `ComboBoxController` always resolves against the items
+  on screen. The `Repeater`'s `onCountChanged` covers a list that arrives late. Silica
+  turns a menu of more than five items into a page of its own, which is what makes the
+  thirty-item fallback usable in a `ComboBox` at all.
+- **The band sliders' `Repeater` is modelled on the band *count*, not the values.**
+  The values change on every tweak, and a list model would destroy and rebuild the
+  sliders underneath the finger dragging one.
+- **Setting one field means sending them all.** `mdrHeadphonesSetEqualizer` stages
+  the preset, clear bass and DSEE together and validates each, and
+  `mdrHeadphonesSetEqualizerBands` takes the whole band array, so every setter reads
+  the current state first and changes only its own field — the same reason
+  `setVolume()` puts the playback status back unaltered.
+- **DSEE is not here.** It rides in the same `MDREqualizer` struct but is its own
+  feature bit and its own thing; the setters pass it back untouched.
+
 ### Confirmed on hardware, 2026-08-30
 
 The "reasoned through but never observed" caveat this section used to carry is
@@ -680,11 +755,15 @@ Known gaps:
   reports no NC/ASM function of any kind — the ambient sound control section
   simply will not appear. It offers background music, voice boost and sound
   leakage reduction, but no cinema.
-- The device switches the equalizer and DSEE off while any listening mode other
-  than Standard is active (`MDREqualizer.available` / `.dsee_available`). Neither
-  has a UI here yet; whichever gets one has to gate on those, not on
-  `MDR_FEATURE_EQUALIZER` / `MDR_FEATURE_DSEE`.
+- The equalizer section has not been driven from *this* app on hardware yet: it builds
+  and the page parses, but nobody has moved a band on the LinkBuds Clip from Lauscher.
+  The protocol underneath it has been, through the desktop client on 2.0.3 — the
+  capability request is answered (eight presets, ten bands, thirteen steps) and each of
+  Heavy, Clear, Hard and Soft applies and stays applied.
+- DSEE has no UI. When it gets one it has to gate on `MDREqualizer.dsee_available`,
+  not on `MDR_FEATURE_DSEE` — the device switches DSEE off alongside the equalizer
+  while a listening mode other than Standard is active (see Equalizer).
 - V1 (XM4 and older) is compiled in and the UUID fallback exists, but untested.
-- Equalizer, touch controls, speak-to-chat, DSEE and the device's general
-  settings are all reachable through the C ABI already; only the UI is missing.
-  The general settings are where multipoint's own on/off switch would come from.
+- Touch controls, speak-to-chat, DSEE and the device's general settings are all
+  reachable through the C ABI already; only the UI is missing. The general settings
+  are where multipoint's own on/off switch would come from.

@@ -27,6 +27,7 @@ DISTFILES += \
     qml/components/BackgroundImage.qml \
     qml/pages/DeviceListPage.qml \
     qml/pages/DevicePage.qml \
+    qml/pages/EqualizerPage.qml \
     qml/pages/AboutPage.qml \
     harbour-lauscher.desktop \
     $$files(images/*.svg)
