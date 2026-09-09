@@ -47,6 +47,7 @@ const char *const kProfileManagerPath = "/org/bluez";
 const char *const kProfileManagerIface = "org.bluez.ProfileManager1";
 const char *const kDeviceIface = "org.bluez.Device1";
 const char *const kObjectManagerIface = "org.freedesktop.DBus.ObjectManager";
+const char *const kPropertiesIface = "org.freedesktop.DBus.Properties";
 
 /* Qt hands an "as" property straight back as a QStringList, but a variant that
  * came through a nested demarshalling arrives as a QDBusArgument instead. */
@@ -177,6 +178,7 @@ BluezTransport::BluezTransport(QObject *parent)
 BluezTransport::~BluezTransport()
 {
     doDisconnect();
+    unwatchDevice();
     unregisterProfile();
 }
 
@@ -243,6 +245,83 @@ QString BluezTransport::devicePathForAddress(const QString &macAddress)
         return m_addressToPath.value(key);
     pairedDevices();
     return m_addressToPath.value(key);
+}
+
+/* ---------------------------------------------------------------- watching */
+
+/* Whether the headset is there at all is BlueZ's business, not the RFCOMM
+ * channel's, and bluetoothd says so on its own: a device that connects to the
+ * phone again - buds taken out of the case, headphones switched on - gets its
+ * Device1 properties updated. Subscribing to that one device's PropertiesChanged
+ * is cheaper and quicker than asking BlueZ on a timer, and it is the same signal
+ * the Bluetooth settings react to. */
+void BluezTransport::watchDevice(const QString &macAddress)
+{
+    const QString path = devicePathForAddress(macAddress);
+    if (path == m_watchedPath)
+        return;
+    unwatchDevice();
+    if (path.isEmpty())
+        return;
+
+    if (!QDBusConnection::systemBus().connect(
+            QString::fromLatin1(kBluezService), path, QString::fromLatin1(kPropertiesIface),
+            QStringLiteral("PropertiesChanged"), this,
+            SLOT(onWatchedDeviceChanged(QString,QVariantMap,QStringList)))) {
+        qWarning() << "[lauscher] bluez: could not watch" << path;
+        return;
+    }
+    m_watchedPath = path;
+}
+
+void BluezTransport::unwatchDevice()
+{
+    if (m_watchedPath.isEmpty())
+        return;
+    QDBusConnection::systemBus().disconnect(
+        QString::fromLatin1(kBluezService), m_watchedPath, QString::fromLatin1(kPropertiesIface),
+        QStringLiteral("PropertiesChanged"), this,
+        SLOT(onWatchedDeviceChanged(QString,QVariantMap,QStringList)));
+    m_watchedPath.clear();
+}
+
+/* Whether it is worth reaching for the headset at all. Connected is the property
+ * that answers it and ServicesResolved is not: bluetoothd leaves the ACL link up
+ * after a failed ConnectProfile, so a headset that is there but not offering the
+ * MDR record reads as connected-but-unresolved, and that is exactly the case a
+ * retry is for. Nothing to poll for here - the caller asks when it is about to
+ * try. */
+bool BluezTransport::isDeviceConnected(const QString &macAddress)
+{
+    const QString path = devicePathForAddress(macAddress);
+    if (path.isEmpty())
+        return false;
+
+    QDBusMessage call = QDBusMessage::createMethodCall(
+        QString::fromLatin1(kBluezService), path, QString::fromLatin1(kPropertiesIface),
+        QStringLiteral("Get"));
+    call << QString::fromLatin1(kDeviceIface) << QStringLiteral("Connected");
+
+    const QDBusMessage reply = QDBusConnection::systemBus().call(call);
+    if (reply.type() != QDBusMessage::ReplyMessage || reply.arguments().isEmpty())
+        return false;
+    return reply.arguments().first().value<QDBusVariant>().variant().toBool();
+}
+
+/* ServicesResolved is the property worth acting on: Connected goes true as soon
+ * as the radio link is up, which is before bluetoothd has read the device's SDP
+ * records back and therefore before there is an MDR record to connect on. A
+ * device that reports Connected without ever resolving is still reported, since
+ * the caller retries anyway and a headset held back here would never reconnect. */
+void BluezTransport::onWatchedDeviceChanged(const QString &interface, const QVariantMap &changed,
+                                            const QStringList &invalidated)
+{
+    Q_UNUSED(invalidated)
+    if (interface != QLatin1String(kDeviceIface))
+        return;
+    if (changed.value(QStringLiteral("ServicesResolved")).toBool()
+        || changed.value(QStringLiteral("Connected")).toBool())
+        emit watchedDeviceReturned();
 }
 
 /* -------------------------------------------------------------- profile/fd */
@@ -348,7 +427,7 @@ void BluezTransport::handleRequestDisconnection()
      * tearing the profile down ourselves. */
     if (wasConnected) {
         setError(QStringLiteral("The device closed the connection"));
-        emit failed(lastError());
+        emit linkLost();
     }
 }
 

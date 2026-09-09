@@ -601,5 +601,13 @@
         <source>Upscaling</source>
         <translation>Hochskalierung</translation>
     </message>
+    <message>
+        <source>The headphones are not connected. Lauscher reconnects as soon as they are available again.</source>
+        <translation>Der Kopfhörer ist nicht verbunden. Lauscher verbindet sich erneut, sobald er wieder verfügbar ist.</translation>
+    </message>
+    <message>
+        <source>The headphones are not connected.</source>
+        <translation>Der Kopfhörer ist nicht verbunden.</translation>
+    </message>
 </context>
 </TS>

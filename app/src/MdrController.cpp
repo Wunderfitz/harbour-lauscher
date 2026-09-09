@@ -57,17 +57,33 @@ const int kMaxVolume = 30;
  * whatever the device says is taken at face value again. */
 const int kListeningSettleMs = 2000;
 
+/* Reconnecting after the headset came back. bluetoothd reports the device the
+ * moment its link is up, and the MDR record is published a little after that, so
+ * the first attempt waits; the ones after it are spaced further apart because by
+ * then the likely answer is that this headset is awake but not offering the
+ * service. Three attempts and the app waits for the device to turn up again
+ * rather than keeping the radio busy over a headset that will not answer. */
+const int kReconnectSettleMs = 2000;
+const int kReconnectRetryMs = 6000;
+const int kReconnectAttempts = 3;
+
 } // namespace
 
 MdrController::MdrController(QObject *parent)
     : QObject(parent)
 {
     m_transport = new BluezTransport(this);
-    QObject::connect(m_transport, &BluezTransport::failed, this, &MdrController::fail);
+    QObject::connect(m_transport, &BluezTransport::linkLost, this, &MdrController::handleLinkLost);
+    QObject::connect(m_transport, &BluezTransport::watchedDeviceReturned,
+                     this, &MdrController::handleDeviceReturned);
 
     m_timer = new QTimer(this);
     m_timer->setInterval(kPollIntervalMs);
     QObject::connect(m_timer, &QTimer::timeout, this, &MdrController::tick);
+
+    m_reconnectTimer = new QTimer(this);
+    m_reconnectTimer->setSingleShot(true);
+    QObject::connect(m_reconnectTimer, &QTimer::timeout, this, &MdrController::attemptReconnect);
 
     refreshPairedDevices();
 }
@@ -95,10 +111,14 @@ void MdrController::setStatus(const QString &message)
     emit statusMessageChanged();
 }
 
+/* The end of the road: what is on screen is the reason, and nothing is retried
+ * behind it. A failure that is only this attempt's goes through
+ * connectAttemptFailed() instead and reaches here once the attempts run out. */
 void MdrController::fail(const QString &message)
 {
     qWarning() << "[lauscher]" << message;
     closeDevice();
+    setReconnectPending(false);
     setStatus(message);
     setState(Error);
 }
@@ -113,17 +133,37 @@ void MdrController::refreshPairedDevices()
 
 void MdrController::connectToDevice(const QString &address)
 {
-    closeDevice();
-
     m_address = address;
+    /* Asking for a device is what arms the automatic side of this: from here until
+     * the session is given up on deliberately, a headset that goes away and comes
+     * back is picked up again without the user having to say so twice. */
+    m_autoReconnect = true;
+    m_reconnectAttempts = 0;
+    setReconnectPending(false);
+    m_transport->watchDevice(address);
+    startConnection();
+}
+
+void MdrController::reconnectDevice()
+{
+    if (m_address.isEmpty())
+        return;
+    connectToDevice(m_address);
+}
+
+void MdrController::startConnection()
+{
+    closeDevice();
+    m_reconnectTimer->stop();
+
     m_serviceIndex = 0;
     setStatus(tr("Connecting…"));
     setState(Connecting);
 
     const MDRResult result = mdrConnectionConnect(
-        m_transport->connection(), address.toUtf8().constData(), kServices[m_serviceIndex].uuid);
+        m_transport->connection(), m_address.toUtf8().constData(), kServices[m_serviceIndex].uuid);
     if (result != MDR_RESULT_OK && result != MDR_RESULT_INPROGRESS) {
-        fail(m_transport->lastError());
+        connectAttemptFailed(m_transport->lastError());
         return;
     }
     m_timer->start();
@@ -131,9 +171,124 @@ void MdrController::connectToDevice(const QString &address)
 
 void MdrController::disconnectDevice()
 {
+    m_autoReconnect = false;
+    m_reconnectTimer->stop();
+    m_transport->unwatchDevice();
+    setReconnectPending(false);
+
     closeDevice();
     setStatus(QString());
     setState(Idle);
+}
+
+/* --------------------------------------------------------------- reconnect */
+
+/* The headset dropping the channel is not a fault to report as one: buds go into
+ * their case, headphones are switched off, and the user knows they did it. So it
+ * reads as a state rather than an error, and says what the app will do about it. */
+void MdrController::handleLinkLost()
+{
+    closeDevice();
+
+    if (!m_autoReconnect) {
+        setStatus(tr("The headphones are not connected."));
+        setState(Error);
+        return;
+    }
+
+    /* A drop says nothing about whether the device is coming back, so the count
+     * starts over here - the attempts that follow are this disappearance's own. */
+    m_reconnectAttempts = 0;
+    setReconnectPending(true);
+    setStatus(pendingStatus());
+    setState(Error);
+    scheduleReconnect(kReconnectSettleMs);
+}
+
+void MdrController::handleDeviceReturned()
+{
+    if (!m_autoReconnect || m_state == Connecting || m_state == Initializing || m_state == Ready)
+        return;
+
+    /* The device being back is the one thing that earns a fresh set of attempts -
+     * including after they ran out and the last reason was put on screen. */
+    m_reconnectAttempts = 0;
+    setReconnectPending(true);
+    setStatus(pendingStatus());
+    scheduleReconnect(kReconnectSettleMs);
+}
+
+void MdrController::scheduleReconnect(int delayMs)
+{
+    if (!m_autoReconnect || m_reconnectAttempts >= kReconnectAttempts)
+        return;
+    m_reconnectTimer->start(delayMs);
+}
+
+/* Nothing is tried while BlueZ has no link to the headset. Reaching for a device
+ * that is in its case cannot work - bluetoothd has nothing to run an SDP search
+ * over - and the attempt would only replace the notice with "Connecting…" and
+ * then with a failure, twice a minute, for as long as the buds are put away. So
+ * the check comes first, and a device that is not there costs no attempt: the
+ * watch on it is what wakes this up again. */
+void MdrController::attemptReconnect()
+{
+    if (!m_autoReconnect || m_address.isEmpty() || m_device)
+        return;
+
+    if (!m_transport->isDeviceConnected(m_address)) {
+        setStatus(pendingStatus());
+        return;
+    }
+
+    ++m_reconnectAttempts;
+    startConnection();
+}
+
+/* An attempt that failed while more are coming. The reason goes to the log and
+ * the page keeps the message it had: on the phone, a reconnect that showed each
+ * failure in turn - "the headset is not offering its control channel", gone six
+ * seconds later - read as the app malfunctioning rather than as it trying. The
+ * last one is shown, once there is nothing left to wait for. */
+void MdrController::connectAttemptFailed(const QString &reason)
+{
+    if (!m_autoReconnect || m_reconnectAttempts >= kReconnectAttempts) {
+        fail(reason);
+        return;
+    }
+
+    qWarning() << "[lauscher] attempt" << m_reconnectAttempts << "failed:" << reason;
+    closeDevice();
+    setReconnectPending(true);
+    setStatus(pendingStatus());
+    setState(Error);
+    scheduleReconnect(kReconnectRetryMs);
+}
+
+/* What the page says while the app is waiting for the headset or working its way
+ * back to it. Two sentences, and which one it is follows from BlueZ rather than
+ * from our own attempts, so it stays put across a whole run of them. */
+QString MdrController::pendingStatus() const
+{
+    return m_transport->isDeviceConnected(m_address)
+               ? tr("Connecting…")
+               : tr("The headphones are not connected. Lauscher reconnects as soon as "
+                    "they are available again.");
+}
+
+void MdrController::setReconnectPending(bool pending)
+{
+    if (m_reconnectPending == pending)
+        return;
+    m_reconnectPending = pending;
+    emit reconnectingChanged();
+}
+
+/* Waiting for the headset, or on the way back to it. The first connection is not
+ * this, even though it runs through the same code: somebody asked for that one. */
+bool MdrController::reconnecting() const
+{
+    return m_reconnectPending;
 }
 
 void MdrController::closeDevice()
@@ -246,13 +401,23 @@ void MdrController::pumpConnection()
         if (retry == MDR_RESULT_OK || retry == MDR_RESULT_INPROGRESS)
             return;
     }
-    fail(m_transport->lastError());
+    connectAttemptFailed(m_transport->lastError());
 }
 
 void MdrController::pumpDevice()
 {
     MDREvent event = MDR_EVENT_NONE;
-    if (mdrHeadphonesPoll(m_device, &event) != MDR_RESULT_OK) {
+    const MDRResult polled = mdrHeadphonesPoll(m_device, &event);
+    if (polled != MDR_RESULT_OK) {
+        /* The channel going away is the ordinary case - the headset went into its
+         * case or out of range - and libmdr's own wording for it ("Unable to poll
+         * the connection (no connection has been established)") describes the API
+         * call rather than what happened. Anything else is worth reporting as it
+         * came, since it is a protocol fault the user cannot have caused. */
+        if (polled == MDR_RESULT_ERROR_NO_CONNECTION || polled == MDR_RESULT_ERROR_NET) {
+            handleLinkLost();
+            return;
+        }
         const QString reason = textOf(MDR_TEXT_LAST_ERROR);
         fail(reason.isEmpty() ? tr("The device disconnected") : reason);
         return;
@@ -269,6 +434,8 @@ void MdrController::pumpDevice()
         refreshIdentity();
         setStatus(QString());
         setState(Ready);
+        m_reconnectAttempts = 0;
+        setReconnectPending(false);
         break;
     case MDR_EVENT_SYNC_COMPLETE:
         refreshAll();

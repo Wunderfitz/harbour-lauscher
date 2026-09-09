@@ -45,6 +45,13 @@ class MdrController : public QObject
 
     Q_PROPERTY(State state READ state NOTIFY stateChanged)
     Q_PROPERTY(QString statusMessage READ statusMessage NOTIFY statusMessageChanged)
+    /* Whether a control session is up or on its way, which is what the pulley menu's
+     * Connect/Disconnect entry says. Idle and Error are the two states that are not. */
+    Q_PROPERTY(bool connected READ connected NOTIFY stateChanged)
+    /* True while the app is waiting for a headset that went away, or is in the middle
+     * of an attempt to pick it up again. What separates it from Connecting is that
+     * nobody asked for this one, so the page says so quietly rather than as an error. */
+    Q_PROPERTY(bool reconnecting READ reconnecting NOTIFY reconnectingChanged)
     Q_PROPERTY(QVariantList pairedDevices READ pairedDevices NOTIFY pairedDevicesChanged)
 
     Q_PROPERTY(QString deviceName READ deviceName NOTIFY identityChanged)
@@ -157,6 +164,8 @@ public:
     ~MdrController() override;
 
     State state() const { return m_state; }
+    bool connected() const { return m_state != Idle && m_state != Error; }
+    bool reconnecting() const;
     QString statusMessage() const { return m_statusMessage; }
     QVariantList pairedDevices() const { return m_pairedDevices; }
 
@@ -227,6 +236,8 @@ public:
 public slots:
     void refreshPairedDevices();
     void connectToDevice(const QString &address);
+    /** Open the channel to the device that was last asked for, if there was one. */
+    void reconnectDevice();
     void disconnectDevice();
 
     void setVolume(int volume);
@@ -252,6 +263,7 @@ public slots:
 
 signals:
     void stateChanged();
+    void reconnectingChanged();
     void statusMessageChanged();
     void pairedDevicesChanged();
     void identityChanged();
@@ -269,6 +281,9 @@ signals:
 
 private slots:
     void tick();
+    void handleLinkLost();
+    void handleDeviceReturned();
+    void attemptReconnect();
 
 private:
     void setState(State state);
@@ -277,6 +292,12 @@ private:
 
     void openDevice();
     void closeDevice();
+
+    void startConnection();
+    void connectAttemptFailed(const QString &reason);
+    void scheduleReconnect(int delayMs);
+    void setReconnectPending(bool pending);
+    QString pendingStatus() const;
 
     void pumpConnection();
     void pumpDevice();
@@ -307,6 +328,8 @@ private:
     BluezTransport *m_transport = nullptr;
     MDRHeadphones *m_device = nullptr;
     QTimer *m_timer = nullptr;
+    /* Single-shot: the next reconnect attempt, armed only while one is wanted. */
+    QTimer *m_reconnectTimer = nullptr;
 
     State m_state = Idle;
     QString m_statusMessage;
@@ -315,6 +338,19 @@ private:
     QString m_address;
     /* XM5-and-newer UUID first, legacy second; index into kServices. */
     int m_serviceIndex = 0;
+
+    /* True from the moment a device is asked for until the session is given up on
+     * deliberately - leaving the device page, or disconnecting from its menu. While
+     * it holds, a headset that comes back is connected to again by itself. */
+    bool m_autoReconnect = false;
+    /* Attempts made since the device was last seen; reset when it turns up again, so
+     * a headset that is there but not answering is not chased forever. */
+    int m_reconnectAttempts = 0;
+    /* True from a lost connection until the session is back or given up on. What it
+     * buys is a steady message: the reason an attempt failed is only worth showing
+     * once there are no attempts left, so while this holds the page says what the
+     * app is doing rather than flicking through the failures on the way. */
+    bool m_reconnectPending = false;
 
     QString m_deviceName;
     QString m_firmwareVersion;

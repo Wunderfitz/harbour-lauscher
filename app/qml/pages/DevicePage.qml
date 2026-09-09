@@ -30,6 +30,12 @@ Page {
                                          || mdr.trackArtist.length > 0
                                          || mdr.trackAlbum.length > 0
 
+    // The notice below the header carries the status message whenever there is a
+    // connection to say something about, and the header's description carries it
+    // the rest of the time. One of the two, never both: the same sentence twice on
+    // one screen reads as a glitch rather than as emphasis.
+    readonly property bool showsNotice: mdr.state === Mdr.Error
+
     // Leaving the page tears the RFCOMM channel down; the headset only allows
     // one control session at a time and Sound Connect on another phone would
     // otherwise be locked out.
@@ -52,8 +58,18 @@ Page {
                 onClicked: pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
             }
             MenuItem {
-                text: qsTr("Disconnect")
-                onClicked: pageStack.pop()
+                // The entry says what there is to do about the connection as it
+                // stands. While the session is up - or on its way - leaving the page
+                // is what drops it, which is what Disconnect has always done here;
+                // once the headset has gone away, the same place is where the user
+                // asks for it back rather than going out to the list and in again.
+                text: mdr.connected ? qsTr("Disconnect") : qsTr("Connect")
+                onClicked: {
+                    if (mdr.connected)
+                        pageStack.pop()
+                    else
+                        mdr.reconnectDevice()
+                }
             }
         }
 
@@ -66,7 +82,7 @@ Page {
                 title: mdr.deviceName.length > 0 ? mdr.deviceName : qsTr("Headphones")
                 description: mdr.state === Mdr.Ready && mdr.firmwareVersion.length > 0
                              ? qsTr("Firmware %1").arg(mdr.firmwareVersion)
-                             : mdr.statusMessage
+                             : page.showsNotice ? "" : mdr.statusMessage
             }
 
             /* ------------------------------------------------ busy / error */
@@ -74,6 +90,9 @@ Page {
             BusyIndicator {
                 anchors.horizontalCenter: parent.horizontalCenter
                 size: BusyIndicatorSize.Large
+                // Only while something is actually going on. Waiting for a headset
+                // that is in its case is not that, and a spinner that never stops
+                // says the app is stuck rather than patient.
                 running: mdr.state === Mdr.Connecting || mdr.state === Mdr.Initializing
                 visible: running
             }
@@ -81,9 +100,12 @@ Page {
             Label {
                 x: Theme.horizontalPageMargin
                 width: parent.width - 2 * Theme.horizontalPageMargin
-                visible: mdr.state === Mdr.Error
+                visible: page.showsNotice
                 wrapMode: Text.WordWrap
-                color: Theme.errorColor
+                // A headset that went into its case is not a fault, and the app is
+                // about to pick it up again by itself: that reads as a notice, not
+                // as the red an actual failure deserves.
+                color: mdr.reconnecting ? Theme.secondaryHighlightColor : Theme.errorColor
                 text: mdr.statusMessage
             }
 

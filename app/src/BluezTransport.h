@@ -87,6 +87,16 @@ public:
     /** Paired devices as [{name, address}, ...], newest BlueZ state each call. */
     QVariantList pairedDevices();
 
+    /* Watch one paired device's BlueZ state, so a headset that went away - into its
+     * case, out of range - can be noticed coming back without polling for it. The
+     * watch is independent of the RFCOMM channel and outlives it on purpose: that
+     * is the state it exists to report on. */
+    void watchDevice(const QString &macAddress);
+    void unwatchDevice();
+
+    /** Whether BlueZ has a link to this device right now - its Device1.Connected. */
+    bool isDeviceConnected(const QString &macAddress);
+
     /** True once BlueZ has handed us a connected RFCOMM socket. */
     bool hasSocket() const { return m_fd >= 0; }
 
@@ -94,7 +104,10 @@ public:
 
 signals:
     void socketConnected();
-    void failed(const QString &message);
+    /** The headset dropped the channel on its own - the controller words it. */
+    void linkLost();
+    /** The watched device is back on BlueZ's books with its services resolved. */
+    void watchedDeviceReturned();
 
 public:
     /* org.bluez.Profile1 - called by bluetoothd via Profile1Adaptor, not by us. */
@@ -104,6 +117,8 @@ public:
 
 private slots:
     void onConnectProfileFinished(QDBusPendingCallWatcher *watcher);
+    void onWatchedDeviceChanged(const QString &interface, const QVariantMap &changed,
+                                const QStringList &invalidated);
 
 private:
     /* MDRConnection vtable thunks. */
@@ -137,6 +152,8 @@ private:
     bool m_connecting = false;
 
     QString m_profilePath;
+    /* The device path watchDevice() subscribed to, or empty. */
+    QString m_watchedPath;
     QString m_profileUuid;
     QString m_devicePath;
     QHash<QString, QString> m_addressToPath;

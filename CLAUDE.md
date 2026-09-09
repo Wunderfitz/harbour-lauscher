@@ -266,6 +266,66 @@ it means to. That is not just tidiness: `MDRNoiseControl` grew a
 `changing_asm_level` field, and a struct filled in from scratch would have been
 refused outright for the field nobody remembered to set.
 
+### Losing the headset, and getting it back
+
+Buds going into their case take the RFCOMM channel with them, which is not a
+fault and must not read as one. Three things follow from that.
+
+- **The message is the app's, not libmdr's.** libmdr words the drop as the API
+  call that noticed it — "Unable to poll the connection (no connection has been
+  established)" — which sends the reader looking for a bug. `pumpDevice()`
+  therefore branches on the **result code** rather than passing the text on:
+  `MDR_RESULT_ERROR_NO_CONNECTION` and `MDR_RESULT_ERROR_NET` are the link going
+  away and get `handleLinkLost()`; everything else is still reported as libmdr
+  worded it, because it is a protocol fault the user did not cause. The transport
+  says the same thing its own way — `handleRequestDisconnection()` raises
+  `linkLost()` with no message attached, and the controller supplies the words.
+- **The pulley entry says what there is to do.** `MdrController::connected` is
+  every state but `Idle` and `Error`, and `DevicePage`'s second menu item reads
+  Disconnect or Connect off it. Disconnect keeps its old meaning — pop the page,
+  which is what drops the channel — while Connect calls `reconnectDevice()` and
+  stays put, so a headset that went away can be picked up without a trip through
+  the list.
+- **The app reconnects by itself, and BlueZ says when.** Asking for a device arms
+  it: `connectToDevice()` sets `m_autoReconnect` and has the transport subscribe
+  to that one device's `PropertiesChanged` (`watchDevice()`). `ServicesResolved`
+  or `Connected` going true means the headset is back on the phone, and a
+  `kReconnectSettleMs` delay covers the gap between the link coming up and the
+  MDR record being published. Only leaving the page or disconnecting from the
+  menu disarms it. That subscription is the only thing that restarts the machine
+  once it has settled into waiting, so a subscription that could not be
+  established leaves the pulley's Connect entry as the only way back —
+  `watchDevice()` says so in the log.
+
+Two rules keep that from becoming a loop, and both were learned on the phone.
+
+**Nothing is tried while BlueZ has no link to the headset.** `attemptReconnect()`
+asks `isDeviceConnected()` first, and a device that is not there costs no attempt
+and schedules nothing — the watch is what wakes it up again. Without that check
+the timer fired into the void: buds in the case, and every couple of seconds the
+notice was replaced by "Connecting…" and then by a failure, over a headset that
+bluetoothd could not even run an SDP search against. `Connected` is the property
+to ask, not `ServicesResolved`: a failed `ConnectProfile` leaves the ACL link up
+with the services unresolved, and that is precisely the state a retry is for.
+
+**A failure is only shown once there is nothing left to try.**
+`connectAttemptFailed()` takes the reason, logs it, and leaves the page saying
+what `pendingStatus()` says; only when the attempts run out does it hand the
+reason to `fail()`, which is the verdict. On the phone the other way round read
+as a malfunction — "The headset is not offering its control channel", gone six
+seconds later, back again — rather than as an app being patient. The two
+sentences `pendingStatus()` picks between follow from BlueZ, not from our own
+attempts, so the message holds still across a whole run of them.
+
+Attempts are capped at `kReconnectAttempts` and spaced `kReconnectRetryMs` apart;
+the count resets only when the device turns up again or a session opens, so a
+headset that is awake but silent is waited for rather than chased. The
+`reconnecting` property is that whole wait, which is why the notice on
+`DevicePage` drops out of `Theme.errorColor` while it holds — the app is not
+reporting a failure, it is saying what it is doing. The spinner does **not**
+follow it: it runs on `Connecting`/`Initializing` only, because a spinner that
+turns for as long as the buds are in their case says stuck, not patient.
+
 ---
 
 ## Layout
@@ -837,9 +897,23 @@ not only the reads and writes underneath — `EqualizerBand`'s drag arbitration 
 claiming the gesture from the flickable rather than losing it, and moving by how far the
 finger moved rather than to where it landed.
 
+### Confirmed on hardware, 2026-09-09
+
+Reconnect-on-wake works against the LinkBuds Clip: buds into the case drops the
+session and the page says so in the app's own words rather than libmdr's, and
+taking them out picks the session up again by itself.
+
+The first cut of it got two things wrong on the phone, and both are fixed in
+`attemptReconnect()` and `connectAttemptFailed()` above: it reached for a headset
+that was not connected to the phone at all, and it flashed each attempt's failure
+on screen as though that were the answer. What the run confirmed underneath is
+the part that matters — BlueZ's `PropertiesChanged` on the device does arrive
+when the buds come back, so the watch is a working wake-up and not a hopeful one.
+
 Known gaps:
-- No reconnect-on-wake; leaving `DevicePage` drops the RFCOMM channel on
-  purpose (the headset allows one control session at a time).
+- Leaving `DevicePage` still drops the RFCOMM channel on purpose, since the
+  headset allows one control session at a time. Coming back to it is what the
+  reconnect covers (see Losing the headset, and getting it back).
 - LinkBuds Clip is open-ear and, as the desktop client confirmed on hardware,
   reports no NC/ASM function of any kind — the ambient sound control section
   simply will not appear. It offers background music, voice boost and sound
