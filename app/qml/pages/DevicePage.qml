@@ -476,7 +476,7 @@ Page {
                 visible: mdr.state === Mdr.Ready && mdr.dseeAvailable
                 enabled: mdr.dseeUsable
                 text: mdr.dseeName
-                description: qsTr("Restores what compression takes out of a track. On is the headset's automatic mode - it decides which sources want it.")
+                description: qsTr("Restores what compression takes out of a track. On is the headset's automatic mode.")
                 // Without this the first tap replaces the binding with a plain value and
                 // the switch stops following the headset.
                 automaticCheck: false

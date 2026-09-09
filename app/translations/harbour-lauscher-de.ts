@@ -384,8 +384,8 @@
         <translation>Der Kopfhörer schaltet den Equalizer ab, solange ein anderer Hörmodus als Standard aktiv ist.</translation>
     </message>
     <message>
-        <source>Restores what compression takes out of a track. On is the headset&apos;s automatic mode - it decides which sources want it.</source>
-        <translation>Stellt wieder her, was die Komprimierung einem Titel nimmt. An ist die Automatik des Kopfhörers – er entscheidet, welche Quellen sie brauchen.</translation>
+        <source>Restores what compression takes out of a track. On is the headset&apos;s automatic mode.</source>
+        <translation>Stellt wieder her, was die Komprimierung einem Titel nimmt. An ist die Automatik des Kopfhörers.</translation>
     </message>
     <message>
         <source>The headset turns the equalizer and %1 off while a listening mode other than Standard is active.</source>
