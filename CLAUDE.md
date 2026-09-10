@@ -902,6 +902,21 @@ clear bass. `MdrController::refreshEqualizer()` reads all of that on
   Custom, flat. That was a libmdr commit-path bug - `pending()` catching the device's own
   mid-commit report of the new curve - fixed in the checkout and vendored with the rest;
   nothing in this app works around it.
+- **The device selects Custom itself when bands are written, and says so.** Nothing here
+  asks it to. Writing band steps while a named preset is active makes the LinkBuds Clip
+  report `CUSTOM` (protocol `0xa0`) unprompted, and `refreshEqualizer()` picks that up like
+  any other report, so the picker follows on its own. Confirmed on the device on
+  2026-09-10, and visible four times over in `tests/WF-LC900-2.0.3-equalizer`, where every
+  preset the old desktop client selected is followed by a `CUSTOM` notification the moment
+  it wrote the curve.
+
+  **Do not add a preset write in front of a band write on that basis.** It would be
+  redundant here, and it puts a preset change immediately before a curve change - which is
+  the sequence that lets the device's report of Custom's *stored* curve land between the
+  two and repaint the sliders under the finger. That is the bug above, arriving from the
+  other side. A V1 device may need it (a WH-1000XM4 reportedly ignores band writes under a
+  named preset, see pull request #2), but that is a V1 question and belongs behind a
+  family check.
 - **The list has its own signal.** It arrives whenever the capability answer does —
   `MDR_EVENT_EQUALIZER_CHANGED` covers it like everything else about the equalizer, so
   `refreshEqualizer()` reads it — but the picker is built from it, and restating it on
