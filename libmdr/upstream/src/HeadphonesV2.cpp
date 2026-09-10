@@ -324,6 +324,22 @@ namespace mdr
             SendCommandACK(t2::SafeListeningGetExtendedParam,
                            {.inquiredType = t2::SafeListeningInquiredType::SAFE_LISTENING_TWS_2});
         }
+        /* Playback metadata. The initialisation asks for it once and the
+         * headset announces a great deal by itself - volume, buttons, battery -
+         * but not this: the phone hands it a new track name over its own
+         * channel without a word on the control link, so the copy kept here
+         * stays at whatever was playing when the connection came up. A sync is
+         * the caller's way of saying "ask again about everything", so the names
+         * belong in it. */
+        if (SupportsFeature(state, MDR_FEATURE_PLAYBACK_METADATA))
+        {
+            SendCommandACK(t1::GetPlayParam,
+                           { .type = t1::PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT });
+            SendCommandACK(t1::GetPlayParam, { .type = t1::PlayInquiredType::MUSIC_VOLUME });
+            SendCommandACK(t1::GetPlayStatus,
+                           { .type = t1::PlayInquiredType::PLAYBACK_CONTROL_WITH_CALL_VOLUME_ADJUSTMENT });
+        }
+
         co_return MDR_EVENT_SYNC_COMPLETE;
     }
 

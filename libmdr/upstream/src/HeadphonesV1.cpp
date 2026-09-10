@@ -454,7 +454,40 @@ namespace mdr
 
     MDRTask MDRHeadphones::RequestSyncV1()
     {
-        // auto& state = mDetailsV1;
+        auto& state = mDetailsV1;
+
+        /* A sync is the caller's way of saying "ask about everything again",
+         * and until now this one asked about nothing at all - it returned
+         * completion without sending a single command. For most of the state
+         * that went unnoticed, because a headset announces changes by itself:
+         * volume, buttons, battery, listening mode. The playback metadata is
+         * the exception. The phone hands the headset a new track name over its
+         * own channel and says nothing on the control link, so the copy kept
+         * here stays at whatever was playing when the connection came up. The
+         * initialisation asks for it once; without this, nothing ever asks
+         * again, and a track name is correct exactly until the next track. */
+        if (state.mSupport.contains(t1::FunctionType::PLAYBACK_CONTROLLER))
+        {
+            SendCommandACK(t1::GetPlayStatus, {.type = t1::PlayInquiredType::PLAYBACK_CONTROLLER});
+
+            SendCommandACK(t1::GetPlayParam, {
+                .type = t1::PlayInquiredType::PLAYBACK_CONTROLLER,
+                .dataType = t1::PlaybackDetailedDataType::VOLUME
+            });
+            SendCommandACK(t1::GetPlayParam, {
+                .type = t1::PlayInquiredType::PLAYBACK_CONTROLLER,
+                .dataType = t1::PlaybackDetailedDataType::TRACK_NAME
+            });
+            SendCommandACK(t1::GetPlayParam, {
+                .type = t1::PlayInquiredType::PLAYBACK_CONTROLLER,
+                .dataType = t1::PlaybackDetailedDataType::ALBUM_NAME
+            });
+            SendCommandACK(t1::GetPlayParam, {
+                .type = t1::PlayInquiredType::PLAYBACK_CONTROLLER,
+                .dataType = t1::PlaybackDetailedDataType::ARTIST_NAME
+            });
+        }
+
         co_return MDR_EVENT_SYNC_COMPLETE;
     }
 

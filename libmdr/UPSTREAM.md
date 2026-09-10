@@ -8,7 +8,7 @@ state this app is known to work against:
 |---|---|
 | Repository | `https://github.com/mos9527/SonyHeadphonesClient` |
 | Base | `965c458d` (branch `v1-compat`) |
-| Plus | the WF-LC900 protocol work, branch `mdr-v2-session-correctness-and-listening-modes` on `https://github.com/Wunderfitz/SonyHeadphonesClient`, tip `e8be775` |
+| Plus | the WF-LC900 protocol work, branch `mdr-v2-session-correctness-and-listening-modes` on `https://github.com/Wunderfitz/SonyHeadphonesClient`, tip `cb3d915` |
 | Taken on | 2026-09-10 |
 
 Those extra commits are **not upstream yet**, and four of them are load-bearing for the
@@ -74,6 +74,26 @@ nothing anywhere said so. Everything else in the exchange already used 0x00: the
 request asks on it and the device answers `AUDIO_RET_PARAM` on it. Replaying the
 WF-LC900 capture, the committed write is `e8 00 01` where it was `e8 05 01`, and the
 setting applies on the device.
+
+`5a4a393` and `cb3d915` are the sixth and seventh, and they are the first that came from
+someone else's hardware — a Sony WH-1000XM4, reported in pull request #2 against this
+repository and taken upstream from there. Both live in the V1 path, which until then had
+never met a device.
+
+- `5a4a393` stops every voice-guidance reply being read as the on/off switch. The third
+  byte says which detail the reply carries — `ON_OFF`, `LANGUAGE`, `REQUIRED_TIME`,
+  `DOWNLOAD_SERVER_METHOD`, `UPDATE_METHOD` — and only the first is that switch, so a
+  headset answering about its language was read as sending a malformed packet.
+  Validation failed inside `RequestInit` and took the whole connection with it. What makes
+  this unconditional rather than device-specific is that `RequestInitV1` asks about those
+  other details itself: the library requested what it then refused to parse, so **no V1
+  device advertising `VOICE_GUIDANCE` could connect at all**.
+- `cb3d915` makes a sync ask for something. `RequestSyncV1` returned completion without
+  sending a command, and `RequestSyncV2` asked only about battery and safe listening. That
+  is invisible for state a headset announces by itself, which is most of it, but not for
+  the track names: those reach the headset over AVRCP, not the control link, so nothing
+  ever refills libmdr's copy and a client shows the track that was playing when it
+  connected for as long as it stays connected.
 
 The copy is verbatim - `diff -r` against a checkout's `libmdr/` shows no differences -
 except for two files added here from that repository's root:

@@ -393,6 +393,26 @@ target and configuration.
   libmdr is vendored inside the project, but it has never been tried;
   `.gitignore` covers the leftovers it would drop into a checkout.
 
+### Reading libmdr's own log
+
+`MDR_ENABLE_LOG` and `MDR_DEBUG` are **two separate macros**, and
+[libmdr/libmdr.pro](libmdr/libmdr.pro) sets only the first. `MDR_LOG` writes to stderr
+when `MDR_ENABLE_LOG` is on, but `MDR_LOG_DEBUG` — which is where the per-frame
+traffic and the unhandled-command lines are — expands to nothing unless `MDR_DEBUG`
+is defined as well. So a stock build's journal carries the app's own warnings and
+none of the protocol.
+
+```sh
+# in libmdr/libmdr.pro, for a debugging build only
+DEFINES += MDR_DEBUG
+```
+
+That is deliberately not on by default: it is loud, and the frames carry Bluetooth
+addresses and media metadata. It is also the first thing to reach for when a device
+behaves in a way the app cannot explain — it is how pull request #2's author found
+the voice-guidance fault on a WH-1000XM4, and it would have cost them an hour less
+had this been written down.
+
 ### Nightlies
 
 `.github/workflows/nightly.yml` builds an RPM per architecture on every push and
@@ -1037,7 +1057,11 @@ Known gaps:
   reports no NC/ASM function of any kind — the ambient sound control section
   simply will not appear. It offers background music, voice boost and sound
   leakage reduction, but no cinema.
-- V1 (XM4 and older) is compiled in and the UUID fallback exists, but untested.
+- V1 (XM4 and older) has now been driven, by someone else: a WH-1000XM4 in pull
+  request #2, which found two faults in the V1 path and one in this app. The
+  protocol pair is vendored in (see [libmdr/UPSTREAM.md](libmdr/UPSTREAM.md),
+  `5a4a393` and `cb3d915`); no V1 device has been in these hands, so the UUID
+  fallback and everything above it is confirmed by report rather than by us.
 - Touch controls and speak-to-chat are reachable through the C ABI already; only
   the UI is missing. So is the half of the general settings the ABI cannot carry:
   the list-shaped ones, of which the LinkBuds Clip's tap sensitivity is one.
