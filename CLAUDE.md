@@ -626,6 +626,13 @@ all three, and all of them arrive unprompted as well as on request.
   device pushed over AVRCP, so all three being empty is normal, not a fault — the
   block hides itself in that case. Watch for this when testing: a silent Now-playing
   section usually means the phone is not pushing metadata, not that the app is broken.
+- **A V1 headset has to be asked for them.** A WH-1000XM4 says nothing on the control
+  link when the phone moves to the next track, so the name froze at whatever was playing
+  on connect (pull request #2). While connected to V1, `resyncState()` therefore reads the
+  playback state and calls `mdrHeadphonesRequestSync()` every `kResyncIntervalMs` (3 s).
+  A V2 headset pushes `PLAY_NTFY_PARAM` with the new name by itself, so the timer is never
+  started for it - a permanent beat on the control link of a device that does not need
+  one is exactly what this avoids.
 - **The status is the source device's**, which is why the play/pause button reflects
   what the phone reports rather than what was last tapped, and why
   `sendPlaybackAction()` deliberately does not update anything locally. Whether music

@@ -45,6 +45,13 @@ const int kServiceCount = int(sizeof(kServices) / sizeof(kServices[0]));
 /* 30 ms keeps the protocol's coroutines responsive without busy-spinning the
  * phone; libmdr does no work of its own between polls. */
 const int kPollIntervalMs = 30;
+/* How often the whole device state is asked for again while connected to a V1
+ * headset. The track name is the reason: libmdr keeps the state it was told and
+ * hands that out, and a V1 headset is told a new track name by the phone without
+ * saying so over its control channel. A V2 one announces it by itself, so it gets
+ * no beat at all. Three seconds is slow enough not to sit on the RFCOMM link and
+ * quick enough that a skipped track is named before the reader wonders. */
+const int kResyncIntervalMs = 3000;
 
 /* The headset's own volume scale is 0..30 - mdrHeadphonesSetPlayback rejects
  * anything above that. The UI shows percent instead, so this is also the divisor
@@ -103,6 +110,10 @@ MdrController::MdrController(QObject *parent)
     m_timer = new QTimer(this);
     m_timer->setInterval(kPollIntervalMs);
     QObject::connect(m_timer, &QTimer::timeout, this, &MdrController::tick);
+
+    m_syncTimer = new QTimer(this);
+    m_syncTimer->setInterval(kResyncIntervalMs);
+    QObject::connect(m_syncTimer, &QTimer::timeout, this, &MdrController::resyncState);
 
     m_reconnectTimer = new QTimer(this);
     m_reconnectTimer->setSingleShot(true);
@@ -317,6 +328,7 @@ bool MdrController::reconnecting() const
 void MdrController::closeDevice()
 {
     m_timer->stop();
+    m_syncTimer->stop();
     if (m_device) {
         mdrHeadphonesDestroy(m_device);
         m_device = nullptr;
@@ -401,6 +413,28 @@ void MdrController::openDevice()
 
 /* --------------------------------------------------------------------- pump */
 
+/* Ask a V1 headset for its state again. Everything the app shows is read from
+ * libmdr's copy of that state, and the copy is only as fresh as the last thing
+ * the headset said. It says plenty by itself - volume, buttons, battery - but a
+ * track name that changed on the phone reaches it without a word over the
+ * control channel, so the copy keeps the name it was given when the app
+ * started. Asking again is the only lever the library offers: there is no
+ * request for one field. */
+void MdrController::resyncState()
+{
+    if (!m_device || m_state != Ready)
+        return;
+
+    /* Read first, then ask. The answer to the last request has arrived by now
+     * and sits in libmdr's copy of the state; reading it here is what puts it
+     * on screen. Waiting for an event would not do: the headset announces
+     * volume and battery by itself, but a track name that changed on the phone
+     * reaches it silently, so no event is ever raised for it and the reader
+     * would keep looking at the name the app started with. */
+    refreshPlayback();
+    mdrHeadphonesRequestSync(m_device);
+}
+
 void MdrController::tick()
 {
     if (m_device)
@@ -466,6 +500,11 @@ void MdrController::pumpDevice()
         refreshIdentity();
         setStatus(QString());
         setState(Ready);
+        /* V1 only. A V2 headset pushes PLAY_NTFY_PARAM with the new track name
+         * by itself, so a beat there would be three requests every three seconds
+         * for the life of the session, to learn what it says anyway. */
+        if (kServices[m_serviceIndex].protocol == MDR_PROTOCOL_V1)
+            m_syncTimer->start();
         m_reconnectAttempts = 0;
         setReconnectPending(false);
         break;
