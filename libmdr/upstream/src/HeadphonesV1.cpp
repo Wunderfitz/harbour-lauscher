@@ -790,6 +790,25 @@ namespace mdr
         return MDR_EVENT_IDENTITY_CHANGED;
     }
 
+    MDRTask MDRHeadphones::RequestAlertResponseV1(int action)
+    {
+        auto& state = mDetailsV1;
+        if (!state.mAlertAwaitingResponse)
+            co_return SetLastError(MDR_RESULT_ERROR_NOT_FOUND, "The device has not asked anything");
+
+        // As in V2, cleared before the send: the question is dealt with either way.
+        state.mAlertAwaitingResponse = false;
+
+        using namespace t1;
+        SetAlertParamFixedMessageParam res;
+        res.type = AlertInquiredType::FIXED_MESSAGE;
+        res.messageType = state.mLastAlertMessage;
+        res.action = action == MDR_ALERT_ACTION_POSITIVE ? AlertAction::POSITIVE
+                                                         : AlertAction::NEGATIVE;
+        SendCommandACK(SetAlertParamFixedMessageParam, res);
+        co_return MDR_EVENT_APPLY_COMPLETE;
+    }
+
     bool MDRHeadphones::IsDirtyV1() const
     {
         const auto& state = mDetailsV1;

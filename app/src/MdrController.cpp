@@ -67,6 +67,29 @@ const int kReconnectSettleMs = 2000;
 const int kReconnectRetryMs = 6000;
 const int kReconnectAttempts = 3;
 
+/* A device that answers with GsStringFormat::ENUM_NAME sends a key rather than a
+ * sentence - MULTIPOINT_SETTING, TAP_SENSITIVITY_SETTING - while RAW_NAME sends
+ * the words themselves. The C ABI does not carry which of the two it was, so the
+ * shape of the string has to decide: keys are upper case with underscores, and a
+ * device that sent words did not write them that way. */
+bool looksLikeToken(const QString &text)
+{
+    return text.contains(QLatin1Char('_')) && text == text.toUpper();
+}
+
+/* MULTIPOINT_SETTING -> "Multipoint setting". Not a translation and not meant to
+ * pass as one; it is what a setting we have no words for is called, so that a
+ * headset offering something this app has never seen is still usable. */
+QString prettifyToken(const QString &token)
+{
+    QString text = token;
+    text.replace(QLatin1Char('_'), QLatin1Char(' '));
+    text = text.toLower();
+    if (!text.isEmpty())
+        text[0] = text.at(0).toUpper();
+    return text;
+}
+
 } // namespace
 
 MdrController::MdrController(QObject *parent)
@@ -311,6 +334,7 @@ void MdrController::closeDevice()
     m_backgroundRoomAvailable = false;
     m_equalizerAvailable = false;
     m_dseeAvailable = false;
+    m_connectionModeAvailable = false;
     m_multipointAvailable = false;
     m_sourceSwitchingAvailable = false;
     emit featuresChanged();
@@ -331,6 +355,14 @@ void MdrController::closeDevice()
     m_dseeEnabled = false;
     m_dseeName.clear();
     emit dseeChanged();
+
+    /* A question the last session asked is not owed an answer in the next one. */
+    m_alertPending = false;
+
+    m_generalSettings.clear();
+    emit generalSettingsChanged();
+    m_audioPriority = MDR_AUDIO_PRIORITY_UNKNOWN;
+    emit connectionModeChanged();
 
     m_multipointDevices.clear();
     m_sourceSwitchingEnabled = true;
@@ -475,11 +507,35 @@ void MdrController::pumpDevice()
     case MDR_EVENT_PAIRED_DEVICES_CHANGED:
         refreshMultipoint();
         break;
+    /* The device-defined booleans. Also unprompted: multipoint can be switched in
+     * Sound Connect on the other phone, or by the headset itself. */
+    case MDR_EVENT_GENERAL_SETTINGS_CHANGED:
+        refreshGeneralSettings();
+        break;
+    case MDR_EVENT_CONNECTION_MODE_CHANGED:
+        refreshConnectionMode();
+        break;
+    /* The device is holding a change and wants it confirmed before it applies it -
+     * multipoint and the connection quality both cost it every Bluetooth link it
+     * has, so it asks first, and drops the change silently if nobody answers.
+     *
+     * The answer is yes, and it is given here rather than put to the user again:
+     * the only changes this app makes are ones the user just asked for, on a page
+     * that says in as many words that the headset disconnects for a moment when
+     * they do. Asking a second time would be asking about something already
+     * agreed to. */
+    case MDR_EVENT_ALERT:
+        qInfo() << "[lauscher] the device is asking about change"
+                << textOf(MDR_TEXT_LAST_ALERT) << "- confirming";
+        m_alertPending = true;
+        break;
     case MDR_EVENT_APPLY_COMPLETE:
         refreshPlayback();
         refreshNoiseControl();
         refreshListening();
         refreshEqualizer();
+        refreshGeneralSettings();
+        refreshConnectionMode();
         refreshMultipoint();
         break;
     default:
@@ -490,6 +546,13 @@ void MdrController::pumpDevice()
     if (mdrHeadphonesIsReady(m_device) && mdrHeadphonesIsDirty(m_device) &&
         mdrHeadphonesRequestCommit(m_device) != MDR_RESULT_OK)
         fail(tr("Could not apply the change"));
+
+    /* Answered here rather than where the alert arrives, and for the same reason
+     * the commit is: a request already running has to finish first, and the ABI
+     * says so with MDR_RESULT_INPROGRESS. The next tick tries again. */
+    if (m_alertPending && mdrHeadphonesIsReady(m_device) &&
+        mdrHeadphonesRespondToAlert(m_device, MDR_ALERT_ACTION_POSITIVE) == MDR_RESULT_OK)
+        m_alertPending = false;
 
     /* A listening mode the device never came back on has to be given up on here: the
      * events that would notice have already been suppressed, and a device that is not
@@ -610,6 +673,11 @@ void MdrController::refreshFeatures()
      * the first without the second. */
     m_multipointAvailable = featureAvailable(MDR_FEATURE_PAIRED_DEVICE_MANAGEMENT);
     m_sourceSwitchingAvailable = featureAvailable(MDR_FEATURE_SOURCE_SWITCH_CONTROL);
+
+    /* The general settings have no flag of their own here: MDR_FEATURE_GENERAL_SETTINGS
+     * says the device defines some, not that this app can drive them, and the list
+     * refreshGeneralSettings() builds answers that. */
+    m_connectionModeAvailable = featureAvailable(MDR_FEATURE_CONNECTION_MODE);
     emit featuresChanged();
 }
 
@@ -755,6 +823,67 @@ void MdrController::refreshEqualizer()
  * connected, and which one currently gets the audio. All of it arrives on
  * MDR_EVENT_PAIRED_DEVICES_CHANGED, including the automatic-switching flag,
  * which is why one refresh covers the lot. */
+/* The settings the device defines itself. Each is a boolean it names, and the
+ * names arrive as tokens - MULTIPOINT_SETTING - which generalSettingTitle() turns
+ * into words. What is not here is as telling as what is: the C ABI carries only
+ * booleans, so a list setting (the LinkBuds Clip offers tap sensitivity that way)
+ * reports MDR_GENERAL_SETTING_UNKNOWN and cannot be read at all. Those are left
+ * out rather than shown as something the page cannot change. */
+void MdrController::refreshGeneralSettings()
+{
+    QVariantList settings;
+    if (m_device) {
+        /* Two passes, as with the paired devices: no buffer asks for the count. */
+        uint32_t count = 0;
+        if (mdrHeadphonesGetGeneralSettingInfo(m_device, nullptr, &count) == MDR_RESULT_OK &&
+            count > 0) {
+            QVector<MDRGeneralSettingInfo> infos;
+            infos.resize(int(count));
+            if (mdrHeadphonesGetGeneralSettingInfo(m_device, infos.data(), &count) ==
+                MDR_RESULT_OK) {
+                for (uint32_t i = 0; i < count; ++i) {
+                    const MDRGeneralSettingInfo &info = infos[int(i)];
+                    if (info.type != MDR_GENERAL_SETTING_BOOLEAN || info.writable == MDR_FALSE)
+                        continue;
+
+                    MDRGeneralSetting value;
+                    if (mdrHeadphonesGetGeneralSetting(m_device, info.index, &value) !=
+                        MDR_RESULT_OK)
+                        continue;
+
+                    const QString subject = textOf(MDR_TEXT_GENERAL_SETTING_SUBJECT, info.index);
+                    QVariantMap entry;
+                    entry.insert(QStringLiteral("index"), int(info.index));
+                    entry.insert(QStringLiteral("title"), generalSettingTitle(subject));
+                    entry.insert(QStringLiteral("description"),
+                                 generalSettingDescription(
+                                     textOf(MDR_TEXT_GENERAL_SETTING_SUMMARY, info.index)));
+                    entry.insert(QStringLiteral("value"), value.boolean_value != MDR_FALSE);
+                    settings.append(entry);
+                }
+            }
+        }
+    }
+
+    if (settings == m_generalSettings)
+        return;
+    m_generalSettings = settings;
+    emit generalSettingsChanged();
+}
+
+void MdrController::refreshConnectionMode()
+{
+    int priority = MDR_AUDIO_PRIORITY_UNKNOWN;
+    MDRConnectionMode mode;
+    if (m_device && mdrHeadphonesGetConnectionMode(m_device, &mode) == MDR_RESULT_OK)
+        priority = int(mode.audio_priority);
+
+    if (priority == m_audioPriority)
+        return;
+    m_audioPriority = priority;
+    emit connectionModeChanged();
+}
+
 void MdrController::refreshMultipoint()
 {
     QVariantList devices;
@@ -812,6 +941,8 @@ void MdrController::refreshAll()
     refreshNoiseControl();
     refreshListening();
     refreshEqualizer();
+    refreshGeneralSettings();
+    refreshConnectionMode();
     refreshMultipoint();
 }
 
@@ -958,6 +1089,34 @@ QVariantList MdrController::equalizerPresetList() const
 /* A member for the same reason as the two below: tr() only puts these in the
  * MdrController context from inside the class. Genre names are left as they are -
  * Rock is Rock everywhere - and the rest are ordinary words. */
+/* What the switch is called. The device's own word for it is a key in the one
+ * language libmdr asks for, so a key we recognise is answered in the user's
+ * instead - the same trade as the equalizer preset names. */
+QString MdrController::generalSettingTitle(const QString &subject) const
+{
+    if (subject == QLatin1String("MULTIPOINT_SETTING"))
+        return tr("Connect to two devices at once");
+    if (subject.isEmpty())
+        return tr("Device setting");
+    return looksLikeToken(subject) ? prettifyToken(subject) : subject;
+}
+
+/* The line under it, and the one place where saying nothing is better than
+ * guessing: a key nobody has words for tells the reader less than the switch's
+ * own name already did. */
+QString MdrController::generalSettingDescription(const QString &summary) const
+{
+    if (summary.startsWith(QLatin1String("MULTIPOINT_SETTING_SUMMARY"))) {
+        /* The device picks the variant: the LDAC one is what a headset that has
+         * LDAC sends, because turning multipoint on is what takes it away. */
+        return summary.contains(QLatin1String("LDAC"))
+                   ? tr("The headset keeps two devices connected at the same time. "
+                        "LDAC cannot be used while this is on.")
+                   : tr("The headset keeps two devices connected at the same time.");
+    }
+    return looksLikeToken(summary) ? QString() : summary;
+}
+
 QString MdrController::equalizerPresetName(MDREqualizerPreset preset) const
 {
     switch (preset) {
@@ -1312,6 +1471,36 @@ void MdrController::connectPairedDevice(const QString &address)
 void MdrController::disconnectPairedDevice(const QString &address)
 {
     sendPairedDeviceCommand(MDR_PAIRED_DEVICE_DISCONNECT, address);
+}
+
+/* The device defines these, so there is no struct to read back and preserve: the
+ * request carries the setting's own index and its new value and nothing else. */
+void MdrController::setGeneralSetting(int index, bool value)
+{
+    if (!m_device)
+        return;
+
+    MDRGeneralSetting setting;
+    setting.index = uint32_t(index);
+    setting.boolean_value = value ? MDR_TRUE : MDR_FALSE;
+    if (mdrHeadphonesSetGeneralSetting(m_device, &setting) != MDR_RESULT_OK)
+        qWarning() << "[lauscher] the device refused general setting" << index;
+}
+
+void MdrController::setAudioPriority(int priority)
+{
+    if (!m_device)
+        return;
+
+    MDRConnectionMode mode;
+    if (mdrHeadphonesGetConnectionMode(m_device, &mode) != MDR_RESULT_OK)
+        return;
+    mode.audio_priority = MDRAudioPriority(priority);
+    if (mdrHeadphonesSetConnectionMode(m_device, &mode) != MDR_RESULT_OK) {
+        /* The picker has already moved; put it back where the device has it. */
+        qWarning() << "[lauscher] the device refused audio priority" << priority;
+        emit connectionModeChanged();
+    }
 }
 
 void MdrController::setSourceSwitchingEnabled(bool enabled)

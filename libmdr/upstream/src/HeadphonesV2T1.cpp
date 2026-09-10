@@ -1014,6 +1014,9 @@ namespace mdr
                 case POSITIVE_NEGATIVE:
                 {
                     self->mDetailsV2.mLastAlertMessage = res.messageType;
+                    // The device is holding the request that provoked this until it is
+                    // answered - see mdrHeadphonesRespondToAlert.
+                    self->mDetailsV2.mAlertAwaitingResponse = true;
                     return MDR_EVENT_ALERT;
                 }
                 default:

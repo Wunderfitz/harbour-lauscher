@@ -63,6 +63,10 @@ namespace mdr
         v2::t1::AudioCodec mAudioCodec{};
 
         v2::t1::AlertMessageType mLastAlertMessage{};
+        // Set when the device asks a POSITIVE_NEGATIVE question and cleared when it is
+        // answered. The request it is holding is dropped until then, so an answer sent
+        // with nothing outstanding would be answering a question already gone.
+        bool mAlertAwaitingResponse{};
         String mLastInteractionMessage;
         String mLastDeviceJSONMessage;
 

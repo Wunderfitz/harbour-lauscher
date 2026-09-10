@@ -251,6 +251,13 @@ typedef uint32_t MDRPairedDeviceCommand;
 #define MDR_PAIRED_DEVICE_SELECT_PLAYBACK ((MDRPairedDeviceCommand)3u)
 #define MDR_PAIRED_DEVICE_UNPAIR ((MDRPairedDeviceCommand)4u)
 
+/**
+ * @brief Answer to the confirmation a device asks for with @ref MDR_EVENT_ALERT.
+ */
+typedef uint32_t MDRAlertAction;
+#define MDR_ALERT_ACTION_NEGATIVE ((MDRAlertAction)0u)
+#define MDR_ALERT_ACTION_POSITIVE ((MDRAlertAction)1u)
+
 typedef uint32_t MDRGeneralSettingType;
 #define MDR_GENERAL_SETTING_UNKNOWN ((MDRGeneralSettingType)0u)
 #define MDR_GENERAL_SETTING_BOOLEAN ((MDRGeneralSettingType)1u)
@@ -582,6 +589,28 @@ MDR_API MDRResult mdrHeadphonesSetSourceSwitchControl(MDRHeadphones* headphones,
  */
 MDR_API MDRResult mdrHeadphonesGetSourceSwitchControlResult(MDRHeadphones* headphones,
                                                             MDRSourceSwitchControlResult* out_result);
+
+/**
+ * @brief Answer the question the device asked with @ref MDR_EVENT_ALERT.
+ *
+ * Some settings are not applied when the device receives them. A device that has to break its
+ * Bluetooth connections to apply one - multipoint and the connection mode are the usual pair -
+ * acknowledges the request, holds it, and asks first, as ALERT_NTFY_PARAM carrying a message
+ * type and POSITIVE_NEGATIVE. That question is reported as @ref MDR_EVENT_ALERT, and
+ * @ref MDR_TEXT_LAST_ALERT says which message it was.
+ *
+ * Until it is answered the held request is simply dropped: the device keeps the old value, says
+ * nothing further about it, and the next @ref mdrHeadphonesRequestSync reads the setting back
+ * unchanged. @ref MDR_ALERT_ACTION_POSITIVE is what applies it - after which the device does
+ * disconnect, so expect the transport to drop and the setting to be reported on the next
+ * session. @ref MDR_ALERT_ACTION_NEGATIVE discards it.
+ *
+ * @note The client owns this decision: the library reports the question and sends the answer,
+ *       and neither invents one nor assumes the user is still there to give it.
+ * @return @ref MDR_RESULT_ERROR_NOT_FOUND if the device has not asked anything,
+ *         @ref MDR_RESULT_INPROGRESS if another request is still running - poll and try again.
+ */
+MDR_API MDRResult mdrHeadphonesRespondToAlert(MDRHeadphones* headphones, MDRAlertAction action);
 
 /* General settings and assignable controls. */
 MDR_API MDRResult mdrHeadphonesGetGeneralSettingInfo(MDRHeadphones* headphones, MDRGeneralSettingInfo* settings,

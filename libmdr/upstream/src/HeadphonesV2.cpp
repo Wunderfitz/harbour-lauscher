@@ -812,6 +812,11 @@ namespace mdr
             {
                 AudioSetParamConnection res;
                 res.command = Command::AUDIO_SET_PARAM;
+                // Assigned rather than left to the struct's default, which is
+                // CONNECTION_MODE_CLASSIC_AUDIO_LE_AUDIO - a different inquired type with a
+                // field this one does not carry. CONNECTION_MODE is the one the capability
+                // above advertises and the one AudioGetParam reads back on.
+                res.type = AudioInquiredType::CONNECTION_MODE;
                 res.settingValue = state.mAudioPriorityMode.submitted;
                 SendCommandACK(AudioSetParamConnection, res);
             }
@@ -1038,6 +1043,29 @@ namespace mdr
             }
             state.mSafeListeningPreviewMode.commit();
         }
+        co_return MDR_EVENT_APPLY_COMPLETE;
+    }
+
+    MDRTask MDRHeadphones::RequestAlertResponseV2(int action)
+    {
+        auto& state = mDetailsV2;
+        if (!state.mAlertAwaitingResponse)
+            co_return SetLastError(MDR_RESULT_ERROR_NOT_FOUND, "The device has not asked anything");
+
+        // Cleared before the send, not after it: the question has been dealt with either way,
+        // and a failure here must not leave an answer owed for a message the device has since
+        // forgotten. It asks again if it still wants to know.
+        state.mAlertAwaitingResponse = false;
+
+        using namespace t1;
+        AlertSetParamFixedMessage res;
+        res.type = AlertInquiredType::FIXED_MESSAGE;
+        // Echoed back rather than assumed: the device pairs its answer with the question it
+        // asked, and the whole point of the exchange is which held request this applies to.
+        res.messageType = state.mLastAlertMessage;
+        res.actionType = action == MDR_ALERT_ACTION_POSITIVE ? AlertAction::POSITIVE
+                                                             : AlertAction::NEGATIVE;
+        SendCommandACK(AlertSetParamFixedMessage, res);
         co_return MDR_EVENT_APPLY_COMPLETE;
     }
 

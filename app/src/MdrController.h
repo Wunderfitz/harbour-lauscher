@@ -108,6 +108,13 @@ class MdrController : public QObject
     Q_PROPERTY(bool dseeEnabled READ dseeEnabled NOTIFY dseeChanged)
     Q_PROPERTY(QString dseeName READ dseeName NOTIFY dseeChanged)
 
+    /* The device's own settings page: the booleans it defines itself and the
+     * Bluetooth connection quality. Two unrelated features, and the page exists for
+     * whichever of them this headset has. */
+    Q_PROPERTY(QVariantList generalSettings READ generalSettings NOTIFY generalSettingsChanged)
+    Q_PROPERTY(bool connectionModeAvailable READ connectionModeAvailable NOTIFY featuresChanged)
+    Q_PROPERTY(int audioPriority READ audioPriority NOTIFY connectionModeChanged)
+
     Q_PROPERTY(bool multipointAvailable READ multipointAvailable NOTIFY featuresChanged)
     Q_PROPERTY(bool sourceSwitchingAvailable READ sourceSwitchingAvailable NOTIFY featuresChanged)
     Q_PROPERTY(QVariantList multipointDevices READ multipointDevices NOTIFY multipointChanged)
@@ -150,6 +157,14 @@ public:
         SoundLeakageReduction = MDR_LISTENING_SOUND_LEAKAGE_REDUCTION
     };
     Q_ENUM(ListeningMode)
+
+    /** Mirrors MDR_AUDIO_PRIORITY_*, what the Bluetooth link is tuned for. */
+    enum AudioPriority {
+        PriorityUnknown = MDR_AUDIO_PRIORITY_UNKNOWN,
+        PriorityQuality = MDR_AUDIO_PRIORITY_QUALITY,
+        PriorityStability = MDR_AUDIO_PRIORITY_STABILITY
+    };
+    Q_ENUM(AudioPriority)
 
     /** Mirrors MDR_ROOM_*, the distance background music is mixed for. */
     enum RoomSize {
@@ -227,6 +242,10 @@ public:
     bool dseeEnabled() const { return m_dseeEnabled; }
     QString dseeName() const { return m_dseeName; }
 
+    QVariantList generalSettings() const { return m_generalSettings; }
+    bool connectionModeAvailable() const { return m_connectionModeAvailable; }
+    int audioPriority() const { return m_audioPriority; }
+
     bool multipointAvailable() const { return m_multipointAvailable; }
     bool sourceSwitchingAvailable() const { return m_sourceSwitchingAvailable; }
     QVariantList multipointDevices() const { return m_multipointDevices; }
@@ -256,6 +275,9 @@ public slots:
     void setClearBass(int value);
     void setDseeEnabled(bool enabled);
 
+    void setGeneralSetting(int index, bool value);
+    void setAudioPriority(int priority);
+
     void selectPlaybackDevice(const QString &address);
     void connectPairedDevice(const QString &address);
     void disconnectPairedDevice(const QString &address);
@@ -277,6 +299,8 @@ signals:
      * from it, so it must not be restated every time a band moves. */
     void equalizerPresetsChanged();
     void dseeChanged();
+    void generalSettingsChanged();
+    void connectionModeChanged();
     void multipointChanged();
 
 private slots:
@@ -309,12 +333,20 @@ private:
     void refreshNoiseControl();
     void refreshListening();
     void refreshEqualizer();
+    void refreshGeneralSettings();
+    void refreshConnectionMode();
     void refreshMultipoint();
     void refreshAll();
 
     void sendPlaybackAction(MDRPlaybackAction action);
     void sendPairedDeviceCommand(MDRPairedDeviceCommand command, const QString &address);
     QString sourceSwitchMessage(MDRSourceSwitchControlResult result) const;
+
+    /* The device names its own settings, but in tokens rather than sentences -
+     * MULTIPOINT_SETTING, not "Connect to two devices". These turn the ones we know
+     * into words and fall back to the token, tidied up, for the ones we do not. */
+    QString generalSettingTitle(const QString &subject) const;
+    QString generalSettingDescription(const QString &summary) const;
 
     QVariantList equalizerPresetList() const;
     QString equalizerPresetName(MDREqualizerPreset preset) const;
@@ -411,6 +443,13 @@ private:
      * the switch is labelled the way the headset's own app labels it. */
     QString m_dseeName;
 
+    /* One entry per device-defined boolean the ABI can read and write, each
+     * {index, title, description, value}. Lists and read-only entries are left out
+     * of it, so this is what the page can show rather than what was advertised. */
+    QVariantList m_generalSettings;
+    bool m_connectionModeAvailable = false;
+    int m_audioPriority = MDR_AUDIO_PRIORITY_UNKNOWN;
+
     bool m_multipointAvailable = false;
     bool m_sourceSwitchingAvailable = false;
     /* The devices the headset itself knows about - phones and computers it is
@@ -421,6 +460,10 @@ private:
     bool m_sourceSwitchingEnabled = true;
     /* Why the headset refused the last playback-device request, or empty. */
     QString m_multipointMessage;
+
+    /* Set when the device asks whether it may apply a change it is holding, and
+     * cleared once that has been answered - see MDR_EVENT_ALERT in pumpDevice(). */
+    bool m_alertPending = false;
 
     /* The mode asked of the device and not yet seen coming back, or -1. The device
      * passes through "every mode off" on its way between two listening modes, and

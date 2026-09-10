@@ -58,6 +58,14 @@ Page {
                 onClicked: pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
             }
             MenuItem {
+                // What the headset keeps about itself rather than about the sound.
+                // Two unrelated features behind it, so the entry is there for
+                // whichever of them this device has and gone when it has neither.
+                text: qsTr("Settings")
+                visible: mdr.generalSettings.length > 0 || mdr.connectionModeAvailable
+                onClicked: pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
+            }
+            MenuItem {
                 // The entry says what there is to do about the connection as it
                 // stands. While the session is up - or on its way - leaving the page
                 // is what drops it, which is what Disconnect has always done here;

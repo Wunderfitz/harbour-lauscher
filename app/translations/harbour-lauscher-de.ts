@@ -395,6 +395,10 @@
         <source>The headset turns %1 off while a listening mode other than Standard is active.</source>
         <translation>Der Kopfhörer schaltet %1 ab, solange ein anderer Hörmodus als Standard aktiv ist.</translation>
     </message>
+    <message>
+        <source>Settings</source>
+        <translation>Einstellungen</translation>
+    </message>
 </context>
 <context>
     <name>EqualizerPage</name>
@@ -608,6 +612,53 @@
     <message>
         <source>The headphones are not connected.</source>
         <translation>Der Kopfhörer ist nicht verbunden.</translation>
+    </message>
+    <message>
+        <source>Connect to two devices at once</source>
+        <translation>Mit zwei Geräten gleichzeitig verbinden</translation>
+    </message>
+    <message>
+        <source>Device setting</source>
+        <translation>Geräteeinstellung</translation>
+    </message>
+    <message>
+        <source>The headset keeps two devices connected at the same time. LDAC cannot be used while this is on.</source>
+        <translation>Der Kopfhörer bleibt mit zwei Geräten gleichzeitig verbunden. LDAC kann nicht genutzt werden, solange das an ist.</translation>
+    </message>
+    <message>
+        <source>The headset keeps two devices connected at the same time.</source>
+        <translation>Der Kopfhörer bleibt mit zwei Geräten gleichzeitig verbunden.</translation>
+    </message>
+</context>
+<context>
+    <name>SettingsPage</name>
+    <message>
+        <source>Settings</source>
+        <translation>Einstellungen</translation>
+    </message>
+    <message>
+        <source>These are the headset&apos;s own settings. They are readable again once it is connected.</source>
+        <translation>Das sind die Einstellungen des Kopfhörers selbst. Sie sind wieder lesbar, sobald er verbunden ist.</translation>
+    </message>
+    <message>
+        <source>Bluetooth connection quality</source>
+        <translation>Bluetooth-Verbindungsqualität</translation>
+    </message>
+    <message>
+        <source>Priority</source>
+        <translation>Priorität</translation>
+    </message>
+    <message>
+        <source>Sound quality</source>
+        <translation>Klangqualität</translation>
+    </message>
+    <message>
+        <source>Stable connection</source>
+        <translation>Stabile Verbindung</translation>
+    </message>
+    <message>
+        <source>Changing one of these makes the headset drop its Bluetooth connections for a moment, music included. Lauscher connects again by itself.</source>
+        <translation>Wenn sich hier etwas ändert, trennt der Kopfhörer kurz alle Bluetooth-Verbindungen – auch die Musik. Lauscher verbindet sich von selbst wieder.</translation>
     </message>
 </context>
 </TS>

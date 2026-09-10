@@ -61,6 +61,19 @@ namespace mdr
         }
     }
 
+    MDRTask MDRHeadphones::RequestAlertResponse(int action)
+    {
+        switch (mProtocolFamily)
+        {
+        case ProtocolFamily::V1:
+            co_return co_await RequestAlertResponseV1(action);
+        case ProtocolFamily::V2:
+            co_return co_await RequestAlertResponseV2(action);
+        default:
+            co_return SetLastError(MDR_RESULT_ERROR_NOT_SUPPORTED, "MDR protocol has not been selected");
+        }
+    }
+
     MDRTask MDRHeadphones::RequestDebugCommand(
         MDRBuffer payload,
         MDRDataType type,
@@ -1263,6 +1276,16 @@ MDRResult mdrHeadphonesRequestCommit(MDRHeadphones* headphones)
     if (!h->IsReady())
         return MDR_RESULT_INPROGRESS;
     return h->Invoke(h->RequestCommit());
+}
+
+MDRResult mdrHeadphonesRespondToAlert(MDRHeadphones* headphones, MDRAlertAction action)
+{
+    if (!headphones || (action != MDR_ALERT_ACTION_POSITIVE && action != MDR_ALERT_ACTION_NEGATIVE))
+        return MDR_RESULT_ERROR_INVALID_ARGUMENT;
+    auto* h = Impl(headphones);
+    if (!h->IsReady())
+        return MDR_RESULT_INPROGRESS;
+    return h->Invoke(h->RequestAlertResponse(static_cast<int>(action)));
 }
 
 MDRResult mdrHeadphonesPoll(MDRHeadphones* headphones, MDREvent* outEvent)

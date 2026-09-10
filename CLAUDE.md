@@ -341,6 +341,7 @@ app/src/MdrController.*       QML facade; owns the poll loop
 app/qml/pages/DeviceListPage  paired-device picker
 app/qml/pages/DevicePage      battery, playback, ambient sound control, listening mode
 app/qml/pages/EqualizerPage   preset, band steps and clear bass
+app/qml/pages/SettingsPage    the device's own settings: its booleans, link quality
 app/qml/pages/AboutPage       logo, what to know about the app, credits
 app/qml/components/           small shared QML: the cover backdrop, about-page bits,
                               the equalizer's vertical band
@@ -583,6 +584,11 @@ background-music distance), the headset's own connected devices (which one plays
 connect and disconnect, and whether the headset may move playback itself), the
 equalizer (preset, band steps, clear bass), DSEE, cover page.
 
+**The device's own settings read and write, as of 2026-09-10.** `SettingsPage` shows
+multipoint and the Bluetooth connection quality, agrees with Sound Connect, follows a
+change made there, and both write from here — confirmed on the LinkBuds Clip. Getting
+there took two unrelated fixes; the section below has them.
+
 Everything under Playback rides on one event. Volume, play/pause status and the
 track names all report `MDR_EVENT_PLAYBACK_CHANGED`, so `refreshPlayback()` reads
 all three, and all of them arrive unprompted as well as on request.
@@ -727,11 +733,111 @@ them has playback. `MdrController::refreshMultipoint()` reads all of it and the
 - **The address must be the headset's own 17-character form.** libmdr validates
   that and refuses anything else, which is why the list's `address` is passed back
   untouched rather than reformatted for display.
-- Turning multipoint itself on and off is **not** here. It is not a dedicated
-  request in the protocol; it sits among the device-defined booleans behind
-  `mdrHeadphonesGetGeneralSetting*`, whose labels come from the device. Sound
-  Connect is still the place to switch it on, and this section shows what the
-  headset reports either way.
+- Turning multipoint itself on and off is **not** here, but it is in the app: it
+  is not a dedicated request in the protocol, it sits among the device-defined
+  booleans behind `mdrHeadphonesGetGeneralSetting*`, so it lives on
+  `SettingsPage` with the rest of them (see The device's own settings). This
+  section shows what the headset reports either way.
+
+### The device's own settings
+
+`SettingsPage`, reached from `DevicePage`'s pulley menu, holds what the headset
+keeps about itself rather than about the sound: the booleans it defines on its
+own — multipoint is one — and what its Bluetooth link is tuned for. Two unrelated
+features, so the menu entry is there for whichever of them the device has.
+
+- **The device defines the booleans, names them, and decides how many.**
+  `mdrHeadphonesGetGeneralSettingInfo` reports up to four slots and
+  `MDR_TEXT_GENERAL_SETTING_SUBJECT`/`SUMMARY` name each one, so the page is a
+  `Repeater` over whatever came back rather than a fixed set of switches.
+- **Only the boolean ones, and only the writable ones.** The C ABI carries
+  `MDR_GENERAL_SETTING_BOOLEAN` and nothing else: a list-shaped setting reports
+  `MDR_GENERAL_SETTING_UNKNOWN`, `mdrHeadphonesGetGeneralSetting` answers
+  `MDR_RESULT_ERROR_NOT_SUPPORTED` for it, and `refreshGeneralSettings()` leaves
+  it out. That is not hypothetical — see the replay below.
+- **The names arrive as keys, not sentences.** A device answering
+  `GsStringFormat::ENUM_NAME` sends `MULTIPOINT_SETTING`, not "Connect to two
+  devices"; one answering `RAW_NAME` sends the words. The C ABI does not carry
+  which of the two it was, so `looksLikeToken()` decides on the shape of the
+  string — a key is upper case with underscores and words are not.
+  `generalSettingTitle()` translates the keys it knows and tidies up the ones it
+  does not (`MULTIPOINT_SETTING` → "Multipoint setting"), so a headset offering
+  something never seen here is still usable. `generalSettingDescription()` does
+  the same but falls back to **nothing**: a key nobody has words for tells the
+  reader less than the switch's own name already did.
+- **Connection quality is a feature of its own**, `MDR_FEATURE_CONNECTION_MODE`,
+  read and written as `MDRConnectionMode.audio_priority`
+  (`MDR_AUDIO_PRIORITY_QUALITY` / `_STABILITY`). Its picker returns **-1** for a
+  device that has not said which it is on, the way `EqualizerPage`'s preset picker
+  handles a preset it cannot show, and `onCurrentIndexChanged` treats a negative
+  index as "not a request" — otherwise the assignment on page load would send the
+  device the first item.
+- **Both kinds of change drop the Bluetooth links, and the device asks first.**
+  Writing one of these does not apply it. The device acknowledges the request,
+  holds it, and sends `ALERT_NTFY_PARAM FIXED_MESSAGE <reason> POSITIVE_NEGATIVE`
+  — the reason being `DISCONNECT_CAUSED_BY_CHANGING_MULTIPOINT` or
+  `DISCONNECT_CAUSED_BY_CONNECTION_MODE_CHANGE`, since applying it costs every
+  link it has. Unanswered, the held request is dropped in silence and the setting
+  reads back unchanged; that was the whole of this section's first version not
+  working, and the desktop client has the same bug (see
+  [libmdr/UPSTREAM.md](libmdr/UPSTREAM.md), `2497040`).
+- **The answer is yes, and the app gives it without asking again.**
+  `MDR_EVENT_ALERT` sets `m_alertPending` and `pumpDevice()` answers with
+  `mdrHeadphonesRespondToAlert(MDR_ALERT_ACTION_POSITIVE)` — next to the commit,
+  and for the same reason: a request still running answers `MDR_RESULT_INPROGRESS`
+  and the next tick tries again. Putting the question to the user would be asking
+  about something already agreed to, since the only changes this app makes are the
+  ones just made on a page that says the headset disconnects for a moment. The
+  page saying so is what makes that defensible — and the reconnect then picks the
+  session back up when the device does disconnect.
+
+**The LinkBuds Clip's answer is on record**, from replaying
+`tests/WF-LC900-2.0.3` through the C ABI offline (the harness the top of this
+file describes, ~150 lines against the vendored sources — no phone involved). It
+advertises two general settings: index 1, boolean and writable, subject
+`MULTIPOINT_SETTING`, summary `MULTIPOINT_SETTING_SUMMARY_LDAC_AVAILABLE`; and
+index 2, `TAP_SENSITIVITY_SETTING`, a list of LOW/HIGH that the ABI reports as
+unknown and refuses to read. It advertises `MDR_FEATURE_CONNECTION_MODE` and was
+captured on `MDR_AUDIO_PRIORITY_QUALITY` — it reads that back as
+`AUDIO_RET_PARAM 0x00 0x00`, `CONNECTION_MODE` carrying `SOUND_QUALITY_PRIOR`, in
+answer to the `AUDIO_GET_PARAM 0x00` the init chain sends. That is also where the
+summary's `_LDAC_AVAILABLE` suffix comes from: it is the variant a device with LDAC
+sends, because switching multipoint on is what takes LDAC away.
+
+**Read the inquired type off the read, never off a struct's default.** An earlier
+version of this file took the `AUDIO_SET_PARAM 0x05 0x00` the harness produced for
+a sound-quality write as the device's own `CONNECTION_MODE_CLASSIC_AUDIO_LE_AUDIO`
+variant, and called the mapping confirmed. It was a bug being mistaken for evidence:
+libmdr never assigned the field, so the frame carried
+`AudioSetParamConnection`'s default (0x05) instead of the `CONNECTION_MODE` (0x00)
+that everything else in the exchange uses — and short by a byte for the variant it
+claimed, since that one carries a fourth field. The device acknowledges such a frame
+and drops it, which is what a write that does nothing looks like from the outside.
+Fixed upstream in `e8be775`; the same write is `e8 00 01` now. The lesson generalizes:
+the replay shows what libmdr sends, and only the device's own frames say what it wants.
+
+**Answering the alert is what made multipoint work**, confirmed on the LinkBuds Clip on
+2026-09-10: the switch is written, the headset asks, the app says yes, the links drop
+the way the page warns they will, and after the reconnect the new value is what stands.
+Nothing else was needed for it — no re-sending of the held request after the yes, which
+was the third of the three things this section used to list as unknown.
+
+The connection quality did not come along, and the reason turned out to be unrelated to
+the alert: the write named the wrong inquired type and the device never saw a command it
+recognized, so it had nothing to ask about. That is `e8be775` above, and with it the
+setting takes on the device too. **Two silent failures with one symptom** is the thing to
+remember here — a write that is held pending an answer and a write that is dropped as
+unrecognized look identical from the client, and the second was hidden behind the first
+for as long as the first was unfixed.
+
+**The alert handshake came out of the same harness**, replaying a capture of the
+desktop client failing to turn multipoint off: `GENERAL_SETTING_SET_PARAM
+GENERAL_SETTING2 BOOLEAN OFF` goes out, the device ACKs it, and 6 ms later sends
+`99 00 07 01` — the question. Answering it puts `98 00 07 01` on the wire, the
+same message type coming back with POSITIVE. Both halves were confirmed offline
+before anything was tried on the phone, which is the point of keeping the replay
+route open: a write that does nothing looks identical to a write that never
+happened, and the frames say which it is.
 
 ### Equalizer
 
@@ -910,6 +1016,19 @@ on screen as though that were the answer. What the run confirmed underneath is
 the part that matters — BlueZ's `PropertiesChanged` on the device does arrive
 when the buds come back, so the watch is a working wake-up and not a hopeful one.
 
+### Confirmed on hardware, 2026-09-10
+
+`SettingsPage` writes, against the LinkBuds Clip. Both settings it offers now apply:
+multipoint once the confirmation the device asks for is answered, and the connection
+quality once the write names the inquired type the device advertised. Changing either
+drops the Bluetooth links the way the page says it will, the reconnect picks the session
+back up, and the new value is what the next read shows.
+
+Both fixes were pinned down offline first, replaying captures through the C ABI with no
+phone involved, and both turned out to be one frame each. That is the route paying for
+itself twice over: the app's own symptom for either bug was a switch that moved and a
+device that did not, which says nothing about which of them it was.
+
 Known gaps:
 - Leaving `DevicePage` still drops the RFCOMM channel on purpose, since the
   headset allows one control session at a time. Coming back to it is what the
@@ -919,6 +1038,6 @@ Known gaps:
   simply will not appear. It offers background music, voice boost and sound
   leakage reduction, but no cinema.
 - V1 (XM4 and older) is compiled in and the UUID fallback exists, but untested.
-- Touch controls, speak-to-chat and the device's general settings are all reachable
-  through the C ABI already; only the UI is missing. The general settings are where
-  multipoint's own on/off switch would come from.
+- Touch controls and speak-to-chat are reachable through the C ABI already; only
+  the UI is missing. So is the half of the general settings the ABI cannot carry:
+  the list-shaped ones, of which the LinkBuds Clip's tap sensitivity is one.
