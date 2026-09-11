@@ -1,50 +1,51 @@
 * Sat Sep 12 2026 Sebastian Wolf <sebastian@ygriega.de> 0.2-1
-- Added a cover page: the headset, its batteries, the volume and the active mode
-  at a glance, with cover actions that step the listening mode, the background
-  music distance and the ambient sound control.
 - Added an equalizer page: the presets the headset advertises, the band steps as
-  a strip of faders, and clear bass where the device has it. The button on the
-  device page names the preset that is on.
-- Added a switch for DSEE, the headset's upscaling, under the equalizer button.
-  Both grey out together while a listening mode other than Standard is active,
-  which is the headset's own rule.
-- Added the headset's connected devices: which of its two source devices holds
-  playback, moving playback between them, and whether the headset may move it by
-  itself.
-- Added a settings page for what the headset keeps about itself: the booleans it
-  defines, multipoint among them, and what its Bluetooth link is tuned for.
-- Added an about page, reachable from the device list and the device page.
-- The app now reconnects by itself when a headset that went away comes back, and
-  says it is waiting rather than reporting a failure while it does.
+  a strip of faders, and clear bass where the device has it. The button that
+  opens it names the preset that is on.
+- Added a switch for DSEE, the headset's upscaling. It sits beside the equalizer
+  button because the headset takes both away on the same terms: while a
+  listening mode other than Standard is active, neither applies.
+- Added a settings page for what the headset keeps about itself rather than
+  about the sound: the booleans it defines, multipoint among them, and what its
+  Bluetooth link is tuned for. Changing either drops the Bluetooth links for a
+  moment, which the page says before it happens.
+- The app now reconnects by itself when a headset that went away comes back.
+  Buds going into their case are not a fault, so the app waits and says so
+  rather than reporting a failure, and picks the session up when they return.
 - Launching with exactly one supported headset already connected now opens it
   straight away. Two of them, or none, still open the picker.
+- The cover can now switch the ambient sound control - off, noise cancelling,
+  ambient sound - which is the whole of what a closed-back headset offers there.
+  Before this the cover had no actions at all on a headset without listening
+  modes.
 - The app now rotates into landscape.
-- Translated into German.
-- Volume now reads as a percentage on both the device page and the cover, rather
-  than in the headset's own 0..30 steps.
-- The picker now lists only headsets that speak the Sony protocol, says why one
-  is missing when it can, and shows no MAC addresses anywhere.
-- A connection BlueZ refuses is now explained in a sentence rather than by its
-  error keyword.
-- A battery reading of 0 % is shown greyed: a bud in its case reports the same
-  thing as an empty one, and the protocol does not separate them.
-- Redrew the app icon on Jolla's own base shape.
-- Fixed the listening mode flicking back through Standard on its way to the mode
-  that was picked.
-- Fixed the equalizer and DSEE staying usable on screen after the headset had
-  switched them off, and a preset change collapsing the curve to a flat Custom.
-- Fixed the headset's own settings never applying: the headset asks before a
-  change that costs it its Bluetooth links, and that question went unanswered.
-- Fixed several faults on MDR version 1 headphones (WH-1000XM4 and older),
-  reported and diagnosed by JimKnopfIoT against a WH-1000XM4: voice guidance
-  taking the whole connection down, track names never refreshing, ambient sound
-  being unreachable behind noise cancelling, and the equalizer ignoring both
-  presets and band moves.
-- Fixed a second headset being shown under the first one's name, and the app
-  accepting a Bluetooth connection from a headset it had not asked for.
+- Fixed four faults on MDR version 1 headphones, WH-1000XM4 and older, reported
+  and diagnosed by JimKnopfIoT against that headset: voice guidance taking the
+  whole connection down, so that no such headset could connect at all; track
+  names never refreshing after the first; ambient sound being unreachable
+  because every mode read as noise cancelling; and the equalizer ignoring both
+  preset changes and band moves.
+- Fixed a second headset being shown under the first one's name, which read as
+  the app connecting to the wrong one. Fixed the app accepting a Bluetooth
+  connection from a headset it had not asked for, and acting on a disconnection
+  meant for one it was not talking to.
+- The new pages and controls are translated into German.
 
-* Mon Aug 31 2026 Sebastian Wolf <sebastian@ygriega.de> 0.1-1
-- Initial release: lists the paired headsets that speak Sony's MDR protocol and
-  connects to one over Bluetooth RFCOMM, then shows its model, firmware and
-  battery levels, plays and pauses what is on the phone and moves between
-  tracks, and switches the headset's ambient sound control and listening modes.
+* Sun Sep 06 2026 Sebastian Wolf <sebastian@ygriega.de> 0.1-1
+- Initial release. Lists the paired headsets that speak Sony's MDR protocol -
+  and only those, never their MAC addresses - and connects to one over Bluetooth
+  RFCOMM.
+- Shows the headset's model, firmware and battery levels, a level of 0 % greyed
+  because a bud in its case reports the same thing as an empty one.
+- Plays and pauses what is on the phone, moves between tracks, and sets the
+  volume as a percentage.
+- Switches the ambient sound control - noise cancelling, ambient sound and its
+  level, focus on voice - and the listening modes, background music with its
+  distance among them.
+- Shows the headset's own connected devices, which of them holds playback, and
+  moves playback between them.
+- Puts the headset on the cover: its batteries, volume and active mode, with
+  cover actions for the listening mode and the background music distance.
+- Explains in a sentence what BlueZ means when it refuses a connection, rather
+  than putting its error keyword on screen.
+- Translated into German.

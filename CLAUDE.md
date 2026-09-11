@@ -436,19 +436,25 @@ target and configuration.
 - `%prep` is skipped either way, and `--prepare` is not available for shadow
   builds at all. No loss here — `%prep` only unpacks the source tarball.
 - **sfdk renames the package out from under the spec.** It derives the version from
-  git unless told otherwise, and with no tags in this repository that is
-  `0.1+master.<UTC timestamp>.git<commit>` — the `0.1` is sfdk's own starting point,
-  **not** the spec's `Version`, which has read `0.2` since `7f71502` and is ignored.
-  So an ordinary `sfdk build` cannot produce the RPM a release needs:
+  the latest git tag, and **this repository is tagged**: `0.1` is an annotated tag on
+  `8580397` (2026-09-06), so a build off `master` comes out as
+  `0.1+master.<UTC timestamp>.git<commit>` — the tag, the branch, and where the
+  commit sits after it. The spec's `Version` is ignored outright, which is why it can
+  read `0.2` (since `7f71502`) while the RPM still says 0.1:
 
   ```sh
   sfdk -c target=... build ../harbour-lauscher                    # 0.1+master.….rpm
   sfdk -c no-fix-version -c target=... build ../harbour-lauscher  # 0.2-1.rpm
   ```
 
-  Either tag the release so git and the spec agree, or pass `-c no-fix-version`.
-  Day to day the derived version is the more useful of the two, since it sorts by
-  commit; it is only cutting a release that wants the spec's own word.
+  So cutting a release means tagging it — then git and the spec agree and the derived
+  version is the right one anyway — or passing `-c no-fix-version`. Day to day the
+  derived version is the more useful of the two, since it sorts by commit.
+
+  **Ask git, not this file, where a release begins.** An earlier version of this
+  section said the repository had no tags, which was true when it was written and was
+  taken on trust long after it stopped being. `git tag` and
+  `git log <tag>..HEAD` are the two commands; reading either would have caught it.
 - **The changelog is a separate file.** `rpm/harbour-lauscher.changes` holds RPM
   changelog entries, newest first, in the `* <Day Mon DD YYYY> <name> <email>
   <version>-<release>` form. The spec has no `%changelog` of its own — sfdk appends
