@@ -621,12 +621,27 @@ namespace mdr
         {
             if (state.mSupport.contains(t1::FunctionType::PRESET_EQ))
             {
+                /*
+                 * One frame, but it cannot say both things at once. A V1 device takes a
+                 * preset on its own - no band steps, and it answers with that preset's
+                 * curve - or a curve with the preset left UNSPECIFIED, and then selects
+                 * CUSTOM by itself and says so. A frame carrying a preset and band steps
+                 * together is acknowledged and dropped: a WH-1000XM4 keeps its preset and
+                 * its curve. So a curve the caller changed goes out alone, and anything
+                 * else is a preset change and goes out without one. dirty(), not
+                 * pending(), for the same reason as above.
+                 */
                 t1::SetEqEbbParamEqParam payload;
-                payload.presetId = state.mEqPresetId.submitted;
-                payload.bandSteps.value.push_back(
-                    static_cast<UInt8>(std::clamp(state.mEqClearBass.submitted, -10, 10) + 10));
-                for (const int band : state.mEqConfig.submitted)
-                    payload.bandSteps.value.push_back(static_cast<UInt8>(std::clamp(band, -10, 10) + 10));
+                if (state.mEqConfig.dirty() || state.mEqClearBass.dirty())
+                {
+                    payload.presetId = t1::EqPresetId::UNSPECIFIED;
+                    payload.bandSteps.value.push_back(
+                        static_cast<UInt8>(std::clamp(state.mEqClearBass.submitted, -10, 10) + 10));
+                    for (const int band : state.mEqConfig.submitted)
+                        payload.bandSteps.value.push_back(static_cast<UInt8>(std::clamp(band, -10, 10) + 10));
+                }
+                else
+                    payload.presetId = state.mEqPresetId.submitted;
                 SendCommandACK(t1::SetEqEbbParamEqParam, payload);
             }
             state.mEqPresetId.commit();

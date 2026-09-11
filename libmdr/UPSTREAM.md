@@ -8,8 +8,8 @@ state this app is known to work against:
 |---|---|
 | Repository | `https://github.com/mos9527/SonyHeadphonesClient` |
 | Base | `965c458d` (branch `v1-compat`) |
-| Plus | the WF-LC900 protocol work, branch `mdr-v2-session-correctness-and-listening-modes` on `https://github.com/Wunderfitz/SonyHeadphonesClient`, tip `cb3d915` |
-| Taken on | 2026-09-10 |
+| Plus | the WF-LC900 protocol work, branch `mdr-v2-session-correctness-and-listening-modes` on `https://github.com/Wunderfitz/SonyHeadphonesClient`, tip `d9f7a61` |
+| Taken on | 2026-09-11 |
 
 Those extra commits are **not upstream yet**, and four of them are load-bearing for the
 LinkBuds Clip:
@@ -75,10 +75,10 @@ request asks on it and the device answers `AUDIO_RET_PARAM` on it. Replaying the
 WF-LC900 capture, the committed write is `e8 00 01` where it was `e8 05 01`, and the
 setting applies on the device.
 
-`5a4a393` and `cb3d915` are the sixth and seventh, and they are the first that came from
-someone else's hardware — a Sony WH-1000XM4, reported in pull request #2 against this
-repository and taken upstream from there. Both live in the V1 path, which until then had
-never met a device.
+`5a4a393`, `cb3d915` and `d9f7a61` are the sixth, seventh and eighth, and they are the
+first that came from someone else's hardware — a Sony WH-1000XM4, reported in pull
+request #2 against this repository and taken upstream from there. All three live in the
+V1 path, which until then had never met a device.
 
 - `5a4a393` stops every voice-guidance reply being read as the on/off switch. The third
   byte says which detail the reply carries — `ON_OFF`, `LANGUAGE`, `REQUIRED_TIME`,
@@ -94,6 +94,20 @@ never met a device.
   the track names: those reach the headset over AVRCP, not the control link, so nothing
   ever refills libmdr's copy and a client shows the track that was playing when it
   connected for as long as it stays connected.
+- `d9f7a61` sends a V1 equalizer preset and a curve in separate frames. `EQEBB_SET_PARAM`
+  carries both, and `RequestCommitV1` always filled in both: the staged preset, and every
+  band step as it stood. A V1 device takes one at a time — a WH-1000XM4 acknowledges a
+  frame carrying both and drops it, keeping the preset and the curve it had, so on that
+  headset neither a preset change nor a band move ever took. A curve the caller changed
+  now goes out alone with the preset left `UNSPECIFIED`, after which the device selects
+  Custom and says so; anything else goes out as a preset without steps. It is the same
+  rule as `988f3d1` above, stated forwards, and the V2 side needs no such thing because
+  the frame it sends was already one or the other.
+
+  The equalizer bug this one is *not*: `988f3d1` was about our own re-sending of a
+  snapshot the device had moved past. This is about what a single frame is allowed to
+  say. Both had the same symptom — a control that moves on screen and nothing on the
+  headset — which is worth remembering before reaching for either.
 
 The copy is verbatim - `diff -r` against a checkout's `libmdr/` shows no differences -
 except for two files added here from that repository's root:
