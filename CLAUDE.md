@@ -518,6 +518,13 @@ under `/usr/share/harbour-lauscher`.
 - **Volume is a percentage here, as it is on `DevicePage`.** The headset's 0..30
   scale means nothing at a glance, so the cover reads `MdrController.volumePercent`
   — the same conversion the slider's `valueText` runs through `volumeToPercent()`.
+- **The equalizer preset is deliberately not here.** Issue #3 asked for it in both
+  places and got the `DevicePage` button, which now reads "Equalizer (Bass)"; the
+  cover was declined as too much for the space. The string exists and is one
+  `Label` away — `MdrController.equalizerPresetLabel`, the same property the button
+  uses — so this is a decision about what the cover is for, not a gap. What is on
+  it is what can be read at a glance and acted on from the two actions below it,
+  and the preset is neither.
 
 ## The app icon
 
