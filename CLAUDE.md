@@ -642,6 +642,13 @@ all three, and all of them arrive unprompted as well as on request.
   device pushed over AVRCP, so all three being empty is normal, not a fault — the
   block hides itself in that case. Watch for this when testing: a silent Now-playing
   section usually means the phone is not pushing metadata, not that the app is broken.
+- **A V1 headset has to be asked for them.** A WH-1000XM4 says nothing on the control
+  link when the phone moves to the next track, so the name froze at whatever was playing
+  on connect (pull request #2). While connected to V1, `resyncState()` therefore reads the
+  playback state and calls `mdrHeadphonesRequestSync()` every `kResyncIntervalMs` (3 s).
+  A V2 headset pushes `PLAY_NTFY_PARAM` with the new name by itself, so the timer is never
+  started for it - a permanent beat on the control link of a device that does not need
+  one is exactly what this avoids.
 - **The status is the source device's**, which is why the play/pause button reflects
   what the phone reports rather than what was last tapped, and why
   `sendPlaybackAction()` deliberately does not update anything locally. Whether music
@@ -707,6 +714,25 @@ which a poll-driven protocol library has no business owning. The related fix tha
 *did* belong there - committing the staged flags before the sends instead of
 after - closes a second, shorter window of the same shape, where our own
 two-frame switch (deactivate, then activate) left no mode set in between.
+
+### Ambient sound on V1
+
+The C ABI does not describe a V1 device's noise control the way it describes V2's.
+`mdrHeadphonesGetNoiseControl` reports a single "on", `MDR_NOISE_MODE_V1_ON` - the same
+value as `MDR_NOISE_MODE_CANCELLING` - and puts the mode in `ambient_level`: -1 (`0xFF`) is
+noise cancelling, 0 wind noise reduction, 1..20 ambient sound at that level. Read as V2,
+ambient sound shows as noise cancelling and can never be picked.
+
+- **Reading:** on V1, `refreshNoiseControl()` turns a level of 1..20 into `AmbientSound`
+  and anything below into `NoiseCancelling`. The UI has no wind noise reduction, and noise
+  cancelling is the nearer of the two. The last ambient level is kept through a spell of
+  noise cancelling, which reports none.
+- **Writing:** `setNoiseMode()` sends `0xFF` for noise cancelling and the kept level for
+  ambient sound, 20 if none has been seen; `setAmbientLevel()` stays at 1 or above, since
+  0 would be wind noise reduction.
+- Confirmed on a WH-1000XM4 on 2026-09-11: off, noise cancelling and ambient sound from
+  the app, the level and focus on voice, and the headset's own button, each answered by
+  the matching `NCASM_NTFY_PARAM`.
 
 ### DSEE
 
@@ -930,9 +956,15 @@ clear bass. `MdrController::refreshEqualizer()` reads all of that on
   redundant here, and it puts a preset change immediately before a curve change - which is
   the sequence that lets the device's report of Custom's *stored* curve land between the
   two and repaint the sliders under the finger. That is the bug above, arriving from the
-  other side. A V1 device may need it (a WH-1000XM4 reportedly ignores band writes under a
-  named preset, see pull request #2), but that is a V1 question and belongs behind a
-  family check.
+  other side. A V1 device does not need it either: a WH-1000XM4 selects Custom the same
+  way, see below.
+- **On V1 a preset and a curve never share a frame.** `EQEBB_SET_PARAM` carries a preset
+  and band steps, but a V1 device takes one of them at a time: the preset on its own
+  (`58 01 <preset> 00`), which it answers with that preset's curve, or a curve with the
+  preset left `UNSPECIFIED` (`58 01 FF 06 ...`), after which it reports `CUSTOM` by itself.
+  A frame carrying both is acknowledged and dropped - a WH-1000XM4 keeps its preset and its
+  curve - so `RequestCommitV1` sends one or the other. Confirmed on that headset on
+  2026-09-11; Gadgetbridge writes it the same way.
 - **The list has its own signal.** It arrives whenever the capability answer does —
   `MDR_EVENT_EQUALIZER_CHANGED` covers it like everything else about the equalizer, so
   `refreshEqualizer()` reads it — but the picker is built from it, and restating it on

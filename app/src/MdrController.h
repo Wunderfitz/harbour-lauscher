@@ -307,6 +307,7 @@ signals:
 
 private slots:
     void tick();
+    void resyncState();
     void handleLinkLost();
     void handleDeviceReturned();
     void attemptReconnect();
@@ -362,6 +363,11 @@ private:
     BluezTransport *m_transport = nullptr;
     MDRHeadphones *m_device = nullptr;
     QTimer *m_timer = nullptr;
+    /* Repeating, V1 only: track names live in libmdr's own copy of the device
+     * state, and a V1 headset does not refill that copy while a phone-side
+     * player moves to the next track. So the state is asked for again on a slow
+     * beat - see resyncState(). */
+    QTimer *m_syncTimer = nullptr;
     /* Single-shot: the next reconnect attempt, armed only while one is wanted. */
     QTimer *m_reconnectTimer = nullptr;
 
