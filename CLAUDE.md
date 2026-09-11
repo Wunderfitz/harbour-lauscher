@@ -398,7 +398,8 @@ app/qml/components/           small shared QML: the cover backdrop, about-page b
 app/qml/cover/CoverPage       the cover: status at a glance, mode and distance actions
 app/icons/                    the rendered app icon, one PNG per launcher size
 app/images/                   app icon master, cover artwork, cover-action icons (SVG)
-rpm/harbour-lauscher.spec
+rpm/harbour-lauscher.spec     package metadata and dependencies
+rpm/harbour-lauscher.changes  the RPM changelog, appended to the spec at build time
 ```
 
 Lauscher's own sources — everything under `app/src` and `app/qml` — carry a
@@ -434,10 +435,25 @@ target and configuration.
   build with `Error 127`.
 - `%prep` is skipped either way, and `--prepare` is not available for shadow
   builds at all. No loss here — `%prep` only unpacks the source tarball.
-- sfdk derives the package version from git tags unless told otherwise. This
-  repository has no tags, so it falls back to the spec's `0.1`. Once tags
-  exist they either follow the spec version or builds need
-  `-c no-fix-version`.
+- **sfdk renames the package out from under the spec.** It derives the version from
+  git unless told otherwise, and with no tags in this repository that is
+  `0.1+master.<UTC timestamp>.git<commit>` — the `0.1` is sfdk's own starting point,
+  **not** the spec's `Version`, which has read `0.2` since `7f71502` and is ignored.
+  So an ordinary `sfdk build` cannot produce the RPM a release needs:
+
+  ```sh
+  sfdk -c target=... build ../harbour-lauscher                    # 0.1+master.….rpm
+  sfdk -c no-fix-version -c target=... build ../harbour-lauscher  # 0.2-1.rpm
+  ```
+
+  Either tag the release so git and the spec agree, or pass `-c no-fix-version`.
+  Day to day the derived version is the more useful of the two, since it sorts by
+  commit; it is only cutting a release that wants the spec's own word.
+- **The changelog is a separate file.** `rpm/harbour-lauscher.changes` holds RPM
+  changelog entries, newest first, in the `* <Day Mon DD YYYY> <name> <email>
+  <version>-<release>` form. The spec has no `%changelog` of its own — sfdk appends
+  the file to it at build time and says so (`Appending changelog entries to the RPM
+  SPEC file`), so a malformed entry is worth looking for in the build output.
 - rpmbuild still builds **in-tree** when it unpacks a source tarball
   (`sfdk package`, OBS). That path is no longer structurally blocked now that
   libmdr is vendored inside the project, but it has never been tried;

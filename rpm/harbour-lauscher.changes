@@ -1,0 +1,50 @@
+* Sat Sep 12 2026 Sebastian Wolf <sebastian@ygriega.de> 0.2-1
+- Added a cover page: the headset, its batteries, the volume and the active mode
+  at a glance, with cover actions that step the listening mode, the background
+  music distance and the ambient sound control.
+- Added an equalizer page: the presets the headset advertises, the band steps as
+  a strip of faders, and clear bass where the device has it. The button on the
+  device page names the preset that is on.
+- Added a switch for DSEE, the headset's upscaling, under the equalizer button.
+  Both grey out together while a listening mode other than Standard is active,
+  which is the headset's own rule.
+- Added the headset's connected devices: which of its two source devices holds
+  playback, moving playback between them, and whether the headset may move it by
+  itself.
+- Added a settings page for what the headset keeps about itself: the booleans it
+  defines, multipoint among them, and what its Bluetooth link is tuned for.
+- Added an about page, reachable from the device list and the device page.
+- The app now reconnects by itself when a headset that went away comes back, and
+  says it is waiting rather than reporting a failure while it does.
+- Launching with exactly one supported headset already connected now opens it
+  straight away. Two of them, or none, still open the picker.
+- The app now rotates into landscape.
+- Translated into German.
+- Volume now reads as a percentage on both the device page and the cover, rather
+  than in the headset's own 0..30 steps.
+- The picker now lists only headsets that speak the Sony protocol, says why one
+  is missing when it can, and shows no MAC addresses anywhere.
+- A connection BlueZ refuses is now explained in a sentence rather than by its
+  error keyword.
+- A battery reading of 0 % is shown greyed: a bud in its case reports the same
+  thing as an empty one, and the protocol does not separate them.
+- Redrew the app icon on Jolla's own base shape.
+- Fixed the listening mode flicking back through Standard on its way to the mode
+  that was picked.
+- Fixed the equalizer and DSEE staying usable on screen after the headset had
+  switched them off, and a preset change collapsing the curve to a flat Custom.
+- Fixed the headset's own settings never applying: the headset asks before a
+  change that costs it its Bluetooth links, and that question went unanswered.
+- Fixed several faults on MDR version 1 headphones (WH-1000XM4 and older),
+  reported and diagnosed by JimKnopfIoT against a WH-1000XM4: voice guidance
+  taking the whole connection down, track names never refreshing, ambient sound
+  being unreachable behind noise cancelling, and the equalizer ignoring both
+  presets and band moves.
+- Fixed a second headset being shown under the first one's name, and the app
+  accepting a Bluetooth connection from a headset it had not asked for.
+
+* Mon Aug 31 2026 Sebastian Wolf <sebastian@ygriega.de> 0.1-1
+- Initial release: lists the paired headsets that speak Sony's MDR protocol and
+  connects to one over Bluetooth RFCOMM, then shows its model, firmware and
+  battery levels, plays and pauses what is on the phone and moves between
+  tracks, and switches the headset's ambient sound control and listening modes.
