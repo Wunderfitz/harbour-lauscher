@@ -38,6 +38,12 @@ CoverBackground {
                                         && mdr.listeningModes.length > 1
     readonly property bool canPickRoom: canPickMode && roomApplies
 
+    // The same test for the ambient sound control, which is the whole of what a
+    // closed-back headset offers here: it has no listening modes at all, so gating
+    // the cover on those alone left it with no actions whatsoever.
+    readonly property bool canPickNoise: ready && mdr.noiseControlAvailable
+                                         && mdr.noiseModes.length > 1
+
     function modeName(mode) {
         switch (mode) {
         case Mdr.BackgroundMusic: return qsTr("Ambient background music")
@@ -45,6 +51,16 @@ CoverBackground {
         case Mdr.VoiceBoost: return qsTr("Voice boost")
         case Mdr.SoundLeakageReduction: return qsTr("Sound leakage reduction")
         default: return qsTr("Standard")
+        }
+    }
+
+    // Off is spelled out rather than left as "Off": the cover shows the line with no
+    // section header over it, so the state has to name the feature it belongs to.
+    function noiseName(mode) {
+        switch (mode) {
+        case Mdr.NoiseCancelling: return qsTr("Noise cancelling")
+        case Mdr.AmbientSound: return qsTr("Ambient sound")
+        default: return qsTr("Ambient sound control off")
         }
     }
 
@@ -59,6 +75,14 @@ CoverBackground {
         case Mdr.VoiceBoost: return "../../images/icon-cover-mode-voice-boost-" + inkSuffix
         case Mdr.SoundLeakageReduction: return "../../images/icon-cover-mode-leakage-" + inkSuffix
         default: return "../../images/icon-cover-mode-standard-" + inkSuffix
+        }
+    }
+
+    function noiseIcon(mode) {
+        switch (mode) {
+        case Mdr.NoiseCancelling: return "../../images/icon-cover-noise-cancelling-" + inkSuffix
+        case Mdr.AmbientSound: return "../../images/icon-cover-noise-ambient-" + inkSuffix
+        default: return "../../images/icon-cover-noise-off-" + inkSuffix
         }
     }
 
@@ -90,6 +114,17 @@ CoverBackground {
         var next = modes[(modes.indexOf(mdr.listeningMode) + 1) % modes.length]
         if (next !== mdr.listeningMode)
             mdr.setListeningMode(next)
+    }
+
+    // Off, noise cancelling and ambient sound in the order the device advertised
+    // them, so a headset with only one of the two halves still steps cleanly.
+    function nextNoiseMode() {
+        var modes = mdr.noiseModes
+        if (!modes || modes.length === 0)
+            return
+        var next = modes[(modes.indexOf(mdr.noiseMode) + 1) % modes.length]
+        if (next !== mdr.noiseMode)
+            mdr.setNoiseMode(next)
     }
 
     function nextRoom() {
@@ -183,6 +218,18 @@ CoverBackground {
             truncationMode: TruncationMode.Fade
             font.pixelSize: Theme.fontSizeSmall
             color: Theme.primaryColor
+            visible: cover.ready && mdr.noiseControlAvailable
+            text: cover.noiseName(mdr.noiseMode)
+        }
+
+        Label {
+            width: parent.width
+            horizontalAlignment: Text.AlignLeft
+            wrapMode: Text.WordWrap
+            maximumLineCount: 2
+            truncationMode: TruncationMode.Fade
+            font.pixelSize: Theme.fontSizeSmall
+            color: Theme.primaryColor
             visible: cover.ready && mdr.listeningModeAvailable
             text: cover.modeName(mdr.listeningMode)
         }
@@ -198,17 +245,17 @@ CoverBackground {
         }
     }
 
-    // Two lists rather than one with a hidden action: lipstick takes the first
-    // enabled list wholesale, so the distance appears only when it applies.
-    CoverActionList {
-        enabled: cover.canPickMode && !cover.canPickRoom
-
-        CoverAction {
-            iconSource: cover.modeIcon(mdr.listeningMode)
-            onTriggered: cover.nextMode()
-        }
-    }
-
+    /* One list per combination rather than one list with hidden actions: lipstick
+     * takes an enabled list wholesale, so what a device does not have has to be
+     * absent from the list it is offered rather than hidden inside it. The
+     * conditions are mutually exclusive for the same reason - a device with both
+     * halves is in exactly one of them.
+     *
+     * Two actions is the ceiling, which is what the priority below is about: a
+     * headset with the listening modes, the ambient sound control and background
+     * music playing has three things to step through and room for two. The
+     * distance wins that, because it only applies while that one mode is active
+     * and the other two are reachable for the rest of the session. */
     CoverActionList {
         enabled: cover.canPickRoom
 
@@ -220,6 +267,40 @@ CoverBackground {
         CoverAction {
             iconSource: cover.roomIcon(mdr.backgroundRoom)
             onTriggered: cover.nextRoom()
+        }
+    }
+
+    CoverActionList {
+        enabled: cover.canPickMode && cover.canPickNoise && !cover.canPickRoom
+
+        CoverAction {
+            iconSource: cover.modeIcon(mdr.listeningMode)
+            onTriggered: cover.nextMode()
+        }
+
+        CoverAction {
+            iconSource: cover.noiseIcon(mdr.noiseMode)
+            onTriggered: cover.nextNoiseMode()
+        }
+    }
+
+    CoverActionList {
+        enabled: cover.canPickMode && !cover.canPickNoise && !cover.canPickRoom
+
+        CoverAction {
+            iconSource: cover.modeIcon(mdr.listeningMode)
+            onTriggered: cover.nextMode()
+        }
+    }
+
+    // A closed-back headset lands here: noise cancelling and ambient sound, and no
+    // listening modes to put in front of them.
+    CoverActionList {
+        enabled: cover.canPickNoise && !cover.canPickMode
+
+        CoverAction {
+            iconSource: cover.noiseIcon(mdr.noiseMode)
+            onTriggered: cover.nextNoiseMode()
         }
     }
 }

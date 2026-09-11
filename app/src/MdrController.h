@@ -74,6 +74,7 @@ class MdrController : public QObject
 
     Q_PROPERTY(bool noiseControlAvailable READ noiseControlAvailable NOTIFY featuresChanged)
     Q_PROPERTY(bool ambientLevelAvailable READ ambientLevelAvailable NOTIFY featuresChanged)
+    Q_PROPERTY(QVariantList noiseModes READ noiseModes NOTIFY featuresChanged)
     Q_PROPERTY(int noiseMode READ noiseMode NOTIFY noiseControlChanged)
     Q_PROPERTY(int ambientLevel READ ambientLevel NOTIFY noiseControlChanged)
     Q_PROPERTY(bool focusOnVoice READ focusOnVoice NOTIFY noiseControlChanged)
@@ -208,6 +209,7 @@ public:
 
     bool noiseControlAvailable() const { return m_noiseControlAvailable; }
     bool ambientLevelAvailable() const { return m_ambientLevelAvailable; }
+    QVariantList noiseModes() const { return m_noiseModes; }
     int noiseMode() const { return m_noiseMode; }
     int ambientLevel() const { return m_ambientLevel; }
     bool focusOnVoice() const { return m_focusOnVoice; }
@@ -403,6 +405,7 @@ private:
 
     bool m_noiseControlAvailable = false;
     bool m_ambientLevelAvailable = false;
+    QVariantList m_noiseModes;
     int m_noiseMode = MDR_NOISE_MODE_OFF;
     int m_ambientLevel = 0;
     bool m_focusOnVoice = false;

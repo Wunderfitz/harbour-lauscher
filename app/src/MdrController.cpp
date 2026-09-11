@@ -329,6 +329,7 @@ void MdrController::closeDevice()
     m_playbackControlAvailable = false;
     m_noiseControlAvailable = false;
     m_ambientLevelAvailable = false;
+    m_noiseModes.clear();
     m_listeningModeAvailable = false;
     m_listeningModes.clear();
     m_backgroundRoomAvailable = false;
@@ -640,6 +641,21 @@ void MdrController::refreshFeatures()
     m_noiseControlAvailable = featureAvailable(MDR_FEATURE_NOISE_CANCELLING) ||
                               featureAvailable(MDR_FEATURE_AMBIENT_SOUND);
     m_ambientLevelAvailable = featureAvailable(MDR_FEATURE_AMBIENT_SOUND);
+
+    /* The same shape as the listening modes below: whoever offers these without a
+     * menu - the cover - needs to know which of them this device has, and libmdr
+     * validates the struct rather than the mode against the feature list, so an
+     * unadvertised mode would be staged and quietly ignored. Off exists wherever
+     * either half does, the way Standard does for the listening modes. */
+    QVariantList noiseModes;
+    if (m_noiseControlAvailable) {
+        noiseModes.append(int(MDR_NOISE_MODE_OFF));
+        if (featureAvailable(MDR_FEATURE_NOISE_CANCELLING))
+            noiseModes.append(int(MDR_NOISE_MODE_CANCELLING));
+        if (featureAvailable(MDR_FEATURE_AMBIENT_SOUND))
+            noiseModes.append(int(MDR_NOISE_MODE_AMBIENT));
+    }
+    m_noiseModes = noiseModes;
 
     /* MDR_FEATURE_LISTENING_MODE only says the device groups these into one
      * exclusive setting; each mode is advertised separately, so the picker offers

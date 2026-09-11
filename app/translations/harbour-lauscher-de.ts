@@ -169,6 +169,18 @@
         <source>Volume: %1 %</source>
         <translation>Lautstärke: %1 %</translation>
     </message>
+    <message>
+        <source>Noise cancelling</source>
+        <translation>Geräuschminimierung</translation>
+    </message>
+    <message>
+        <source>Ambient sound</source>
+        <translation>Umgebungsgeräusche</translation>
+    </message>
+    <message>
+        <source>Ambient sound control off</source>
+        <translation>Umgebungsgeräusche-Steuerung aus</translation>
+    </message>
 </context>
 <context>
     <name>DeviceListPage</name>

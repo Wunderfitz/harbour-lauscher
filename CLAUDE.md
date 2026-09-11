@@ -492,13 +492,29 @@ under `/usr/share/harbour-lauscher`.
   harbour-fernschreiber's component, anchored on the cover the way that app
   anchors it: a square as wide as the cover is tall, hung off the bottom right,
   so it overflows the cover and reads large.
-- **Two `CoverActionList`s, not one with a hidden action.** Lipstick takes the
-  first enabled list whole, so the distance action only exists while background
-  music is the active mode. harbour-tasklist switches its cover actions the same
-  way.
+- **A `CoverActionList` per combination, not one with hidden actions.** Lipstick
+  takes an enabled list whole, so what a device does not have has to be absent
+  from the list rather than hidden inside it. harbour-tasklist switches its cover
+  actions the same way. The four lists' conditions are mutually exclusive, so
+  which one lipstick finds first does not decide anything.
+- **The cover covers both of the headset's mode settings**, because a device may
+  have either. The listening mode is one action and the ambient sound control is
+  another; a closed-back headset advertises the ambient sound control and, by the
+  WF-C700N report this came from, none of the listening modes, so gating the whole
+  cover on those left it with no actions whatsoever — which is what "the cover
+  actions do not work" turned out to mean, and a WF-C700N confirmed both halves of
+  the fix.
+- **Two actions is lipstick's ceiling, so there is a priority.** A headset with
+  both settings and background music playing has three things to step through.
+  The distance takes the second slot then, because it applies only while that one
+  mode is active while the other two are there for the rest of the session.
 - The actions step to the next option rather than opening anything — a cover
-  cannot show a menu — and the icon says where that landed. The mode rotation
-  only contains what the device advertises, so it matches `DevicePage`'s picker.
+  cannot show a menu — and the icon says where that landed. Both rotations only
+  contain what the device advertises, so they match `DevicePage`'s pickers:
+  `MdrController.listeningModes` for the one and `noiseModes` for the other,
+  the latter built the same way and for the same reason — libmdr validates the
+  struct rather than the mode against the feature list, so an unadvertised mode
+  would be staged and quietly ignored.
 - **Volume is a percentage here, as it is on `DevicePage`.** The headset's 0..30
   scale means nothing at a glance, so the cover reads `MdrController.volumePercent`
   — the same conversion the slider's `valueText` runs through `volumeToPercent()`.
@@ -1063,6 +1079,19 @@ Both fixes were pinned down offline first, replaying captures through the C ABI 
 phone involved, and both turned out to be one frame each. That is the route paying for
 itself twice over: the app's own symptom for either bug was a switch that moved and a
 device that did not, which says nothing about which of them it was.
+
+### Confirmed on hardware, 2026-09-11
+
+The cover's ambient sound control works, against a **WF-C700N** — the first device
+other than the LinkBuds Clip these hands have driven. It advertises no listening
+modes at all, which is what left the cover with no actions whatsoever while both of
+its lists were gated on those, and the noise action steps it Off, noise cancelling,
+ambient sound from the cover.
+
+The LinkBuds Clip was checked in the same session and its listening-mode and distance
+actions are unchanged. That is the half worth stating: the lists were restructured
+from two to four, so the path that device takes through them is a different one than
+before even though nothing about what it offers moved.
 
 Known gaps:
 - Leaving `DevicePage` still drops the RFCOMM channel on purpose, since the
