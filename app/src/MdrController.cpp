@@ -754,11 +754,27 @@ void MdrController::refreshNoiseControl()
     if (!m_device || mdrHeadphonesGetNoiseControl(m_device, &noise) != MDR_RESULT_OK)
         return;
 
-    const bool changed = m_noiseMode != int(noise.mode) ||
-                         m_ambientLevel != int(noise.ambient_level) ||
+    int mode = int(noise.mode);
+    int level = int(noise.ambient_level);
+    /* V1 has a single "on" - MDR_NOISE_MODE_V1_ON, which is the same value as
+     * MDR_NOISE_MODE_CANCELLING - and says which mode it is through the level:
+     * -1 is noise cancelling, 0 wind noise reduction, 1..20 ambient sound at that
+     * level. Read as it stands, ambient sound would show as noise cancelling.
+     * The UI has no wind noise reduction, so that shows as noise cancelling, the
+     * nearer of the two. A level of -1 or 0 says nothing about the ambient level,
+     * so the last one seen is kept for the way back. */
+    if (kServices[m_serviceIndex].protocol == MDR_PROTOCOL_V1) {
+        const int v1Level = int(int8_t(noise.ambient_level));
+        level = v1Level >= 1 ? v1Level : m_ambientLevel;
+        if (noise.mode != MDR_NOISE_MODE_OFF)
+            mode = v1Level >= 1 ? MDR_NOISE_MODE_AMBIENT : MDR_NOISE_MODE_CANCELLING;
+    }
+
+    const bool changed = m_noiseMode != mode ||
+                         m_ambientLevel != level ||
                          m_focusOnVoice != bool(noise.focus_on_voice);
-    m_noiseMode = int(noise.mode);
-    m_ambientLevel = int(noise.ambient_level);
+    m_noiseMode = mode;
+    m_ambientLevel = level;
     m_focusOnVoice = noise.focus_on_voice != MDR_FALSE;
     if (changed)
         emit noiseControlChanged();
@@ -1303,6 +1319,16 @@ void MdrController::setNoiseMode(int mode)
         return;
 
     noise.mode = MDRNoiseMode(mode);
+    /* V1 takes "on" and a level, and the level is the mode - see
+     * refreshNoiseControl(). 0xFF is the -1 that means noise cancelling;
+     * ambient sound goes back to the last level seen, or the loudest if none
+     * has been. */
+    if (kServices[m_serviceIndex].protocol == MDR_PROTOCOL_V1 && mode != MDR_NOISE_MODE_OFF) {
+        noise.mode = MDR_NOISE_MODE_V1_ON;
+        noise.ambient_level = mode == MDR_NOISE_MODE_CANCELLING
+                                  ? uint8_t(0xFF)
+                                  : uint8_t(m_ambientLevel >= 1 ? qMin(m_ambientLevel, 20) : 20);
+    }
     if (mdrHeadphonesSetNoiseControl(m_device, &noise) != MDR_RESULT_OK)
         return;
 
@@ -1319,7 +1345,9 @@ void MdrController::setAmbientLevel(int level)
     if (!m_device || mdrHeadphonesGetNoiseControl(m_device, &noise) != MDR_RESULT_OK)
         return;
 
-    noise.ambient_level = uint8_t(qBound(0, level, 20));
+    /* On V1 a level of 0 is wind noise reduction, not the quietest ambient sound. */
+    const int minimum = kServices[m_serviceIndex].protocol == MDR_PROTOCOL_V1 ? 1 : 0;
+    noise.ambient_level = uint8_t(qBound(minimum, level, 20));
     if (mdrHeadphonesSetNoiseControl(m_device, &noise) != MDR_RESULT_OK)
         return;
 

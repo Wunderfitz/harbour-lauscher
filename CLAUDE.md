@@ -699,6 +699,25 @@ which a poll-driven protocol library has no business owning. The related fix tha
 after - closes a second, shorter window of the same shape, where our own
 two-frame switch (deactivate, then activate) left no mode set in between.
 
+### Ambient sound on V1
+
+The C ABI does not describe a V1 device's noise control the way it describes V2's.
+`mdrHeadphonesGetNoiseControl` reports a single "on", `MDR_NOISE_MODE_V1_ON` - the same
+value as `MDR_NOISE_MODE_CANCELLING` - and puts the mode in `ambient_level`: -1 (`0xFF`) is
+noise cancelling, 0 wind noise reduction, 1..20 ambient sound at that level. Read as V2,
+ambient sound shows as noise cancelling and can never be picked.
+
+- **Reading:** on V1, `refreshNoiseControl()` turns a level of 1..20 into `AmbientSound`
+  and anything below into `NoiseCancelling`. The UI has no wind noise reduction, and noise
+  cancelling is the nearer of the two. The last ambient level is kept through a spell of
+  noise cancelling, which reports none.
+- **Writing:** `setNoiseMode()` sends `0xFF` for noise cancelling and the kept level for
+  ambient sound, 20 if none has been seen; `setAmbientLevel()` stays at 1 or above, since
+  0 would be wind noise reduction.
+- Confirmed on a WH-1000XM4 on 2026-09-11: off, noise cancelling and ambient sound from
+  the app, the level and focus on voice, and the headset's own button, each answered by
+  the matching `NCASM_NTFY_PARAM`.
+
 ### DSEE
 
 Sony's upscaling. It rides in `MDREqualizer` and arrives on the same
