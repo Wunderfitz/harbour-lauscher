@@ -411,6 +411,10 @@
         <source>Settings</source>
         <translation>Einstellungen</translation>
     </message>
+    <message>
+        <source>Equalizer (%1)</source>
+        <translation>Equalizer (%1)</translation>
+    </message>
 </context>
 <context>
     <name>EqualizerPage</name>

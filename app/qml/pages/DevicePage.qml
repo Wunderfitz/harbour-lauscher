@@ -472,7 +472,18 @@ Page {
                 visible: mdr.state === Mdr.Ready && mdr.equalizerAvailable
                 enabled: mdr.equalizerUsable
                 preferredWidth: Theme.buttonWidthLarge
-                text: qsTr("Equalizer")
+                // Silica grows a button past preferredWidth to fit its text, and the
+                // page is what it would grow past - so cap it at the margins and let
+                // the label fade, which it already does.
+                width: Math.min(implicitWidth, parent.width - 2 * Theme.horizontalPageMargin)
+                // The preset is named here because the page has no room to show it
+                // otherwise, and it is the one thing about the equalizer that changes
+                // without the page being opened - the device selects Custom itself
+                // after a band write. A preset with no name to give falls back to the
+                // plain label rather than to empty brackets.
+                text: mdr.equalizerPresetLabel.length > 0
+                      ? qsTr("Equalizer (%1)").arg(mdr.equalizerPresetLabel)
+                      : qsTr("Equalizer")
                 onClicked: pageStack.push(Qt.resolvedUrl("EqualizerPage.qml"))
             }
 

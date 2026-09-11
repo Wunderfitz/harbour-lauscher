@@ -93,6 +93,11 @@ class MdrController : public QObject
     Q_PROPERTY(QVariantList equalizerPresets READ equalizerPresets NOTIFY equalizerPresetsChanged)
     Q_PROPERTY(bool equalizerUsable READ equalizerUsable NOTIFY equalizerChanged)
     Q_PROPERTY(int equalizerPreset READ equalizerPreset NOTIFY equalizerChanged)
+    /* The preset's own name, for whoever shows it without a menu to put it in.
+     * Read off equalizerPresetName() rather than looked up in equalizerPresets: the
+     * device selects Custom by itself after a band write and need never have
+     * advertised it, and that is exactly when the reader wants to be told. */
+    Q_PROPERTY(QString equalizerPresetLabel READ equalizerPresetLabel NOTIFY equalizerChanged)
     Q_PROPERTY(int equalizerBandCount READ equalizerBandCount NOTIFY equalizerChanged)
     Q_PROPERTY(QVariantList equalizerBands READ equalizerBands NOTIFY equalizerChanged)
     Q_PROPERTY(int equalizerBandMinimum READ equalizerBandMinimum NOTIFY equalizerChanged)
@@ -224,6 +229,10 @@ public:
     QVariantList equalizerPresets() const { return m_equalizerPresets; }
     bool equalizerUsable() const { return m_equalizerUsable; }
     int equalizerPreset() const { return m_equalizerPreset; }
+    QString equalizerPresetLabel() const
+    {
+        return equalizerPresetName(MDREqualizerPreset(m_equalizerPreset));
+    }
     int equalizerBandCount() const { return m_equalizerBands.size(); }
     QVariantList equalizerBands() const { return m_equalizerBands; }
     int equalizerBandMinimum() const;

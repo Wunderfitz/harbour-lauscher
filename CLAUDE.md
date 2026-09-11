@@ -908,6 +908,15 @@ happened, and the frames say which it is.
 clear bass. `MdrController::refreshEqualizer()` reads all of that on
 `MDR_EVENT_EQUALIZER_CHANGED`, which the device raises for every part of it.
 
+- **The button names the preset** — "Equalizer (Bass)" — from
+  `MdrController.equalizerPresetLabel`, which runs the current preset through
+  `equalizerPresetName()` rather than looking it up in `equalizerPresets`. The device
+  selects Custom by itself after a band write and need never have advertised that
+  preset, which is precisely the moment the reader wants to be told; a lookup in the
+  advertised list would come up empty there. A preset with no name to give falls back
+  to the plain label rather than to empty brackets. Silica grows a `Button` past
+  `preferredWidth` to fit its text, so this one is capped at the page margins and the
+  label fades — `R&B / Hip-Hop` is the name that makes that matter.
 - **Two gates, and they mean different things.** `MDR_FEATURE_EQUALIZER` says the
   headset has an equalizer at all — no bit, no button. `MDREqualizer.available`
   says it will act on a change *right now*, and it goes false while any listening
