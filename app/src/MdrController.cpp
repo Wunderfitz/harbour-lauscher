@@ -187,6 +187,17 @@ void MdrController::refreshPairedDevices()
 
 void MdrController::connectToDevice(const QString &address)
 {
+    /* A different headset is not the last one's name, firmware, serial or codec, and
+     * DevicePage's header shows the name from the moment it opens - before the new
+     * device has said anything, and for as long as it says nothing. Left standing, a
+     * connection to the second headset reads as one still being made to the first,
+     * which is what it was taken for. Cleared here rather than in closeDevice(),
+     * because the same headset coming back from its case is the case that wants the
+     * name kept: it is still that headset, and the page holding its identity through
+     * the wait is the point of the wait. */
+    if (address.compare(m_address, Qt::CaseInsensitive) != 0)
+        clearIdentity();
+
     m_address = address;
     /* Asking for a device is what arms the automatic side of this: from here until
      * the session is given up on deliberately, a headset that goes away and comes
@@ -211,6 +222,10 @@ void MdrController::startConnection()
     m_reconnectTimer->stop();
 
     m_serviceIndex = 0;
+    /* Which headset, by address: with two of them paired and one in its case, "it is
+     * connecting to the wrong one" is a claim the journal can settle and the screen
+     * cannot - the page can only name a device once that device has answered. */
+    qInfo() << "[lauscher] connecting to" << m_address;
     setStatus(tr("Connecting…"));
     setState(Connecting);
 
@@ -646,6 +661,16 @@ bool MdrController::featureAvailable(MDRFeature feature) const
     return m_device &&
            mdrHeadphonesGetFeature(m_device, feature, &availability) == MDR_RESULT_OK &&
            availability == MDR_AVAILABILITY_AVAILABLE;
+}
+
+void MdrController::clearIdentity()
+{
+    m_deviceName.clear();
+    m_firmwareVersion.clear();
+    m_serialNumber.clear();
+    m_codec.clear();
+    m_protocolVersion = 0;
+    emit identityChanged();
 }
 
 void MdrController::refreshIdentity()

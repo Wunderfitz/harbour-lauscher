@@ -27,6 +27,7 @@
 #include <QVariantList>
 
 #include <QDBusAbstractAdaptor>
+#include <QDBusContext>
 #include <QDBusObjectPath>
 #include <QDBusUnixFileDescriptor>
 #include <QDBusVariant>
@@ -41,7 +42,7 @@ class QDBusPendingCallWatcher;
  * actually calls. QtDBus derives the interface from the adaptor class unless
  * told otherwise, hence the Q_CLASSINFO.
  */
-class Profile1Adaptor : public QDBusAbstractAdaptor
+class Profile1Adaptor : public QDBusAbstractAdaptor, protected QDBusContext
 {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.bluez.Profile1")
@@ -96,6 +97,10 @@ public:
 
     /** Whether BlueZ has a link to this device right now - its Device1.Connected. */
     bool isDeviceConnected(const QString &macAddress);
+
+    /** Whether @p path is the device this transport asked BlueZ for. A registered
+     *  Profile1 is offered every device that connects on its UUID, not only ours. */
+    bool ownsDevicePath(const QString &path) const;
 
     /** True once BlueZ has handed us a connected RFCOMM socket. */
     bool hasSocket() const { return m_fd >= 0; }

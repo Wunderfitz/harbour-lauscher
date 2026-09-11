@@ -133,17 +133,34 @@ Profile1Adaptor::Profile1Adaptor(BluezTransport *transport)
     setAutoRelaySignals(false);
 }
 
+/* The Profile1 object is registered for a UUID, not for a device, so bluetoothd
+ * offers it every device that connects on that UUID - including a second headset,
+ * or the one this app has just walked away from waking up again. Taking whatever
+ * arrives would hand the session a socket to a headset nobody asked for, and the
+ * app would go on naming the one it thinks it called. So the path is checked, and
+ * anything else is refused the way BlueZ expects a profile to refuse. */
 void Profile1Adaptor::NewConnection(const QDBusObjectPath &device, const QDBusUnixFileDescriptor &fd,
                                     const QVariantMap &properties)
 {
-    Q_UNUSED(device)
     Q_UNUSED(properties)
+    if (!m_transport->ownsDevicePath(device.path())) {
+        qWarning() << "[lauscher] bluez: refusing a connection from" << device.path()
+                   << "- not the device we asked for";
+        sendErrorReply(QStringLiteral("org.bluez.Error.Rejected"),
+                       QStringLiteral("Not the device this profile asked for"));
+        return;
+    }
     m_transport->handleNewConnection(fd);
 }
 
 void Profile1Adaptor::RequestDisconnection(const QDBusObjectPath &device)
 {
-    Q_UNUSED(device)
+    /* Same reasoning as NewConnection: another headset's profile going away is not
+     * this session ending, and acting on it would drop a link that is up. */
+    if (!m_transport->ownsDevicePath(device.path())) {
+        qInfo() << "[lauscher] bluez: ignoring a disconnection request for" << device.path();
+        return;
+    }
     m_transport->handleRequestDisconnection();
 }
 
@@ -527,6 +544,11 @@ void BluezTransport::handleRelease()
     handleRequestDisconnection();
 }
 
+bool BluezTransport::ownsDevicePath(const QString &path) const
+{
+    return !m_devicePath.isEmpty() && path == m_devicePath;
+}
+
 void BluezTransport::doDisconnect()
 {
     if (m_fd >= 0) {
@@ -535,6 +557,9 @@ void BluezTransport::doDisconnect()
     }
     m_connecting = false;
     m_pendingResult = MDR_RESULT_OK;
+    /* Nothing is ours from here until the next doConnect() names a device, which is
+     * what keeps a late callback for the last one from being taken for this one. */
+    m_devicePath.clear();
 }
 
 MDRResult BluezTransport::doPoll(int timeout)

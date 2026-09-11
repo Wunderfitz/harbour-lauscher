@@ -342,6 +342,8 @@ private:
     void pumpConnection();
     void pumpDevice();
 
+    /** Drop the last headset's name, firmware, serial and codec. */
+    void clearIdentity();
     void refreshIdentity();
     void refreshBatteries();
     void refreshFeatures();

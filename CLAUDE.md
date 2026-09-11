@@ -219,6 +219,33 @@ an automatic connection can fail exactly as a tapped one does — which is why i
 pushed rather than swapped in: the way back to the list is also the way to the other
 headset.
 
+**A `Profile1` belongs to a UUID, not to a device.** bluetoothd offers the registered
+object every device that connects on that UUID, so `NewConnection` and
+`RequestDisconnection` both arrive for headsets this app never asked for — a second
+one the reader has just paired, or the one they walked away from waking up in its
+case. Both callbacks ignored their `device` argument at first, which meant a stray
+`NewConnection` handed the session a socket to the wrong headset while the app went
+on naming the one it had called, and a stray `RequestDisconnection` dropped a link
+that was up. Both now test `ownsDevicePath()` against the path `doConnect()` asked
+on; a mismatched connection is refused as `org.bluez.Error.Rejected`, which is how
+BlueZ expects a profile to say no. `doDisconnect()` clears that path, so a callback
+arriving after the app let go is not taken for the next connection either.
+
+**The identity is the last headset's until the next one answers.** `closeDevice()`
+clears every reading — batteries, features, equalizer, listening mode — but the model
+name, firmware, serial and codec are only ever written by `refreshIdentity()`, and
+`DevicePage`'s header shows the name from the moment the page opens. Connecting to a
+second headset therefore showed the first one's name for as long as the second said
+nothing, which reads exactly like a connection still being made to the first, and was
+reported as one. `connectToDevice()` clears the identity when the address differs from
+the last — not `closeDevice()`, because the same headset coming back from its case is
+precisely the case that wants its name kept through the wait.
+
+**`startConnection()` logs the address it is about to use**, because "it is connecting
+to the wrong headset" is a claim only the journal can settle: the page cannot name a
+device until that device has answered, so the screen is silent on exactly the question
+being asked.
+
 **No MAC address is shown anywhere in the UI.** Addresses are passed through as
 identifiers (`connectToDevice()`, and the paired-device commands, which libmdr
 validates against the headset's 17-character form) and nothing more. BlueZ
