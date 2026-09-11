@@ -940,9 +940,15 @@ clear bass. `MdrController::refreshEqualizer()` reads all of that on
   redundant here, and it puts a preset change immediately before a curve change - which is
   the sequence that lets the device's report of Custom's *stored* curve land between the
   two and repaint the sliders under the finger. That is the bug above, arriving from the
-  other side. A V1 device may need it (a WH-1000XM4 reportedly ignores band writes under a
-  named preset, see pull request #2), but that is a V1 question and belongs behind a
-  family check.
+  other side. A V1 device does not need it either: a WH-1000XM4 selects Custom the same
+  way, see below.
+- **On V1 a preset and a curve never share a frame.** `EQEBB_SET_PARAM` carries a preset
+  and band steps, but a V1 device takes one of them at a time: the preset on its own
+  (`58 01 <preset> 00`), which it answers with that preset's curve, or a curve with the
+  preset left `UNSPECIFIED` (`58 01 FF 06 ...`), after which it reports `CUSTOM` by itself.
+  A frame carrying both is acknowledged and dropped - a WH-1000XM4 keeps its preset and its
+  curve - so `RequestCommitV1` sends one or the other. Confirmed on that headset on
+  2026-09-11; Gadgetbridge writes it the same way.
 - **The list has its own signal.** It arrives whenever the capability answer does —
   `MDR_EVENT_EQUALIZER_CHANGED` covers it like everything else about the equalizer, so
   `refreshEqualizer()` reads it — but the picker is built from it, and restating it on
