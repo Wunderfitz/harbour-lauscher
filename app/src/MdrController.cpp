@@ -159,6 +159,26 @@ void MdrController::fail(const QString &message)
 
 /* ------------------------------------------------------------------ devices */
 
+/* Launching with one headset already on the phone is the ordinary case, and making
+ * the reader pick it out of a list of one says nothing. Two of them is a genuine
+ * question - which of these did you mean - and none is not a question at all, so
+ * both leave the picker up. What BlueZ calls Connected is the ACL link, which is
+ * what attemptReconnect() asks about too; it does not promise the MDR record is
+ * live, and a connection that fails from here fails the way a tapped one does. */
+QString MdrController::soleConnectedDevice() const
+{
+    QString address;
+    for (int i = 0; i < m_pairedDevices.size(); ++i) {
+        const QVariantMap device = m_pairedDevices.at(i).toMap();
+        if (!device.value(QStringLiteral("connected")).toBool())
+            continue;
+        if (!address.isEmpty())
+            return QString();
+        address = device.value(QStringLiteral("address")).toString();
+    }
+    return address;
+}
+
 void MdrController::refreshPairedDevices()
 {
     m_pairedDevices = m_transport->pairedDevices();

@@ -196,6 +196,29 @@ missing from the picker means bluetoothd has no MDR record for it, and
 reconnecting it once in the Bluetooth settings is what re-runs the SDP lookup —
 the empty-list hint on `DeviceListPage` says so.
 
+**One headset already connected is opened without being asked for.** On launch, if
+exactly one of the listed devices has BlueZ's `Connected` set, `DeviceListPage`
+connects to it and pushes `DevicePage` — picking it out of a list of one says
+nothing. Two is a question only the reader can answer and none is not a question, so
+both leave the picker up; `MdrController::soleConnectedDevice()` is that rule and
+returns an empty string for either. Three things about it are load-bearing:
+
+- **It is the status, not `Component.onCompleted`.** The page is the stack's bottom
+  and is never rebuilt, so a flag settles it once per run. Without that, coming back
+  from `DevicePage` — which is what leaving it does — would reconnect what the reader
+  just walked away from, and the page could not be left at all.
+- **`PageStatus.Active`, not `Activating`.** Pushing through a transition that has
+  not finished asks the stack to do two things at once.
+- **The list is real by then.** `pairedDevices()` is a blocking `GetManagedObjects`
+  and `main.cpp` sets the context property before loading any QML, so the answer does
+  not depend on a D-Bus round trip landing in time.
+
+`Connected` is the ACL link, the same property `attemptReconnect()` asks about. It
+does not promise the MDR record is live (see `br-connection-not-supported` below), so
+an automatic connection can fail exactly as a tapped one does — which is why it is
+pushed rather than swapped in: the way back to the list is also the way to the other
+headset.
+
 **No MAC address is shown anywhere in the UI.** Addresses are passed through as
 identifiers (`connectToDevice()`, and the paired-device commands, which libmdr
 validates against the headset's 17-character form) and nothing more. BlueZ

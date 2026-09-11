@@ -189,6 +189,10 @@ public:
     bool reconnecting() const;
     QString statusMessage() const { return m_statusMessage; }
     QVariantList pairedDevices() const { return m_pairedDevices; }
+    /** The address of the one headset the phone already has a link to, or an empty
+     *  string unless there is exactly one. Two is a question only the reader can
+     *  answer, and none is nothing to answer. */
+    Q_INVOKABLE QString soleConnectedDevice() const;
 
     QString deviceName() const { return m_deviceName; }
     QString firmwareVersion() const { return m_firmwareVersion; }

@@ -30,11 +30,33 @@ Page {
     // intersected with the window's, so All here means "whatever the device permits".
     allowedOrientations: Orientation.All
 
+    // Set once the launch has been answered one way or the other. This page is the
+    // stack's bottom and is never rebuilt, so coming back from the device page lands
+    // here again - and must not reconnect what the reader has just walked away from.
+    property bool autoConnectSettled: false
+
     // Coming back from the device page means we disconnected; make sure the
     // list reflects whatever BlueZ thinks is paired right now.
     onStatusChanged: {
         if (status === PageStatus.Activating)
             mdr.refreshPairedDevices()
+
+        // Launching with one headset already on the phone is the ordinary case, and
+        // picking it out of a list of one says nothing; two is a question only the
+        // reader can answer, and none is not a question. On Active rather than
+        // Activating, because pushing through a transition that has not finished is
+        // asking the stack to do two things at once.
+        if (status !== PageStatus.Active || autoConnectSettled)
+            return
+        autoConnectSettled = true
+
+        var address = mdr.soleConnectedDevice()
+        if (address.length === 0)
+            return
+        // Pushed, not replaced: the way back to the list is also the way to a second
+        // headset, and a connection that fails wants somewhere to return to.
+        mdr.connectToDevice(address)
+        pageStack.push(Qt.resolvedUrl("DevicePage.qml"))
     }
 
     SilicaListView {
