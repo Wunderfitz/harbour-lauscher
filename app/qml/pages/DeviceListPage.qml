@@ -24,6 +24,12 @@ import de.ygriega.lauscher 1.0
 Page {
     id: page
 
+    // Silica defaults every page to Orientation.Portrait - _defaultPageOrientations
+    // on ApplicationWindow - no matter what the window allows, so the window's
+    // defaultAllowedOrientations alone rotates nothing. Page.allowedOrientations is
+    // intersected with the window's, so All here means "whatever the device permits".
+    allowedOrientations: Orientation.All
+
     // Coming back from the device page means we disconnected; make sure the
     // list reflects whatever BlueZ thinks is paired right now.
     onStatusChanged: {

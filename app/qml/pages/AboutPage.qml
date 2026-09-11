@@ -24,6 +24,8 @@ import "../components"
 Page {
     id: aboutPage
 
+    allowedOrientations: Orientation.All
+
     readonly property string sourcesUrl: "https://github.com/Wunderfitz/harbour-lauscher"
     readonly property string clientUrl: "https://github.com/mos9527/SonyHeadphonesClient"
 

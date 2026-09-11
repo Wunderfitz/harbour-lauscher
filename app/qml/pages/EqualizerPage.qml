@@ -31,6 +31,8 @@ import "../components"
 Page {
     id: page
 
+    allowedOrientations: Orientation.All
+
     SilicaFlickable {
         anchors.fill: parent
         contentHeight: content.height + Theme.paddingLarge
@@ -189,8 +191,13 @@ Page {
 
                             width: bandStrip.width / Math.max(1, mdr.equalizerBandCount)
                             // Room for a finger to travel: about twenty pixels a step on
-                            // the ten-band layout, which is the one this device has.
-                            trackHeight: Theme.itemSizeHuge * 1.5
+                            // the ten-band layout, which is the one this device has. A
+                            // landscape screen has no such room to give - the full strip
+                            // would leave the curve to be read through a slot - so it
+                            // gives back a third, which still leaves a step wider than a
+                            // finger is precise. The bands are wider there in exchange.
+                            trackHeight: page.isLandscape ? Theme.itemSizeHuge
+                                                          : Theme.itemSizeHuge * 1.5
                             minimumValue: mdr.equalizerBandMinimum
                             maximumValue: mdr.equalizerBandMaximum
                             label: mdr.equalizerBandLabel(index)

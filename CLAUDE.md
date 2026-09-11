@@ -567,7 +567,7 @@ package.
 
 ## QML gotchas already paid for
 
-Three bugs cost real debugging time here; do not reintroduce them.
+Four bugs cost real debugging time here; do not reintroduce them.
 
 The host's own `qmllint` runs over these files without a device or an emulator —
 it only parses, so the Silica imports it cannot resolve do not bother it:
@@ -602,6 +602,13 @@ C++ — that is where `Separator.horizontalAlignment` turns out to come from
   owns pages pushed by URL and destroys them when they are popped, so that fires
   only on the way out for good. Anything else that must survive a pushed page
   needs the same distinction.
+- **`allowedOrientations` on `ApplicationWindow` rotates nothing by itself.** Silica
+  gives every `Page` its own `allowedOrientations`, defaulted to
+  `ApplicationWindow._defaultPageOrientations`, which is `Orientation.Portrait` — so
+  the window saying `defaultAllowedOrientations` is overruled page by page, and the
+  app simply does not turn. Every page here sets `Orientation.All`; `Page` intersects
+  that with the window's, so it still means "whatever the device permits" rather than
+  overriding the device's own configuration. A page added later needs the line too.
 
 Also: Silica's `ComboBox.currentIndex`, `Slider.value` and `TextSwitch.checked`
 are **written to** by the controls themselves. Binding them to a `mdr.*` property

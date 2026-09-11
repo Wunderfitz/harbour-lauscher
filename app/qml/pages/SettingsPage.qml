@@ -30,6 +30,8 @@ import de.ygriega.lauscher 1.0
 Page {
     id: page
 
+    allowedOrientations: Orientation.All
+
     SilicaFlickable {
         anchors.fill: parent
         contentHeight: content.height + Theme.paddingLarge

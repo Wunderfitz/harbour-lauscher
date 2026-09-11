@@ -24,6 +24,8 @@ import de.ygriega.lauscher 1.0
 Page {
     id: page
 
+    allowedOrientations: Orientation.All
+
     // Track names reach the headset over AVRCP from whatever is playing, so all
     // three are empty unless the phone is pushing metadata. Nothing to show then.
     readonly property bool hasTrackInfo: mdr.trackTitle.length > 0
