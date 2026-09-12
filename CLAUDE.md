@@ -231,6 +231,32 @@ on; a mismatched connection is refused as `org.bluez.Error.Rejected`, which is h
 BlueZ expects a profile to say no. `doDisconnect()` clears that path, so a callback
 arriving after the app let go is not taken for the next connection either.
 
+**Letting go of the channel means telling BlueZ, not closing the descriptor.** The
+fd from `NewConnection` is a second reference to the same socket; bluetoothd keeps
+its own and watches it for hangup. So `::close()` alone leaves the RFCOMM channel
+up, the headset's one control session occupied, and the service marked connected
+on BlueZ's books — and the next `ConnectProfile` for that device is answered
+`Already Connected` with no `NewConnection` behind it, because there is no new
+channel to hand over. That is a `DevicePage` stuck on "Connecting…" for good: the
+app was waiting for a socket nobody was going to send. `doDisconnect()` therefore
+calls `Device1.DisconnectProfile()` for any channel it held or had asked for.
+Three details are load-bearing:
+
+- **`NoBlock`.** BlueZ takes an external profile down by calling
+  `RequestDisconnection` on us and waiting for the reply, so a blocking call here
+  would be this process waiting on an answer it cannot give until it stops waiting.
+- **The callback that follows is ignored**, because `m_devicePath` is cleared right
+  after and `ownsDevicePath()` fails — which is right: that teardown is ours, not
+  the headset going away, and `linkLost()` would start a reconnect for a session
+  the user just left.
+- **`Already Connected` is a failure, not a state to wait in.** The branch that used
+  to swallow it said BlueZ would still call `NewConnection`; it does not — device.c
+  answers `btd_error_already_connected` and stops there. It now disconnects the
+  stale profile and fails the attempt, so the retry a few seconds later is the one
+  that gets a fresh channel. That is the backstop for the race — leave the page and
+  tap the same headset before bluetoothd has finished — while the disconnect above
+  is what keeps the ordinary case from reaching it at all.
+
 **The identity is the last headset's until the next one answers.** `closeDevice()`
 clears every reading — batteries, features, equalizer, listening mode — but the model
 name, firmware, serial and codec are only ever written by `refreshIdentity()`, and

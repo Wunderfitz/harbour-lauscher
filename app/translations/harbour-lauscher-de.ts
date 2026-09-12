@@ -118,6 +118,10 @@
         <source>Could not open the control channel: %1</source>
         <translation>Der Steuerkanal konnte nicht geöffnet werden: %1</translation>
     </message>
+    <message>
+        <source>The control channel was still open from the last session. Lauscher has closed it; please try again.</source>
+        <translation>Der Steuerkanal war noch von der letzten Sitzung geöffnet. Lauscher hat ihn geschlossen; bitte versuchen Sie es erneut.</translation>
+    </message>
 </context>
 <context>
     <name>CoverPage</name>

@@ -29,6 +29,10 @@
   the app connecting to the wrong one. Fixed the app accepting a Bluetooth
   connection from a headset it had not asked for, and acting on a disconnection
   meant for one it was not talking to.
+- Fixed connecting to the same headset a second time hanging on "Connecting..."
+  for good. Leaving the device page closed this app's end of the control
+  channel, but BlueZ held the other end open, so the headset's one control
+  session stayed occupied; the app now tells BlueZ to let go of it.
 - The new pages and controls are translated into German.
 
 * Sun Sep 06 2026 Sebastian Wolf <sebastian@ygriega.de> 0.1-1

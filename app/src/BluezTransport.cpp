@@ -383,6 +383,32 @@ bool BluezTransport::ensureProfileRegistered(const QString &serviceUUID)
     return true;
 }
 
+/* The descriptor BlueZ hands over is a second reference to the same socket, not
+ * a handover: bluetoothd keeps its own and watches it, so closing ours leaves the
+ * RFCOMM channel up, the headset's one control session occupied, and the service
+ * marked connected on BlueZ's books. The next ConnectProfile for that device is
+ * then answered "Already Connected" and no NewConnection follows, because there
+ * is no new channel to hand over - which is a session that can never be opened
+ * again short of restarting the app. So a channel we let go of is one BlueZ has
+ * to be told about.
+ *
+ * NoBlock, not a blocking call: BlueZ takes an external profile down by calling
+ * RequestDisconnection on us and waiting for the reply, so blocking here would be
+ * this process waiting on a reply to a question it cannot answer until it stops
+ * waiting. The callback that follows is ignored by ownsDevicePath() - the path is
+ * cleared before it can arrive - which is exactly right, since this teardown is
+ * ours and not the headset going away. */
+void BluezTransport::disconnectProfile(const QString &devicePath)
+{
+    if (devicePath.isEmpty() || m_profileUuid.isEmpty())
+        return;
+
+    QDBusMessage call = QDBusMessage::createMethodCall(
+        kBluezService, devicePath, kDeviceIface, QStringLiteral("DisconnectProfile"));
+    call << m_profileUuid;
+    QDBusConnection::systemBus().call(call, QDBus::NoBlock);
+}
+
 void BluezTransport::unregisterProfile()
 {
     if (m_profileUuid.isEmpty())
@@ -489,11 +515,28 @@ void BluezTransport::onConnectProfileFinished(QDBusPendingCallWatcher *watcher)
     if (!reply.isError())
         return; /* The socket arrives separately, via NewConnection. */
 
-    /* "Already Connected" means the profile channel is up from an earlier run;
-     * BlueZ still calls NewConnection in that case, so keep waiting. */
-    const QString message = reply.error().message();
-    if (message.contains(QStringLiteral("Already Connected"), Qt::CaseInsensitive))
+    /* NewConnection can land before the reply does, and a socket in hand settles
+     * the question whatever the reply says. */
+    if (m_fd >= 0)
         return;
+
+    /* "Already Connected" is BlueZ saying it still holds the channel from the last
+     * session - our own, most likely, since closing our copy of the descriptor does
+     * not close its. There is no new channel to hand over, so no NewConnection is
+     * coming and waiting for one is waiting forever. Tell BlueZ to drop it and let
+     * this attempt fail: the retry a few seconds later is the one that gets a fresh
+     * channel. */
+    const QString message = reply.error().message();
+    if (message.contains(QStringLiteral("Already Connected"), Qt::CaseInsensitive)) {
+        disconnectProfile(m_devicePath);
+        m_connecting = false;
+        m_pendingResult = MDR_RESULT_ERROR_NET;
+        /* Worded as a verdict, because that is the only way it is ever read: the
+         * attempts in between keep the message the page already has. */
+        setError(tr("The control channel was still open from the last session. "
+                    "Lauscher has closed it; please try again."));
+        return;
+    }
 
     /* Reported through poll() rather than failed(), so the controller still
      * gets to retry on the other service UUID before giving up. */
@@ -551,10 +594,16 @@ bool BluezTransport::ownsDevicePath(const QString &path) const
 
 void BluezTransport::doDisconnect()
 {
+    /* An attempt still in flight counts: BlueZ may complete it after we have gone,
+     * and then it holds a channel nobody adopted. */
+    const bool heldChannel = m_fd >= 0 || m_connecting;
+
     if (m_fd >= 0) {
         ::close(m_fd);
         m_fd = -1;
     }
+    if (heldChannel)
+        disconnectProfile(m_devicePath);
     m_connecting = false;
     m_pendingResult = MDR_RESULT_OK;
     /* Nothing is ours from here until the next doConnect() names a device, which is

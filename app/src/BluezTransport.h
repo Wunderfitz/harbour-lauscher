@@ -144,6 +144,8 @@ private:
 
     bool ensureProfileRegistered(const QString &serviceUUID);
     void unregisterProfile();
+    /** Ask BlueZ to drop the profile connection it holds for @p devicePath. */
+    void disconnectProfile(const QString &devicePath);
     QString devicePathForAddress(const QString &macAddress);
     void setError(const QString &message);
     void adoptSocket(int fd);
