@@ -61,7 +61,7 @@ Page {
             Label {
                 anchors.horizontalCenter: parent.horizontalCenter
                 // Bump together with rpm/harbour-lauscher.spec.
-                text: qsTr("Lauscher %1").arg("0.2")
+                text: qsTr("Lauscher %1").arg("0.3")
                 font.pixelSize: Theme.fontSizeExtraLarge
             }
 
