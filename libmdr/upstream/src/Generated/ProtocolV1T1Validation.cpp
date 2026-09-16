@@ -304,6 +304,21 @@ MDRResult<void> NotifyBatteryLevelBatteryParam::Validate(const NotifyBatteryLeve
     MDR_VALIDATE(is_valid(data.chargingStatus));
     return MDRResult<void>::Success();
 }
+MDRResult<void> NotifyBatteryLevelCradleBatteryParam::Validate(const NotifyBatteryLevelCradleBatteryParam& data) {
+    MDR_VALIDATE(is_valid(data.command));
+    MDR_VALIDATE(data.command == Command::COMMON_NTFY_BATTERY_LEVEL);
+    // data.type ignored: OUT_OF_RANGE is expected
+    MDR_VALIDATE(is_valid(data.chargingStatus));
+    return MDRResult<void>::Success();
+}
+MDRResult<void> NotifyBatteryLevelLeftRightBatteryParam::Validate(const NotifyBatteryLevelLeftRightBatteryParam& data) {
+    MDR_VALIDATE(is_valid(data.command));
+    MDR_VALIDATE(data.command == Command::COMMON_NTFY_BATTERY_LEVEL);
+    // data.type ignored: OUT_OF_RANGE is expected
+    MDR_VALIDATE(is_valid(data.leftChargingStatus));
+    MDR_VALIDATE(is_valid(data.rightChargingStatus));
+    return MDRResult<void>::Success();
+}
 MDRResult<void> NotifyBatteryLevelUpdateBatteryPowerThresholdForInterruptiongUpdtParam::Validate(const NotifyBatteryLevelUpdateBatteryPowerThresholdForInterruptiongUpdtParam& data) {
     MDR_VALIDATE(is_valid(data.command));
     MDR_VALIDATE(data.command == Command::COMMON_NTFY_BATTERY_LEVEL);
@@ -654,6 +669,21 @@ MDRResult<void> RetBatteryLevelBatteryParam::Validate(const RetBatteryLevelBatte
     MDR_VALIDATE(data.command == Command::COMMON_RET_BATTERY_LEVEL);
     // data.type ignored: OUT_OF_RANGE is expected
     MDR_VALIDATE(is_valid(data.chargingStatus));
+    return MDRResult<void>::Success();
+}
+MDRResult<void> RetBatteryLevelCradleBatteryParam::Validate(const RetBatteryLevelCradleBatteryParam& data) {
+    MDR_VALIDATE(is_valid(data.command));
+    MDR_VALIDATE(data.command == Command::COMMON_RET_BATTERY_LEVEL);
+    // data.type ignored: OUT_OF_RANGE is expected
+    MDR_VALIDATE(is_valid(data.chargingStatus));
+    return MDRResult<void>::Success();
+}
+MDRResult<void> RetBatteryLevelLeftRightBatteryParam::Validate(const RetBatteryLevelLeftRightBatteryParam& data) {
+    MDR_VALIDATE(is_valid(data.command));
+    MDR_VALIDATE(data.command == Command::COMMON_RET_BATTERY_LEVEL);
+    // data.type ignored: OUT_OF_RANGE is expected
+    MDR_VALIDATE(is_valid(data.leftChargingStatus));
+    MDR_VALIDATE(is_valid(data.rightChargingStatus));
     return MDRResult<void>::Success();
 }
 MDRResult<void> RetBatteryLevelUpdateBatteryPowerThresholdForInterruptiongUpdtParam::Validate(const RetBatteryLevelUpdateBatteryPowerThresholdForInterruptiongUpdtParam& data) {

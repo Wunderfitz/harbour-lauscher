@@ -224,6 +224,12 @@ namespace mdr {
     template<> struct MDRTraits<v1::t1::NotifyBatteryLevelBatteryParam> {
         static constexpr MDRDataType kDataType = MDRDataType::DATA_MDR;
     };
+    template<> struct MDRTraits<v1::t1::NotifyBatteryLevelCradleBatteryParam> {
+        static constexpr MDRDataType kDataType = MDRDataType::DATA_MDR;
+    };
+    template<> struct MDRTraits<v1::t1::NotifyBatteryLevelLeftRightBatteryParam> {
+        static constexpr MDRDataType kDataType = MDRDataType::DATA_MDR;
+    };
     template<> struct MDRTraits<v1::t1::NotifyBatteryLevelUpdateBatteryPowerThresholdForInterruptiongUpdtParam> {
         static constexpr MDRDataType kDataType = MDRDataType::DATA_MDR;
     };
@@ -381,6 +387,12 @@ namespace mdr {
         static constexpr MDRDataType kDataType = MDRDataType::DATA_MDR;
     };
     template<> struct MDRTraits<v1::t1::RetBatteryLevelBatteryParam> {
+        static constexpr MDRDataType kDataType = MDRDataType::DATA_MDR;
+    };
+    template<> struct MDRTraits<v1::t1::RetBatteryLevelCradleBatteryParam> {
+        static constexpr MDRDataType kDataType = MDRDataType::DATA_MDR;
+    };
+    template<> struct MDRTraits<v1::t1::RetBatteryLevelLeftRightBatteryParam> {
         static constexpr MDRDataType kDataType = MDRDataType::DATA_MDR;
     };
     template<> struct MDRTraits<v1::t1::RetBatteryLevelUpdateBatteryPowerThresholdForInterruptiongUpdtParam> {

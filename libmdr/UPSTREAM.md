@@ -8,8 +8,9 @@ state this app is known to work against:
 |---|---|
 | Repository | `https://github.com/mos9527/SonyHeadphonesClient` |
 | Base | `965c458d` (branch `v1-compat`) |
-| Plus | the WF-LC900 protocol work, branch `mdr-v2-session-correctness-and-listening-modes` on `https://github.com/Wunderfitz/SonyHeadphonesClient`, tip `d9f7a61` |
-| Taken on | 2026-09-11 |
+| Plus | the WF-LC900 protocol work, branch `mdr-v2-session-correctness-and-listening-modes` on `https://github.com/Wunderfitz/SonyHeadphonesClient`, tip `41ac425` |
+| Plus | the V1 earbud battery fix, branch `v1-left-right-battery` off that tip, `47c9b28` |
+| Taken on | 2026-09-16 |
 
 Those extra commits are **not upstream yet**, and four of them are load-bearing for the
 LinkBuds Clip:
@@ -57,8 +58,10 @@ it, and asks first, as `ALERT_NTFY_PARAM FIXED_MESSAGE <message> POSITIVE_NEGATI
 Unanswered, the held request is dropped without another word, which is exactly what
 multipoint did here and in the desktop client: written, acknowledged, and read back
 unchanged. libmdr already reported the question as `MDR_EVENT_ALERT` and had no way to
-answer it, so `mdrHeadphonesRespondToAlert` adds one. Nothing crossing the boundary
-changed shape - `MDR_ABI_VERSION` stays 2.
+answer it, so `mdrHeadphonesRequestRespondToAlert` adds one - named
+`mdrHeadphonesRespondToAlert` until `41ac425` below renamed it to sit with the other
+`Request*` calls, which is what it is: a task, invoked like a commit. Nothing crossing the
+boundary changed shape - `MDR_ABI_VERSION` stays 2.
 
   Confirmed against a LinkBuds Clip on 2026-09-10: multipoint written from `SettingsPage`
   now takes, the headset drops its links the way the question warns it will, and the new
@@ -108,6 +111,33 @@ V1 path, which until then had never met a device.
   snapshot the device had moved past. This is about what a single frame is allowed to
   say. Both had the same symptom — a control that moves on screen and nothing on the
   headset — which is worth remembering before reaching for either.
+
+`41ac425` is the review feedback on the upstream pull request (#64) and carries no
+behaviour: the narrative comments are cut to one-line briefs, `mTxSeqNumber` goes back to
+`mSeqNumber`, and `mdrHeadphonesRespondToAlert` becomes
+`mdrHeadphonesRequestRespondToAlert`. That rename is the only thing here that reaches this
+app, at the one call site in `MdrController::tick()`.
+
+`47c9b28` is the ninth fix, and the second to come from someone else's hardware — a Sony
+**WF-1000XM3**, reported against this repository. The V1 path knew one battery: it asked
+only when the device advertised `BATTERY_LEVEL` (0x11) and only for
+`BatteryInquiredType::BATTERY`, and decoded that inquired type alone. Earbuds do not
+report that way. That headset advertises `LEFT_RIGHT_BATTERY_LEVEL` (0x15) and
+`CRADLE_BATTERY_LEVEL` (0x18) and no single battery, so nothing was asked for, an
+unsolicited `COMMON_NTFY_BATTERY_LEVEL` was dropped as an unhandled inquired type, and
+`SupportsFeature` — which had no cases for the two features at all — answered no, so
+`mdrHeadphonesGetBatteries` reported zero parts. The V2 path has covered all three parts
+all along. A WH-1000XM4 was unaffected, being a single-battery device, which is why pull
+request #2 did not find this.
+
+  **V1 groups where V2 interleaves.** `11 01 5A 3C 00 01` is left 90 %, right 60 %, left
+  idle, right charging — the two levels and then the two statuses — while V2's
+  `PowerRetStatusLeftRightBattery` pairs each level with its own status. Both orders are as
+  Sound Connect's own class metadata has them, read out of
+  `tooling/ida/generated/v1_t1.json` in that checkout rather than inferred: the
+  WF-1000XM3 capture this came from breaks off before any battery frame, at the
+  voice-guidance fault `5a4a393` fixes. **Not confirmed on hardware** — no V1 earbuds have
+  been in these hands.
 
 The copy is verbatim - `diff -r` against a checkout's `libmdr/` shows no differences -
 except for two files added here from that repository's root:

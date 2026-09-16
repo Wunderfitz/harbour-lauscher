@@ -73,6 +73,32 @@ namespace mdr
                     self->mDetailsV1.mBatteryL = {result.level, 0xFF, result.chargingStatus};
                 }
                 return MDR_EVENT_BATTERY_CHANGED;
+            case BatteryInquiredType::LEFT_RIGHT_BATTERY:
+                if (command == Command::COMMON_NTFY_BATTERY_LEVEL)
+                {
+                    Deserialize(NotifyBatteryLevelLeftRightBatteryParam, result, cmd);
+                    self->mDetailsV1.mBatteryL = {result.leftLevel, 0xFF, result.leftChargingStatus};
+                    self->mDetailsV1.mBatteryR = {result.rightLevel, 0xFF, result.rightChargingStatus};
+                }
+                else
+                {
+                    Deserialize(RetBatteryLevelLeftRightBatteryParam, result, cmd);
+                    self->mDetailsV1.mBatteryL = {result.leftLevel, 0xFF, result.leftChargingStatus};
+                    self->mDetailsV1.mBatteryR = {result.rightLevel, 0xFF, result.rightChargingStatus};
+                }
+                return MDR_EVENT_BATTERY_CHANGED;
+            case BatteryInquiredType::CRADLE_BATTERY:
+                if (command == Command::COMMON_NTFY_BATTERY_LEVEL)
+                {
+                    Deserialize(NotifyBatteryLevelCradleBatteryParam, result, cmd);
+                    self->mDetailsV1.mBatteryCase = {result.level, 0xFF, result.chargingStatus};
+                }
+                else
+                {
+                    Deserialize(RetBatteryLevelCradleBatteryParam, result, cmd);
+                    self->mDetailsV1.mBatteryCase = {result.level, 0xFF, result.chargingStatus};
+                }
+                return MDR_EVENT_BATTERY_CHANGED;
             default:
                 return MDR_EVENT_UNHANDLED;
             }
@@ -208,11 +234,6 @@ namespace mdr
             return MDR_EVENT_UNHANDLED;
         }
 
-        /*
-         * The preset list. V1 has asked for this since the capability request went into the
-         * initialization chain; until now nothing read the answer, so the ids a device would
-         * accept were never known.
-         */
         int HandleEqCapability(MDRHeadphones* self, Span<const UInt8> cmd)
         {
             EqEbbInquiredType type{};
@@ -479,7 +500,6 @@ namespace mdr
                 case POSITIVE_NEGATIVE:
                 {
                     self->mDetailsV1.mLastAlertMessage = res.messageType;
-                    // As in V2: the request that provoked this is held until it is answered.
                     self->mDetailsV1.mAlertAwaitingResponse = true;
                     return MDR_EVENT_ALERT;
                 }

@@ -779,6 +779,23 @@ so `DevicePage` and `CoverPage` both just disable the row at 0 %: still visible,
 plainly not a measurement. `enabled` propagates down the item tree, which is what
 dims the name and the level together.
 
+**A V1 headset's batteries arrive in their own shape, and the app needs nothing for
+it.** `batteryPartName()` already names Left, Right and Case, and
+`mdrHeadphonesGetBatteries()` reports whichever parts a device has whatever family it
+speaks — so the WF-1000XM3 reported in 2026-09 showing no battery at all was entirely
+below the ABI: libmdr's V1 path asked only for the single battery a headphone has and
+decoded only that, while earbuds advertise left/right and the case instead. Fixed in the
+vendored copy (see [libmdr/UPSTREAM.md](libmdr/UPSTREAM.md), `47c9b28`), where the field
+order is the thing to know: **V1 groups the two levels and then the two charging
+statuses, where V2 pairs each level with its own status.** Reported, not confirmed — no
+V1 earbuds have been in these hands.
+
+**That diagnosis came out of the support-function frame alone**, from a capture whose
+initialization never completed: the 20 function bytes in `CONNECT_RET_SUPPORT_FUNCTION`
+say which parts the device has, which is the whole question. Worth remembering before
+asking a reporter for a better capture — and in this case a better one would have shown
+nothing extra, since no version of libmdr asked a V1 device for those parts.
+
 The listening-mode picker offers only the modes the device advertises. Each one
 is a separate `MDR_FEATURE_LISTENING_*` bit — `MDR_FEATURE_LISTENING_MODE` only
 says the device groups them into one exclusive setting — so the menu keeps a
@@ -957,7 +974,7 @@ features, so the menu entry is there for whichever of them the device has.
   [libmdr/UPSTREAM.md](libmdr/UPSTREAM.md), `2497040`).
 - **The answer is yes, and the app gives it without asking again.**
   `MDR_EVENT_ALERT` sets `m_alertPending` and `pumpDevice()` answers with
-  `mdrHeadphonesRespondToAlert(MDR_ALERT_ACTION_POSITIVE)` — next to the commit,
+  `mdrHeadphonesRequestRespondToAlert(MDR_ALERT_ACTION_POSITIVE)` — next to the commit,
   and for the same reason: a request still running answers `MDR_RESULT_INPROGRESS`
   and the next tick tries again. Putting the question to the user would be asking
   about something already agreed to, since the only changes this app makes are the

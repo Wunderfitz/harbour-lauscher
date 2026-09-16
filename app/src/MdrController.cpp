@@ -626,7 +626,7 @@ void MdrController::pumpDevice()
      * the commit is: a request already running has to finish first, and the ABI
      * says so with MDR_RESULT_INPROGRESS. The next tick tries again. */
     if (m_alertPending && mdrHeadphonesIsReady(m_device) &&
-        mdrHeadphonesRespondToAlert(m_device, MDR_ALERT_ACTION_POSITIVE) == MDR_RESULT_OK)
+        mdrHeadphonesRequestRespondToAlert(m_device, MDR_ALERT_ACTION_POSITIVE) == MDR_RESULT_OK)
         m_alertPending = false;
 
     /* A listening mode the device never came back on has to be given up on here: the

@@ -1856,6 +1856,34 @@ namespace mdr::v1::t1
     };
 
     // THMSGV1T1NotifyBatteryLevel
+    struct NotifyBatteryLevelCradleBatteryParam
+    {
+        // CODEGEN EnumRange Command::COMMON_NTFY_BATTERY_LEVEL
+        Command command{Command::COMMON_NTFY_BATTERY_LEVEL}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryInquiredType type{BatteryInquiredType::CRADLE_BATTERY}; // 0x1
+        UInt8 level{}; // 0x2
+        BatteryChargingStatus chargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NotifyBatteryLevelCradleBatteryParam);
+    };
+
+    // THMSGV1T1NotifyBatteryLevel
+    struct NotifyBatteryLevelLeftRightBatteryParam
+    {
+        // CODEGEN EnumRange Command::COMMON_NTFY_BATTERY_LEVEL
+        Command command{Command::COMMON_NTFY_BATTERY_LEVEL}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryInquiredType type{BatteryInquiredType::LEFT_RIGHT_BATTERY}; // 0x1
+        UInt8 leftLevel{}; // 0x2
+        UInt8 rightLevel{}; // 0x3
+        BatteryChargingStatus leftChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x4
+        BatteryChargingStatus rightChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(NotifyBatteryLevelLeftRightBatteryParam);
+    };
+
+    // THMSGV1T1NotifyBatteryLevel
     struct NotifyBatteryLevelUpdateBatteryPowerThresholdForInterruptiongUpdtParam
     {
         // CODEGEN EnumRange Command::COMMON_NTFY_BATTERY_LEVEL
@@ -2548,6 +2576,34 @@ namespace mdr::v1::t1
         BatteryChargingStatus chargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
 
         MDR_DEFINE_TRIVIAL_SERIALIZATION(RetBatteryLevelBatteryParam);
+    };
+
+    // THMSGV1T1RetBatteryLevel
+    struct RetBatteryLevelCradleBatteryParam
+    {
+        // CODEGEN EnumRange Command::COMMON_RET_BATTERY_LEVEL
+        Command command{Command::COMMON_RET_BATTERY_LEVEL}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryInquiredType type{BatteryInquiredType::CRADLE_BATTERY}; // 0x1
+        UInt8 level{}; // 0x2
+        BatteryChargingStatus chargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(RetBatteryLevelCradleBatteryParam);
+    };
+
+    // THMSGV1T1RetBatteryLevel
+    struct RetBatteryLevelLeftRightBatteryParam
+    {
+        // CODEGEN EnumRange Command::COMMON_RET_BATTERY_LEVEL
+        Command command{Command::COMMON_RET_BATTERY_LEVEL}; // 0x0
+        // CODEGEN Ignore OUT_OF_RANGE is expected
+        BatteryInquiredType type{BatteryInquiredType::LEFT_RIGHT_BATTERY}; // 0x1
+        UInt8 leftLevel{}; // 0x2
+        UInt8 rightLevel{}; // 0x3
+        BatteryChargingStatus leftChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x4
+        BatteryChargingStatus rightChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x5
+
+        MDR_DEFINE_TRIVIAL_SERIALIZATION(RetBatteryLevelLeftRightBatteryParam);
     };
 
     // THMSGV1T1RetBatteryLevel
