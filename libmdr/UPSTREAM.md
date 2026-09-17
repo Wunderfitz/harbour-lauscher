@@ -91,6 +91,14 @@ V1 path, which until then had never met a device.
   this unconditional rather than device-specific is that `RequestInitV1` asks about those
   other details itself: the library requested what it then refused to parse, so **no V1
   device advertising `VOICE_GUIDANCE` could connect at all**.
+
+  Confirmed on a second device on 2026-09-17, offline: a complete WF-1000XM3
+  initialization replays through the C ABI with every one of its 127 received frames
+  dispatching, and the same capture against `5a4a393^` fails on exactly the
+  voice-guidance frames — all five `DetailedDataType` values and both `StatusType` ones
+  are in it. That headset is a different family from the WH-1000XM4 this came from, and
+  the capture discriminates, which makes it worth keeping as a corpus.
+
 - `cb3d915` makes a sync ask for something. `RequestSyncV1` returned completion without
   sending a command, and `RequestSyncV2` asked only about battery and safe listening. That
   is invisible for state a headset announces by itself, which is most of it, but not for
@@ -152,6 +160,16 @@ is the right side's level, which is a valid charging status only at 0 %, 1 % or 
   parses and the other is rejected at `ProtocolV1T1Validation.cpp:685`, which is the line
   the report named. **Still not confirmed on hardware** — no V1 earbuds have been in these
   hands — but this layout is the one a device actually sent.
+
+  **A capture from a client without `47c9b28` cannot confirm it, and one was tried.** The
+  second WF-1000XM3 capture (2026-09-17, a complete initialization) carries no
+  `COMMON_GET_BATTERY_LEVEL`, `COMMON_RET_BATTERY_LEVEL` or `COMMON_NTFY_BATTERY_LEVEL` at
+  all: a client that does not ask is not answered, and the 1.8 s the recording spans is no
+  evidence about what the device volunteers later. Only a capture taken with these two
+  commits in the client will hold the frame. Decode the bytes rather than grepping the
+  filenames when looking — the recorder labels every file from the V2 command table, so a
+  V1 capture's names are wrong wherever the two tables differ, and V2 spells the battery
+  commands `POWER_*`.
 
 The copy is verbatim - `diff -r` against a checkout's `libmdr/` shows no differences -
 except for two files added here from that repository's root:
