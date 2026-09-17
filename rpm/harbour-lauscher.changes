@@ -2,7 +2,9 @@
 - Fixed the battery levels never appearing on Sony's older earbuds, the WF-1000XM3
   among them. Earbuds report a level for each side and one for the charging case,
   and only the single level a pair of headphones reports was ever asked for, so
-  there was nothing to show. Reported for the WF-1000XM3; not yet confirmed on one.
+  there was nothing to show. Reported for the WF-1000XM3, which has since answered
+  the request the fix sends; the app now reads that answer the way the headset
+  spells it, which the first cut of the fix got wrong. Not yet confirmed on one.
 
 * Sat Sep 12 2026 Sebastian Wolf <sebastian@ygriega.de> 0.2-1
 - Added an equalizer page: the presets the headset advertises, the band steps as

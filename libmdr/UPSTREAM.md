@@ -9,8 +9,8 @@ state this app is known to work against:
 | Repository | `https://github.com/mos9527/SonyHeadphonesClient` |
 | Base | `965c458d` (branch `v1-compat`) |
 | Plus | the WF-LC900 protocol work, branch `mdr-v2-session-correctness-and-listening-modes` on `https://github.com/Wunderfitz/SonyHeadphonesClient`, tip `41ac425` |
-| Plus | the V1 earbud battery fix, branch `v1-left-right-battery` off that tip, `47c9b28` |
-| Taken on | 2026-09-16 |
+| Plus | the V1 earbud battery fixes, branch `v1-left-right-battery` off that tip, tip `e7628d7` |
+| Taken on | 2026-09-17 |
 
 Those extra commits are **not upstream yet**, and four of them are load-bearing for the
 LinkBuds Clip:
@@ -128,16 +128,30 @@ unsolicited `COMMON_NTFY_BATTERY_LEVEL` was dropped as an unhandled inquired typ
 `SupportsFeature` — which had no cases for the two features at all — answered no, so
 `mdrHeadphonesGetBatteries` reported zero parts. The V2 path has covered all three parts
 all along. A WH-1000XM4 was unaffected, being a single-battery device, which is why pull
-request #2 did not find this.
+request #2 did not find this. What it then did with the answer was wrong, which is
+`e7628d7` below.
 
-  **V1 groups where V2 interleaves.** `11 01 5A 3C 00 01` is left 90 %, right 60 %, left
-  idle, right charging — the two levels and then the two statuses — while V2's
-  `PowerRetStatusLeftRightBattery` pairs each level with its own status. Both orders are as
-  Sound Connect's own class metadata has them, read out of
-  `tooling/ida/generated/v1_t1.json` in that checkout rather than inferred: the
-  WF-1000XM3 capture this came from breaks off before any battery frame, at the
-  voice-guidance fault `5a4a393` fixes. **Not confirmed on hardware** — no V1 earbuds have
-  been in these hands.
+`e7628d7` is the tenth, and it is the other half of that report. **Each level is followed
+by its own charging status**, exactly as V2's `PowerRetStatusLeftRightBattery` has it:
+`11 01 5A 00 3C 01` is left 90 % idle, right 60 % charging. `47c9b28` had the two levels
+and then the two statuses, on the strength of `tooling/ida/generated/v1_t1.json`, whose
+entry for that class rests on nothing better than the order its getters are mentioned in
+a cross-referencing function — where every V2 battery layout in the same file is proven
+getter by getter, byte range by byte range. The reporter's WF-1000XM3 settled it in one
+line: `is_valid(data.leftChargingStatus)` failed, and under the grouped reading that byte
+is the right side's level, which is a valid charging status only at 0 %, 1 % or 0xF0.
+
+  This was fatal rather than cosmetic. A handler that reports an error makes
+  `mdrHeadphonesPoll` return `MDR_RESULT_ERROR_MALFORMED_PAYLOAD` instead of an event, and
+  `MdrController::pumpDevice()` hands anything that is not a lost link to `fail()` — so
+  the session ended the moment the battery answer arrived. `47c9b28` alone turned an empty
+  battery section into a connection that could not be held.
+
+  Both orders reproduce offline against the vendored sources, with nothing but
+  `RetBatteryLevelLeftRightBatteryParam::Deserialize` and the two candidate frames: one
+  parses and the other is rejected at `ProtocolV1T1Validation.cpp:685`, which is the line
+  the report named. **Still not confirmed on hardware** — no V1 earbuds have been in these
+  hands — but this layout is the one a device actually sent.
 
 The copy is verbatim - `diff -r` against a checkout's `libmdr/` shows no differences -
 except for two files added here from that repository's root:

@@ -785,9 +785,9 @@ it.** `batteryPartName()` already names Left, Right and Case, and
 speaks — so the WF-1000XM3 reported in 2026-09 showing no battery at all was entirely
 below the ABI: libmdr's V1 path asked only for the single battery a headphone has and
 decoded only that, while earbuds advertise left/right and the case instead. Fixed in the
-vendored copy (see [libmdr/UPSTREAM.md](libmdr/UPSTREAM.md), `47c9b28`), where the field
-order is the thing to know: **V1 groups the two levels and then the two charging
-statuses, where V2 pairs each level with its own status.** Reported, not confirmed — no
+vendored copy (see [libmdr/UPSTREAM.md](libmdr/UPSTREAM.md), `47c9b28` and `e7628d7`).
+**The field order is V2's: each level is followed by its own charging status**, so
+`11 01 5A 00 3C 01` is left 90 % idle, right 60 % charging. Reported, not confirmed — no
 V1 earbuds have been in these hands.
 
 **That diagnosis came out of the support-function frame alone**, from a capture whose
@@ -795,6 +795,24 @@ initialization never completed: the 20 function bytes in `CONNECT_RET_SUPPORT_FU
 say which parts the device has, which is the whole question. Worth remembering before
 asking a reporter for a better capture — and in this case a better one would have shown
 nothing extra, since no version of libmdr asked a V1 device for those parts.
+
+**The layout was the half that capture could not answer, and it was got wrong.**
+`47c9b28` grouped the two levels and then the two statuses, on the strength of Sound
+Connect's own class metadata — where that one class is the kind the extraction infers
+from the order getters are mentioned rather than from byte offsets, which the file says
+per declaration and which nobody read. The device's answer was then rejected outright,
+and since a malformed payload reaches `pumpDevice()` as a result code rather than an
+event, `fail()` ended the session the moment the battery arrived: reading the levels at
+all made that headset worse, not better. `e7628d7` is the correction.
+
+**A rejection names the field it tripped on, and that is a coordinate.** The report
+carried one line — `is_valid(data.leftChargingStatus)` — and that field is a byte offset,
+so it says which byte disagreed. Under the grouped reading it is the right side's level,
+which is a valid charging status only at 0 %, 1 % or 0xF0. That is the whole diagnosis;
+the second capture asked for was never needed. Deserializing the two candidate frames
+through the vendored sources is ~25 lines and no transport, and it reproduces both the
+error and its `ProtocolV1T1Validation.cpp` line number, which is how the fix was checked
+before it was written.
 
 The listening-mode picker offers only the modes the device advertises. Each one
 is a separate `MDR_FEATURE_LISTENING_*` bit — `MDR_FEATURE_LISTENING_MODE` only

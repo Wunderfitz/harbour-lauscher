@@ -1733,8 +1733,8 @@ namespace mdr::v1::t1
     struct LeftRightBatteryParam
     {
         UInt8 leftLevel{}; // 0x0
-        UInt8 rightLevel{}; // 0x1
-        BatteryChargingStatus leftChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x2
+        BatteryChargingStatus leftChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x1
+        UInt8 rightLevel{}; // 0x2
         BatteryChargingStatus rightChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
 
         MDR_DEFINE_EXTERN_READ_WRITE(LeftRightBatteryParam);
@@ -1876,8 +1876,8 @@ namespace mdr::v1::t1
         // CODEGEN Ignore OUT_OF_RANGE is expected
         BatteryInquiredType type{BatteryInquiredType::LEFT_RIGHT_BATTERY}; // 0x1
         UInt8 leftLevel{}; // 0x2
-        UInt8 rightLevel{}; // 0x3
-        BatteryChargingStatus leftChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x4
+        BatteryChargingStatus leftChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
+        UInt8 rightLevel{}; // 0x4
         BatteryChargingStatus rightChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x5
 
         MDR_DEFINE_TRIVIAL_SERIALIZATION(NotifyBatteryLevelLeftRightBatteryParam);
@@ -2599,8 +2599,8 @@ namespace mdr::v1::t1
         // CODEGEN Ignore OUT_OF_RANGE is expected
         BatteryInquiredType type{BatteryInquiredType::LEFT_RIGHT_BATTERY}; // 0x1
         UInt8 leftLevel{}; // 0x2
-        UInt8 rightLevel{}; // 0x3
-        BatteryChargingStatus leftChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x4
+        BatteryChargingStatus leftChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x3
+        UInt8 rightLevel{}; // 0x4
         BatteryChargingStatus rightChargingStatus{BatteryChargingStatus::NOT_CHARGING}; // 0x5
 
         MDR_DEFINE_TRIVIAL_SERIALIZATION(RetBatteryLevelLeftRightBatteryParam);
