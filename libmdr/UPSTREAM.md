@@ -158,8 +158,10 @@ is the right side's level, which is a valid charging status only at 0 %, 1 % or 
   Both orders reproduce offline against the vendored sources, with nothing but
   `RetBatteryLevelLeftRightBatteryParam::Deserialize` and the two candidate frames: one
   parses and the other is rejected at `ProtocolV1T1Validation.cpp:685`, which is the line
-  the report named. **Still not confirmed on hardware** — no V1 earbuds have been in these
-  hands — but this layout is the one a device actually sent.
+  the report named. **Confirmed on hardware on 2026-09-17**, by two WF-1000XM3 owners
+  independently of each other: with both commits in the client the levels arrive and the
+  session survives them. No V1 earbuds have been in these hands, so this is the reported
+  model confirmed rather than the family.
 
   **A capture from a client without `47c9b28` cannot confirm it, and one was tried.** The
   second WF-1000XM3 capture (2026-09-17, a complete initialization) carries no
@@ -169,7 +171,9 @@ is the right side's level, which is a valid charging status only at 0 %, 1 % or 
   commits in the client will hold the frame. Decode the bytes rather than grepping the
   filenames when looking — the recorder labels every file from the V2 command table, so a
   V1 capture's names are wrong wherever the two tables differ, and V2 spells the battery
-  commands `POWER_*`.
+  commands `POWER_*`. In the end the confirmation came from the other direction entirely —
+  owners running a client that has both commits — which is the cheaper route whenever the
+  reporter can install a build.
 
 The copy is verbatim - `diff -r` against a checkout's `libmdr/` shows no differences -
 except for two files added here from that repository's root:

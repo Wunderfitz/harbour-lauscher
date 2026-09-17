@@ -4,7 +4,8 @@
   and only the single level a pair of headphones reports was ever asked for, so
   there was nothing to show. Reported for the WF-1000XM3, which has since answered
   the request the fix sends; the app now reads that answer the way the headset
-  spells it, which the first cut of the fix got wrong. Not yet confirmed on one.
+  spells it, which the first cut of the fix got wrong. Two owners of that headset have
+  since confirmed the levels appear, independently of each other.
 
 * Sat Sep 12 2026 Sebastian Wolf <sebastian@ygriega.de> 0.2-1
 - Added an equalizer page: the presets the headset advertises, the band steps as

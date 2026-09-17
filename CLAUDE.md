@@ -787,8 +787,9 @@ below the ABI: libmdr's V1 path asked only for the single battery a headphone ha
 decoded only that, while earbuds advertise left/right and the case instead. Fixed in the
 vendored copy (see [libmdr/UPSTREAM.md](libmdr/UPSTREAM.md), `47c9b28` and `e7628d7`).
 **The field order is V2's: each level is followed by its own charging status**, so
-`11 01 5A 00 3C 01` is left 90 % idle, right 60 % charging. Reported, not confirmed — no
-V1 earbuds have been in these hands.
+`11 01 5A 00 3C 01` is left 90 % idle, right 60 % charging. Confirmed on 2026-09-17 by
+two WF-1000XM3 owners, independently of each other — on their headsets, not in these
+hands.
 
 **That diagnosis came out of the support-function frame alone**, from a capture whose
 initialization never completed: the 20 function bytes in `CONNECT_RET_SUPPORT_FUNCTION`
@@ -1281,6 +1282,20 @@ actions are unchanged. That is the half worth stating: the lists were restructur
 from two to four, so the path that device takes through them is a different one than
 before even though nothing about what it offers moved.
 
+### Confirmed on hardware, 2026-09-17
+
+**A WF-1000XM3 shows its batteries** — the first battery reading this app has produced on
+a V1 earbud. Two owners of that headset confirmed it on the same day, independently of
+each other, which settles both halves of the fix at once: `47c9b28` asks for the left,
+right and cradle levels a pair of earbuds advertises, and `e7628d7` reads the answer the
+way the device spells it. The layout had been decided offline, off the single validation
+line the first report quoted, and the device agrees with it.
+
+The hardware was theirs, not ours, so this confirms the model the report came from and
+not the family — see the gap below. What two independent reports do make hard to doubt is
+the part that was worse than cosmetic: `47c9b28` on its own ended the session the moment
+the battery arrived, and neither of them lost a connection.
+
 Known gaps:
 - Leaving `DevicePage` still drops the RFCOMM channel on purpose, since the
   headset allows one control session at a time. Coming back to it is what the
@@ -1289,11 +1304,13 @@ Known gaps:
   reports no NC/ASM function of any kind — the ambient sound control section
   simply will not appear. It offers background music, voice boost and sound
   leakage reduction, but no cinema.
-- V1 (XM4 and older) has now been driven, by someone else: a WH-1000XM4 in pull
-  request #2, which found two faults in the V1 path and one in this app. The
-  protocol pair is vendored in (see [libmdr/UPSTREAM.md](libmdr/UPSTREAM.md),
-  `5a4a393` and `cb3d915`); no V1 device has been in these hands, so the UUID
-  fallback and everything above it is confirmed by report rather than by us.
+- V1 (XM4 and older) has now been driven, by other people: a WH-1000XM4 in pull
+  request #2, which found two faults in the V1 path and one in this app, and a
+  WF-1000XM3, whose empty battery section found two more. Those fixes are vendored
+  in (see [libmdr/UPSTREAM.md](libmdr/UPSTREAM.md), `5a4a393`, `cb3d915`, `47c9b28`
+  and `e7628d7`); no V1 device has been in these hands, so the UUID fallback and
+  everything above it is confirmed by report rather than by us — and no V1 earbud
+  other than the WF-1000XM3 has ever been seen answering the battery request.
 - Touch controls and speak-to-chat are reachable through the C ABI already; only
   the UI is missing. So is the half of the general settings the ABI cannot carry:
   the list-shaped ones, of which the LinkBuds Clip's tap sensitivity is one.
