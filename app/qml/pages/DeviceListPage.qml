@@ -35,6 +35,13 @@ Page {
     // here again - and must not reconnect what the reader has just walked away from.
     property bool autoConnectSettled: false
 
+    // Pushed, not replaced: the way back to the list is also the way to a second
+    // headset, and a connection that fails wants somewhere to return to.
+    function openDevice(address) {
+        mdr.connectToDevice(address)
+        pageStack.push(Qt.resolvedUrl("DevicePage.qml"))
+    }
+
     // Coming back from the device page means we disconnected; make sure the
     // list reflects whatever BlueZ thinks is paired right now.
     onStatusChanged: {
@@ -53,10 +60,20 @@ Page {
         var address = mdr.soleConnectedDevice()
         if (address.length === 0)
             return
-        // Pushed, not replaced: the way back to the list is also the way to a second
-        // headset, and a connection that fails wants somewhere to return to.
-        mdr.connectToDevice(address)
-        pageStack.push(Qt.resolvedUrl("DevicePage.qml"))
+        openDevice(address)
+    }
+
+    // The same answer for a headset that connects while the list is up - switched on,
+    // or taken out of its case. Only while this page is the one showing: with the
+    // about page on top the reader is busy with something else, and with the device
+    // page there the controller never says this at all. Coming back to the list does
+    // not count as an arrival, so the headset just left stays left.
+    Connections {
+        target: mdr
+        onHeadsetArrived: {
+            if (page.status === PageStatus.Active)
+                page.openDevice(address)
+        }
     }
 
     SilicaListView {
@@ -127,10 +144,7 @@ Page {
                 }
             }
 
-            onClicked: {
-                mdr.connectToDevice(modelData.address)
-                pageStack.push(Qt.resolvedUrl("DevicePage.qml"))
-            }
+            onClicked: page.openDevice(modelData.address)
         }
 
         ViewPlaceholder {

@@ -6,6 +6,11 @@
   the request the fix sends; the app now reads that answer the way the headset
   spells it, which the first cut of the fix got wrong. Two owners of that headset have
   since confirmed the levels appear, independently of each other.
+- A supported headset that connects to the phone while the app is showing the
+  list of headsets now opens straight away, as one connected at launch already
+  did. Two connected at once still leave the choice to you, and going back to the
+  list does not reopen the headset you just left. The list also follows headsets
+  connecting and disconnecting by itself now.
 
 * Sat Sep 12 2026 Sebastian Wolf <sebastian@ygriega.de> 0.2-1
 - Added an equalizer page: the presets the headset advertises, the band steps as

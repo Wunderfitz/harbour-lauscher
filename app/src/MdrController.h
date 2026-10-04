@@ -303,6 +303,10 @@ signals:
     void reconnectingChanged();
     void statusMessageChanged();
     void pairedDevicesChanged();
+    /** A headset just got a link to the phone while no session was wanted, and it is
+     *  the only supported one connected - the launch's rule, applied on arrival.
+     *  Whether to open it is the picker's call, since only it knows it is showing. */
+    void headsetArrived(const QString &address);
     void identityChanged();
     void batteriesChanged();
     void featuresChanged();
@@ -324,6 +328,8 @@ private slots:
     void handleLinkLost();
     void handleDeviceReturned();
     void attemptReconnect();
+    void handleDeviceConnected(const QString &address);
+    void handleArrivalSettled();
 
 private:
     void setState(State state);
@@ -385,6 +391,13 @@ private:
     QTimer *m_syncTimer = nullptr;
     /* Single-shot: the next reconnect attempt, armed only while one is wanted. */
     QTimer *m_reconnectTimer = nullptr;
+    /* Single-shot: BlueZ reports a device change property by property, and pairing a
+     * headset is half a dozen of them, so the list is read once they have stopped. */
+    QTimer *m_devicesTimer = nullptr;
+    /* Single-shot: the settle between a headset arriving and it being offered to the
+     * picker - see handleDeviceConnected(). */
+    QTimer *m_arrivalTimer = nullptr;
+    QString m_arrivalAddress;
 
     State m_state = Idle;
     QString m_statusMessage;

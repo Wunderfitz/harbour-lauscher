@@ -190,6 +190,16 @@ BluezTransport::BluezTransport(QObject *parent)
     /* One profile object per process instance; the pid keeps it unique enough. */
     m_profilePath = QStringLiteral("/de/ygriega/lauscher/profile%1")
                         .arg(QCoreApplication::applicationPid());
+
+    /* Every device, not one: a headset the reader has not picked yet is exactly the
+     * one this is for. The path is left empty to match any, and arg0 narrows it to
+     * Device1 so the adapter's and the media interfaces' chatter never wakes us. */
+    if (!QDBusConnection::systemBus().connect(
+            QString::fromLatin1(kBluezService), QString(), QString::fromLatin1(kPropertiesIface),
+            QStringLiteral("PropertiesChanged"), QStringList(QString::fromLatin1(kDeviceIface)),
+            QStringLiteral("sa{sv}as"), this,
+            SLOT(onDeviceChanged(QString,QVariantMap,QStringList,QDBusMessage))))
+        qWarning() << "[lauscher] bluez: could not watch devices connecting";
 }
 
 BluezTransport::~BluezTransport()
@@ -262,6 +272,18 @@ QString BluezTransport::devicePathForAddress(const QString &macAddress)
         return m_addressToPath.value(key);
     pairedDevices();
     return m_addressToPath.value(key);
+}
+
+QString BluezTransport::addressForDevicePath(const QString &path)
+{
+    QString address = m_addressToPath.key(path);
+    if (address.isEmpty()) {
+        /* A device paired since the list was last read, or one whose services were
+         * only just resolved - either way the map is what is out of date. */
+        pairedDevices();
+        address = m_addressToPath.key(path);
+    }
+    return address;
 }
 
 /* ---------------------------------------------------------------- watching */
@@ -339,6 +361,34 @@ void BluezTransport::onWatchedDeviceChanged(const QString &interface, const QVar
     if (changed.value(QStringLiteral("ServicesResolved")).toBool()
         || changed.value(QStringLiteral("Connected")).toBool())
         emit watchedDeviceReturned();
+}
+
+/* Any device's Device1 changing. Only the properties the picker shows are worth a
+ * new list, and RSSI in particular is not: it changes for every device in range
+ * for as long as anything on the phone is scanning. Connected going true is also
+ * the headset arriving, which is reported on its own - but only for a device the
+ * picker would list, so a car kit or a keyboard connecting is no more than a list
+ * that may have changed. */
+void BluezTransport::onDeviceChanged(const QString &interface, const QVariantMap &changed,
+                                     const QStringList &invalidated, const QDBusMessage &message)
+{
+    Q_UNUSED(invalidated)
+    if (interface != QLatin1String(kDeviceIface))
+        return;
+
+    static const char *const kListed[] = { "Connected", "Paired", "UUIDs", "Alias", "Name" };
+    bool listed = false;
+    for (const char *key : kListed)
+        listed = listed || changed.contains(QLatin1String(key));
+    if (!listed)
+        return;
+    emit devicesChanged();
+
+    if (!changed.value(QStringLiteral("Connected")).toBool())
+        return;
+    const QString address = addressForDevicePath(message.path());
+    if (!address.isEmpty())
+        emit deviceConnected(address);
 }
 
 /* -------------------------------------------------------------- profile/fd */

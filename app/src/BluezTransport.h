@@ -35,6 +35,7 @@
 #include <mdr-c/Connection.h>
 
 class BluezTransport;
+class QDBusMessage;
 class QDBusPendingCallWatcher;
 
 /**
@@ -113,6 +114,12 @@ signals:
     void linkLost();
     /** The watched device is back on BlueZ's books with its services resolved. */
     void watchedDeviceReturned();
+    /** Something the picker shows changed for some device - its link, its name, its
+     *  services, whether it is paired. pairedDevices() has the new answer. */
+    void devicesChanged();
+    /** A paired headset that speaks MDR has just got a link to the phone - any one of
+     *  them, not only the watched device. */
+    void deviceConnected(const QString &address);
 
 public:
     /* org.bluez.Profile1 - called by bluetoothd via Profile1Adaptor, not by us. */
@@ -124,6 +131,8 @@ private slots:
     void onConnectProfileFinished(QDBusPendingCallWatcher *watcher);
     void onWatchedDeviceChanged(const QString &interface, const QVariantMap &changed,
                                 const QStringList &invalidated);
+    void onDeviceChanged(const QString &interface, const QVariantMap &changed,
+                         const QStringList &invalidated, const QDBusMessage &message);
 
 private:
     /* MDRConnection vtable thunks. */
@@ -147,6 +156,8 @@ private:
     /** Ask BlueZ to drop the profile connection it holds for @p devicePath. */
     void disconnectProfile(const QString &devicePath);
     QString devicePathForAddress(const QString &macAddress);
+    /** The reverse, and empty for a device the picker would not list. */
+    QString addressForDevicePath(const QString &path);
     void setError(const QString &message);
     void adoptSocket(int fd);
 

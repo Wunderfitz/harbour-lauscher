@@ -74,6 +74,10 @@ const int kReconnectSettleMs = 2000;
 const int kReconnectRetryMs = 6000;
 const int kReconnectAttempts = 3;
 
+/* How long BlueZ has to have stopped reporting device changes before the list is
+ * read again. Long enough to take a pairing's burst of properties in one read. */
+const int kDevicesSettleMs = 300;
+
 /* A device that answers with GsStringFormat::ENUM_NAME sends a key rather than a
  * sentence - MULTIPOINT_SETTING, TAP_SENSITIVITY_SETTING - while RAW_NAME sends
  * the words themselves. The C ABI does not carry which of the two it was, so the
@@ -118,6 +122,20 @@ MdrController::MdrController(QObject *parent)
     m_reconnectTimer = new QTimer(this);
     m_reconnectTimer->setSingleShot(true);
     QObject::connect(m_reconnectTimer, &QTimer::timeout, this, &MdrController::attemptReconnect);
+
+    m_devicesTimer = new QTimer(this);
+    m_devicesTimer->setSingleShot(true);
+    m_devicesTimer->setInterval(kDevicesSettleMs);
+    QObject::connect(m_devicesTimer, &QTimer::timeout, this, &MdrController::refreshPairedDevices);
+    QObject::connect(m_transport, &BluezTransport::devicesChanged,
+                     m_devicesTimer, static_cast<void (QTimer::*)()>(&QTimer::start));
+
+    m_arrivalTimer = new QTimer(this);
+    m_arrivalTimer->setSingleShot(true);
+    m_arrivalTimer->setInterval(kReconnectSettleMs);
+    QObject::connect(m_arrivalTimer, &QTimer::timeout, this, &MdrController::handleArrivalSettled);
+    QObject::connect(m_transport, &BluezTransport::deviceConnected,
+                     this, &MdrController::handleDeviceConnected);
 
     refreshPairedDevices();
 }
@@ -198,6 +216,7 @@ void MdrController::connectToDevice(const QString &address)
     if (address.compare(m_address, Qt::CaseInsensitive) != 0)
         clearIdentity();
 
+    m_arrivalTimer->stop();
     m_address = address;
     /* Asking for a device is what arms the automatic side of this: from here until
      * the session is given up on deliberately, a headset that goes away and comes
@@ -248,6 +267,38 @@ void MdrController::disconnectDevice()
     closeDevice();
     setStatus(QString());
     setState(Idle);
+}
+
+/* --------------------------------------------------------------- arrival */
+
+/* A headset connecting to the phone while the app sits on the picker is the launch
+ * case arriving late, and it gets the launch's answer. It is held for the same settle
+ * a reconnect waits: Connected is the link coming up, and the MDR record is published
+ * a little after that, so an attempt made at once would mostly be spent. A session
+ * that is already wanted - the device page is open, or a reconnect is pending - owns
+ * the link and its own watch, and an arrival is none of this code's business. */
+void MdrController::handleDeviceConnected(const QString &address)
+{
+    if (m_autoReconnect)
+        return;
+    m_arrivalAddress = address;
+    m_arrivalTimer->start();
+}
+
+/* The list is read again rather than trusted, because the rule is "the only one" and
+ * a second headset may have connected, or this one gone again, in the meantime. */
+void MdrController::handleArrivalSettled()
+{
+    if (m_autoReconnect)
+        return;
+    refreshPairedDevices();
+    if (soleConnectedDevice().compare(m_arrivalAddress, Qt::CaseInsensitive) != 0) {
+        qInfo() << "[lauscher]" << m_arrivalAddress
+                << "connected, but is gone again or not the only headset that is";
+        return;
+    }
+    qInfo() << "[lauscher]" << m_arrivalAddress << "connected to the phone";
+    emit headsetArrived(m_arrivalAddress);
 }
 
 /* --------------------------------------------------------------- reconnect */

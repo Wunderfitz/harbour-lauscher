@@ -219,6 +219,29 @@ an automatic connection can fail exactly as a tapped one does — which is why i
 pushed rather than swapped in: the way back to the list is also the way to the other
 headset.
 
+**A headset that connects while the list is up gets the same answer.** BlueZ is asked
+for every device's `Device1` `PropertiesChanged` — any path, arg0 matched to
+`org.bluez.Device1` — and `Connected` going true for a device the picker lists is
+`BluezTransport::deviceConnected`. The controller holds it for `kReconnectSettleMs`,
+the gap a reconnect waits for the MDR record too, then re-reads the list and emits
+`headsetArrived` only if that device is `soleConnectedDevice()` — the launch's rule,
+not a looser one. `DeviceListPage` opens it only while it is `Active`. What keeps it
+from fighting the rest:
+
+- **It is an edge, not a state.** Coming back from `DevicePage` leaves the ACL link
+  up — `DisconnectProfile` drops the channel, not the link — so nothing arrives and
+  the headset just left stays left, which is what `autoConnectSettled` guarantees at
+  launch.
+- **A session that is wanted owns its device.** While `m_autoReconnect` holds, the
+  device page is open or a reconnect is pending, and the arrival is dropped both when
+  it comes in and when the settle ends; `connectToDevice()` stops the pending one.
+- **The same subscription keeps the list current.** Any change to a property the
+  picker shows (`Connected`, `Paired`, `UUIDs`, `Alias`, `Name`) re-reads it after
+  `kDevicesSettleMs`, so a pairing's burst of properties costs one
+  `GetManagedObjects`. `RSSI` is left out on purpose — it changes for every device
+  in range while anything is scanning. A device removed outright arrives as
+  `InterfacesRemoved`, which this does not watch; the pulley's Refresh covers it.
+
 **A `Profile1` belongs to a UUID, not to a device.** bluetoothd offers the registered
 object every device that connects on that UUID, so `NewConnection` and
 `RequestDisconnection` both arrive for headsets this app never asked for — a second
